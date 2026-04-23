@@ -1,0 +1,56 @@
+{
+  "collectionName": "components_blocks_dashboard_showcases",
+  "info": {
+    "displayName": "Dashboard Showcase",
+    "description": "Editorial dashboard or analytics showcase section"
+  },
+  "options": {},
+  "attributes": {
+    "badge": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "text"
+    },
+    "chartLabel": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "chartValue": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "chartDelta": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "stats": {
+      "type": "component",
+      "component": "shared.metric",
+      "repeatable": true,
+      "max": 4
+    },
+    "insights": {
+      "type": "component",
+      "component": "shared.list-item",
+      "repeatable": true,
+      "max": 4
+    },
+    "primaryCta": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    },
+    "secondaryCta": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    }
+  }
+}

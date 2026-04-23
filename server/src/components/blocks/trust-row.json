@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_trust_rows",
+  "info": {
+    "displayName": "Trust Row",
+    "description": "Trust cue row"
+  },
+  "options": {},
+  "attributes": {
+    "items": {
+      "type": "component",
+      "component": "shared.list-item",
+      "repeatable": true,
+      "min": 2
+    }
+  }
+}

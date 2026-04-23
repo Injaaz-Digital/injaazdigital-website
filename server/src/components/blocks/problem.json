@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_blocks_problems",
+  "info": {
+    "displayName": "Problem",
+    "description": "Pain and bottleneck section"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "bullets": {
+      "type": "component",
+      "component": "shared.list-item",
+      "repeatable": true,
+      "min": 1
+    },
+    "insight": {
+      "type": "string"
+    }
+  }
+}

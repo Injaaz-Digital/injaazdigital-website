@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_shared_brand_proof_strategy_panels",
+  "info": {
+    "displayName": "Brand Proof Strategy Card",
+    "description": "Strategy card used in the brand proof slider"
+  },
+  "options": {},
+  "attributes": {
+    "badge": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "headline": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "summary": {
+      "type": "text"
+    },
+    "icon": {
+      "type": "component",
+      "component": "shared.media",
+      "repeatable": false
+    },
+    "coverMedia": {
+      "type": "component",
+      "component": "shared.media",
+      "repeatable": false
+    }
+  }
+}

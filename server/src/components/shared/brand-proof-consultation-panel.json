@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_shared_brand_proof_consultation_panels",
+  "info": {
+    "displayName": "Brand Proof Consultation Panel",
+    "description": "Consultation invitation panel content"
+  },
+  "options": {},
+  "attributes": {
+    "headline": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "backgroundMedia": {
+      "type": "component",
+      "component": "shared.media",
+      "repeatable": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    },
+    "supportingNote": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "teamMembers": {
+      "type": "component",
+      "component": "shared.team-member",
+      "repeatable": true,
+      "max": 4
+    }
+  }
+}

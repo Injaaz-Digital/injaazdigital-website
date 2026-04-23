@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_blocks_proof_sections",
+  "info": {
+    "displayName": "Proof",
+    "description": "Process proof section"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "beforeLabel": {
+      "type": "string"
+    },
+    "afterLabel": {
+      "type": "string"
+    },
+    "evidenceText": {
+      "type": "text"
+    },
+    "trackedMetrics": {
+      "type": "component",
+      "component": "shared.metric",
+      "repeatable": true
+    },
+    "artifact": {
+      "type": "component",
+      "component": "shared.media",
+      "repeatable": false
+    }
+  }
+}

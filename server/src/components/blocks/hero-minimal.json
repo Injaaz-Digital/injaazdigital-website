@@ -1,0 +1,56 @@
+{
+  "collectionName": "components_blocks_hero_minimals",
+  "info": {
+    "displayName": "Hero Minimal",
+    "description": "Minimal hero with concise messaging and CTA"
+  },
+  "options": {},
+  "attributes": {
+    "badge": {
+      "type": "string",
+      "maxLength": 140
+    },
+    "headline": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "subheadline": {
+      "type": "text"
+    },
+    "availability": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "primaryCta": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    },
+    "secondaryCta": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    },
+    "highlights": {
+      "type": "component",
+      "component": "shared.metric",
+      "repeatable": true,
+      "max": 4
+    },
+    "gallery": {
+      "type": "component",
+      "component": "shared.media",
+      "repeatable": true,
+      "max": 6
+    },
+    "align": {
+      "type": "enumeration",
+      "enum": [
+        "left",
+        "center"
+      ],
+      "default": "center"
+    }
+  }
+}

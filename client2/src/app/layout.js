@@ -1,0 +1,97 @@
+import "./globals.css";
+import localFont from "next/font/local";
+import Script from "next/script";
+import { IBM_Plex_Sans_Arabic, Manrope, Syne } from "next/font/google";
+import { SITE_URL } from "@/lib/config/site-config";
+import { getLocaleDirection } from "@/lib/i18n/locale";
+import { getInitialLang } from "@/lib/i18n/locale.server";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-syne",
+  display: "swap",
+});
+
+const domaine = localFont({
+  src: [
+    {
+      path: "../fonts/domaine/DomaineDispNar-Regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/domaine/DomaineDispNar-RegularItalic.otf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../fonts/domaine/DomaineDispNar-Medium.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../fonts/domaine/DomaineDispNar-MediumItalic.otf",
+      weight: "500",
+      style: "italic",
+    },
+    {
+      path: "../fonts/domaine/DomaineDispNar-Semibold.otf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../fonts/domaine/DomaineDispNar-SemiboldItalic.otf",
+      weight: "600",
+      style: "italic",
+    },
+    {
+      path: "../fonts/domaine/DomaineDispNar-Bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-domaine",
+  display: "swap",
+  fallback: ["Georgia", "Times New Roman", "serif"],
+});
+
+const arabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-ibm-arabic",
+  display: "swap",
+});
+
+export const metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Injaaz Digital",
+    template: "%s",
+  },
+  description: "Data-driven digital growth systems for ambitious brands.",
+};
+
+export default async function RootLayout({ children }) {
+  const htmlLang = await getInitialLang();
+  const htmlDir = getLocaleDirection(htmlLang);
+
+  return (
+    <html lang={htmlLang} dir={htmlDir} suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        className={`${manrope.className} ${arabic.className} ${manrope.variable} ${syne.variable} ${arabic.variable} ${domaine.variable}`}
+      >
+        <Script src="https://mcp.figma.com/mcp/html-to-design/capture.js" strategy="afterInteractive" />
+        {children}
+      </body>
+    </html>
+  );
+}

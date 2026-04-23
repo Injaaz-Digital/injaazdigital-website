@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_blocks_rich_text_sections",
+  "info": {
+    "displayName": "Rich Text",
+    "description": "Generic rich text content block"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "body": {
+      "type": "richtext",
+      "required": true
+    },
+    "primaryCta": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    }
+  }
+}

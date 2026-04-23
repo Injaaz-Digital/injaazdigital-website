@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_brand_proof_industries_panels",
+  "info": {
+    "displayName": "Brand Proof Industries Panel",
+    "description": "Industries panel content"
+  },
+  "options": {},
+  "attributes": {
+    "headline": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.industry-item",
+      "repeatable": true
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_brand_proof_performance_panels",
+  "info": {
+    "displayName": "Brand Proof Performance Panel",
+    "description": "Performance and metrics panel content"
+  },
+  "options": {},
+  "attributes": {
+    "headline": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "summary": {
+      "type": "text"
+    },
+    "metrics": {
+      "type": "component",
+      "component": "shared.metric",
+      "repeatable": true,
+      "max": 3
+    }
+  }
+}

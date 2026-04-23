@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leads",
+  "info": {
+    "singularName": "lead",
+    "pluralName": "leads",
+    "displayName": "Lead",
+    "description": "Inbound project qualification submissions"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "fullName": { "type": "string", "required": true },
+    "email": { "type": "email", "required": true },
+    "phone": { "type": "string" },
+    "companyName": { "type": "string" },
+    "website": { "type": "string" },
+    "service": { "type": "text" },
+    "audience": { "type": "text" },
+    "experience": { "type": "string" },
+    "current_dislikes": { "type": "text" },
+    "challenge": { "type": "text" },
+    "prev_investment": { "type": "string" },
+    "goal": { "type": "text" },
+    "success_metric": { "type": "text" },
+    "vision": { "type": "text" },
+    "platform_type": { "type": "string" },
+    "features": { "type": "text" },
+    "examples": { "type": "text" },
+    "budget": { "type": "string" },
+    "timeline": { "type": "string" },
+    "decision_maker": { "type": "string" },
+    "qualificationAnswers": { "type": "json" },
+    "sourcePath": { "type": "string" },
+    "locale": {
+      "type": "enumeration",
+      "enum": ["en", "ar"],
+      "default": "en"
+    },
+    "submittedAt": { "type": "datetime" }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_process_steps",
+  "info": {
+    "displayName": "Process Step",
+    "description": "Atomic process step item"
+  },
+  "options": {},
+  "attributes": {
+    "stepTitle": {
+      "type": "string",
+      "required": true,
+      "maxLength": 120
+    },
+    "deliverables": {
+      "type": "text",
+      "required": true
+    },
+    "successCriteria": {
+      "type": "text"
+    },
+    "timeframe": {
+      "type": "string"
+    }
+  }
+}

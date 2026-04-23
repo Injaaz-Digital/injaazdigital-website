@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_shared_media",
+  "info": {
+    "displayName": "Media",
+    "description": "Atomic media wrapper"
+  },
+  "options": {},
+  "attributes": {
+    "asset": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "videos", "files"]
+    },
+    "alt": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "isDecorative": {
+      "type": "boolean",
+      "default": false
+    },
+    "kind": {
+      "type": "enumeration",
+      "enum": ["image", "video", "file", "icon", "logo", "background", "decorative"],
+      "default": "image"
+    },
+    "caption": {
+      "type": "string"
+    }
+  }
+}

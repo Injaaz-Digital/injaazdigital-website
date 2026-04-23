@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_shared_package_items",
+  "info": {
+    "displayName": "Package Item",
+    "description": "Atomic package/pricing item"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 120
+    },
+    "priceLabel": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    },
+    "summary": {
+      "type": "text",
+      "required": true
+    },
+    "outcome": {
+      "type": "text"
+    },
+    "timeline": {
+      "type": "string"
+    },
+    "recommended": {
+      "type": "boolean",
+      "default": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    }
+  }
+}

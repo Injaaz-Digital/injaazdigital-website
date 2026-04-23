@@ -1,0 +1,83 @@
+{
+  "blocks": {
+    "hero": "blocks.hero",
+    "heroMinimal": "blocks.hero-minimal",
+    "dashboardShowcase": "blocks.dashboard-showcase",
+    "featureMosaic": "blocks.feature-mosaic",
+    "trustRow": "blocks.trust-row",
+    "personaGrid": "blocks.persona-grid",
+    "problem": "blocks.problem",
+    "solutionSystem": "blocks.solution-system",
+    "processTimeline": "blocks.process-timeline",
+    "proof": "blocks.proof",
+    "packages": "blocks.packages",
+    "faq": "blocks.faq",
+    "ctaBanner": "blocks.cta-banner",
+    "bookingMeeting": "blocks.booking-meeting",
+    "richText": "blocks.rich-text",
+    "aboutMosaic": "blocks.about-mosaic",
+    "brandProofGrid": "blocks.brand-proof-grid"
+  },
+  "blockSets": {
+    "marketing": [
+      "blocks.hero",
+      "blocks.hero-minimal",
+      "blocks.dashboard-showcase",
+      "blocks.feature-mosaic",
+      "blocks.trust-row",
+      "blocks.persona-grid",
+      "blocks.problem",
+      "blocks.solution-system",
+      "blocks.process-timeline",
+      "blocks.proof",
+      "blocks.packages",
+      "blocks.faq",
+      "blocks.cta-banner",
+      "blocks.booking-meeting",
+      "blocks.rich-text",
+      "blocks.about-mosaic",
+      "blocks.brand-proof-grid"
+    ],
+    "service": [
+      "blocks.hero",
+      "blocks.hero-minimal",
+      "blocks.dashboard-showcase",
+      "blocks.feature-mosaic",
+      "blocks.trust-row",
+      "blocks.problem",
+      "blocks.solution-system",
+      "blocks.process-timeline",
+      "blocks.proof",
+      "blocks.packages",
+      "blocks.faq",
+      "blocks.cta-banner",
+      "blocks.booking-meeting",
+      "blocks.rich-text"
+    ],
+    "about": [
+      "blocks.hero",
+      "blocks.hero-minimal",
+      "blocks.dashboard-showcase",
+      "blocks.feature-mosaic",
+      "blocks.trust-row",
+      "blocks.persona-grid",
+      "blocks.process-timeline",
+      "blocks.proof",
+      "blocks.rich-text",
+      "blocks.cta-banner"
+    ],
+    "blog": [
+      "blocks.hero-minimal",
+      "blocks.rich-text",
+      "blocks.cta-banner"
+    ]
+  },
+  "contentTypeBlockSet": {
+    "api::home-page.home-page": "marketing",
+    "api::growth-engine-page.growth-engine-page": "service",
+    "api::web-studio-page.web-studio-page": "service",
+    "api::about-page.about-page": "about",
+    "api::page.page": "marketing",
+    "api::blog-page.blog-page": "blog"
+  }
+}
