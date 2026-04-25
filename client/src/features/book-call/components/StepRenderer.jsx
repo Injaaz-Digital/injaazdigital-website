@@ -3,14 +3,33 @@
 import Input from '@/shared/ui/Input';
 import QuestionInput from './QuestionInput';
 
-export default function StepRenderer({ mode, question, value, error, contact, contactErrors, onAnswerChange, onContactChange }) {
+const contactLabels = {
+  en: {
+    name: 'Full name',
+    email: 'Email',
+    phone: 'Phone',
+    companyName: 'Company name',
+    websiteUrl: 'Website',
+  },
+  ar: {
+    name: 'الاسم الكامل',
+    email: 'البريد الإلكتروني',
+    phone: 'الهاتف',
+    companyName: 'اسم الشركة',
+    websiteUrl: 'الموقع الإلكتروني',
+  },
+};
+
+export default function StepRenderer({ mode, question, value, error, contact, contactErrors, onAnswerChange, onContactChange, locale = 'en' }) {
+  const labels = contactLabels[locale] || contactLabels.en;
+
   if (mode === 'contact') {
     return (
       <div className="grid gap-4 md:grid-cols-2">
         <Input
           id="contact-name"
           name="name"
-          label="Full name"
+          label={labels.name}
           value={contact.name || ''}
           onChange={onContactChange}
           required
@@ -21,7 +40,7 @@ export default function StepRenderer({ mode, question, value, error, contact, co
           id="contact-email"
           name="email"
           type="email"
-          label="Email"
+          label={labels.email}
           value={contact.email || ''}
           onChange={onContactChange}
           required
@@ -31,7 +50,7 @@ export default function StepRenderer({ mode, question, value, error, contact, co
           id="contact-phone"
           name="phone"
           type="tel"
-          label="Phone"
+          label={labels.phone}
           value={contact.phone || ''}
           onChange={onContactChange}
           error={contactErrors.phone}
@@ -39,7 +58,7 @@ export default function StepRenderer({ mode, question, value, error, contact, co
         <Input
           id="contact-company"
           name="companyName"
-          label="Company name"
+          label={labels.companyName}
           value={contact.companyName || ''}
           onChange={onContactChange}
         />
@@ -47,7 +66,7 @@ export default function StepRenderer({ mode, question, value, error, contact, co
           id="contact-website"
           name="websiteUrl"
           type="url"
-          label="Website"
+          label={labels.websiteUrl}
           value={contact.websiteUrl || ''}
           onChange={onContactChange}
           error={contactErrors.websiteUrl}
@@ -57,5 +76,5 @@ export default function StepRenderer({ mode, question, value, error, contact, co
     );
   }
 
-  return <QuestionInput question={question} value={value} error={error} onChange={onAnswerChange} />;
+  return <QuestionInput question={question} value={value} error={error} onChange={onAnswerChange} locale={locale} />;
 }

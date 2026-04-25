@@ -10,14 +10,23 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "title": {
       "type": "string",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "key": {
-      "type": "uid",
-      "targetField": "title",
+      "type": "string",
       "required": true
     },
     "type": {
@@ -26,7 +35,12 @@
       "required": true
     },
     "options": {
-      "type": "json"
+      "type": "json",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "order": {
       "type": "integer",
@@ -45,10 +59,20 @@
       "default": true
     },
     "helpText": {
-      "type": "text"
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "placeholder": {
-      "type": "string"
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "category": {
       "type": "string"

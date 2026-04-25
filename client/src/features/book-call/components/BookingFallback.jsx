@@ -1,19 +1,18 @@
-import Button from '@/shared/ui/Button';
+import Link from 'next/link';
 
-export default function BookingFallback({ result, onRestart }) {
+export default function BookingFallback({ copy }) {
   return (
-    <section className="rounded-[2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.97)_0%,rgba(241,247,255,0.92)_100%)] p-6 shadow-[0_28px_80px_rgba(8,41,89,0.14)] md:p-8">
+    <section className="rounded-2xl border border-[#d8e3ef] bg-[#f8fbff] p-6 md:p-8">
       <div className="max-w-2xl space-y-4">
-        <p className="text-xs uppercase tracking-[0.22em] text-[#5d7393]">Qualification Result</p>
-        <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#0a2546]">We need a little more context before booking.</h2>
-        <p className="text-base leading-7 text-[#4e6784]">
-          Your answers were saved successfully, but this request does not meet the current booking threshold yet. You can still reach out and we will review the details manually.
-        </p>
-        <div className="rounded-2xl border border-[#d8e4f0] bg-white/80 px-5 py-4 text-sm text-[#17314d]">
-          <p>Current score: <strong>{result?.score ?? 0}</strong></p>
-          <p>Status: <strong>{result?.status || 'unqualified'}</strong></p>
-        </div>
-        <Button variant="outline" onClick={onRestart}>Start again</Button>
+        <p className="text-xs uppercase tracking-[0.22em] text-[#5d7393]">{copy?.meetingName}</p>
+        <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#0a2546]">{copy?.fallbackTitle}</h2>
+        <p className="text-base leading-7 text-[#4e6784]">{copy?.fallbackDescription}</p>
+        <Link
+          href={copy?.fallbackCtaHref || '/'}
+          className="inline-flex h-10 items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 text-sm text-[color:var(--ink-2)] shadow-[0_8px_20px_rgba(13,25,46,0.08)] transition hover:border-[var(--line-strong)] hover:bg-white/90"
+        >
+          {copy?.fallbackCtaLabel}
+        </Link>
       </div>
     </section>
   );

@@ -8,27 +8,46 @@ const OPEN_MEETING_STATUSES = new Set(['scheduled', 'rescheduled']);
 
 type CalendarSetting = {
   id?: number;
+  calendarName?: string;
+  weeklyAvailability?: unknown;
   workingDays?: unknown;
   startTime?: string;
   endTime?: string;
   slotDuration?: number;
+  bufferBefore?: number;
+  bufferAfter?: number;
   bufferTime?: number;
   timezone?: string;
   minNoticeHours?: number;
   maxDaysAhead?: number;
+  maxBookingsPerDay?: number;
+  meetingTitle?: string;
+  meetingDuration?: number;
+  meetingLocation?: string;
+  autoCreateGoogleMeet?: boolean;
+  googleCalendarId?: string;
   calendarId?: string;
 };
 
 type ValidatedCalendarSetting = {
   id?: number;
-  workingDays: string[];
-  startTime: string;
-  endTime: string;
+  weeklyAvailability: Array<{
+    day: string;
+    enabled: boolean;
+    startTime: string;
+    endTime: string;
+  }>;
   slotDuration: number;
-  bufferTime: number;
+  bufferBefore: number;
+  bufferAfter: number;
   timezone: string;
   minNoticeHours: number;
   maxDaysAhead: number;
+  maxBookingsPerDay: number;
+  meetingTitle: string;
+  meetingDuration: number;
+  meetingLocation: string;
+  autoCreateGoogleMeet: boolean;
   calendarId: string;
 };
 
@@ -37,7 +56,7 @@ type CalendarErrorCode =
   | 'CALENDAR_SETTING_MISSING'
   | 'CALENDAR_SETTING_INVALID'
   | 'GOOGLE_CALENDAR_NOT_CONFIGURED'
-  | 'GOOGLE_CALENDAR_AUTH_FAILED'
+  | 'GOOGLE_CALENDAR_FAILED'
   | 'SLOT_UNAVAILABLE'
   | 'LEAD_NOT_QUALIFIED'
   | 'LEAD_ALREADY_BOOKED';
@@ -85,6 +104,59 @@ const normalizeWorkingDays = (value: unknown) => {
     })
     .map(normalizeWeekday)
     .filter(Boolean);
+};
+
+const DEFAULT_WEEKLY_AVAILABILITY = [
+  { day: 'monday', enabled: true, startTime: '09:00', endTime: '17:00' },
+  { day: 'tuesday', enabled: true, startTime: '09:00', endTime: '17:00' },
+  { day: 'wednesday', enabled: true, startTime: '09:00', endTime: '17:00' },
+  { day: 'thursday', enabled: true, startTime: '09:00', endTime: '17:00' },
+  { day: 'friday', enabled: true, startTime: '09:00', endTime: '16:00' },
+  { day: 'saturday', enabled: false, startTime: '09:00', endTime: '17:00' },
+  { day: 'sunday', enabled: false, startTime: '09:00', endTime: '17:00' },
+];
+
+const normalizeWeeklyAvailability = (setting: CalendarSetting) => {
+  const raw = Array.isArray(setting.weeklyAvailability) ? setting.weeklyAvailability : [];
+  const fromWeekly = raw
+    .map((item) => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        return null;
+      }
+
+      const record = item as Record<string, unknown>;
+      const day = typeof record.day === 'string' ? normalizeWeekday(record.day) : '';
+      if (!day) {
+        return null;
+      }
+
+      return {
+        day,
+        enabled: record.enabled !== false,
+        startTime: normalizeTimeValue(record.startTime) || normalizeTimeValue(setting.startTime) || '09:00',
+        endTime: normalizeTimeValue(record.endTime) || normalizeTimeValue(setting.endTime) || '17:00',
+      };
+    })
+    .filter(Boolean) as ValidatedCalendarSetting['weeklyAvailability'];
+
+  if (fromWeekly.length > 0) {
+    return fromWeekly;
+  }
+
+  const legacyDays = normalizeWorkingDays(setting.workingDays);
+  const startTime = normalizeTimeValue(setting.startTime) || '09:00';
+  const endTime = normalizeTimeValue(setting.endTime) || '17:00';
+
+  if (legacyDays.length > 0) {
+    return DEFAULT_WEEKLY_AVAILABILITY.map((dayConfig) => ({
+      ...dayConfig,
+      enabled: legacyDays.includes(dayConfig.day),
+      startTime,
+      endTime,
+    }));
+  }
+
+  return DEFAULT_WEEKLY_AVAILABILITY;
 };
 
 const normalizeTimeValue = (value: unknown) => {
@@ -178,14 +250,24 @@ const generateMockSlots = (date: string) => ({
 
 const mockCalendarSetting = (): CalendarSetting => ({
   id: 0,
+  calendarName: 'Mock strategy calls',
+  weeklyAvailability: DEFAULT_WEEKLY_AVAILABILITY.map((dayConfig) => ({ ...dayConfig, enabled: true })),
   workingDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
   startTime: '10:00',
   endTime: '14:30',
   slotDuration: 30,
+  bufferBefore: 0,
+  bufferAfter: 0,
   bufferTime: 0,
   timezone: 'Africa/Casablanca',
   minNoticeHours: 0,
   maxDaysAhead: 365,
+  maxBookingsPerDay: 20,
+  meetingTitle: 'Injaaz Digital Strategy Call',
+  meetingDuration: 30,
+  meetingLocation: 'Google Meet',
+  autoCreateGoogleMeet: true,
+  googleCalendarId: 'primary',
   calendarId: 'primary',
 });
 
@@ -230,22 +312,27 @@ export default ({ strapi }) => ({
   validateCalendarSetting(setting: CalendarSetting): ValidatedCalendarSetting {
     const invalidFields: string[] = [];
     const timezone = setting.timezone || DEFAULT_TIMEZONE;
-    const workingDays = normalizeWorkingDays(setting.workingDays);
-    const startTime = normalizeTimeValue(setting.startTime);
-    const endTime = normalizeTimeValue(setting.endTime);
-    const slotDuration = Number(setting.slotDuration);
-    const bufferTime = Number(setting.bufferTime ?? 0);
+    const weeklyAvailability = normalizeWeeklyAvailability(setting);
+    const slotDuration = Number(setting.slotDuration || setting.meetingDuration);
+    const bufferBefore = Number(setting.bufferBefore ?? 0);
+    const bufferAfter = Number(setting.bufferAfter ?? setting.bufferTime ?? 0);
     const minNoticeHours = Number(setting.minNoticeHours ?? 4);
     const maxDaysAhead = Number(setting.maxDaysAhead ?? 21);
+    const maxBookingsPerDay = Number(setting.maxBookingsPerDay ?? 4);
+    const meetingDuration = Number(setting.meetingDuration ?? slotDuration);
 
-    if (workingDays.length === 0) invalidFields.push('workingDays');
-    if (!startTime) invalidFields.push('startTime');
-    if (!endTime) invalidFields.push('endTime');
+    if (weeklyAvailability.length === 0) invalidFields.push('weeklyAvailability');
+    if (weeklyAvailability.some((item) => item.enabled && (!item.startTime || !item.endTime))) {
+      invalidFields.push('weeklyAvailability');
+    }
     if (!Number.isFinite(slotDuration) || slotDuration <= 0) invalidFields.push('slotDuration');
-    if (!Number.isFinite(bufferTime) || bufferTime < 0) invalidFields.push('bufferTime');
+    if (!Number.isFinite(bufferBefore) || bufferBefore < 0) invalidFields.push('bufferBefore');
+    if (!Number.isFinite(bufferAfter) || bufferAfter < 0) invalidFields.push('bufferAfter');
     if (!timezone || !IANAZone.isValidZone(timezone)) invalidFields.push('timezone');
     if (!Number.isFinite(minNoticeHours) || minNoticeHours < 0) invalidFields.push('minNoticeHours');
     if (!Number.isFinite(maxDaysAhead) || maxDaysAhead < 0) invalidFields.push('maxDaysAhead');
+    if (!Number.isFinite(maxBookingsPerDay) || maxBookingsPerDay <= 0) invalidFields.push('maxBookingsPerDay');
+    if (!Number.isFinite(meetingDuration) || meetingDuration <= 0) invalidFields.push('meetingDuration');
 
     if (invalidFields.length > 0) {
       throw new CalendarApiError('CALENDAR_SETTING_INVALID', 'Calendar settings are incomplete or invalid.', 503, {
@@ -255,15 +342,19 @@ export default ({ strapi }) => ({
 
     return {
       id: setting.id,
-      workingDays,
-      startTime,
-      endTime,
       slotDuration,
-      bufferTime,
+      weeklyAvailability,
+      bufferBefore,
+      bufferAfter,
       timezone,
       minNoticeHours,
       maxDaysAhead,
-      calendarId: setting.calendarId || process.env.GOOGLE_CALENDAR_ID || 'primary',
+      maxBookingsPerDay,
+      meetingTitle: setting.meetingTitle || 'Injaaz Digital Strategy Call',
+      meetingDuration,
+      meetingLocation: setting.meetingLocation || 'Google Meet',
+      autoCreateGoogleMeet: setting.autoCreateGoogleMeet !== false,
+      calendarId: setting.googleCalendarId || setting.calendarId || process.env.GOOGLE_CALENDAR_ID || 'primary',
     };
   },
 
@@ -297,8 +388,8 @@ export default ({ strapi }) => ({
       const message = (error as { message?: string })?.message || 'Google Calendar rejected the free/busy request.';
       strapi.log.error('[calendar availability] Google busy lookup failed', error);
       throw new CalendarApiError(
-        'GOOGLE_CALENDAR_AUTH_FAILED',
-        'Google Calendar authorization failed. Reconnect Google Calendar or enable CALENDAR_IGNORE_GOOGLE_BUSY=true for local slot-generation testing.',
+        'GOOGLE_CALENDAR_FAILED',
+        'Google Calendar availability lookup failed.',
         502,
         {
           providerMessage: message,
@@ -317,6 +408,25 @@ export default ({ strapi }) => ({
     }
 
     return intervals;
+  },
+
+  async getBookedMeetingIntervals(dayStart: DateTime, dayEnd: DateTime, setting: ValidatedCalendarSetting) {
+    const meetings = await strapi.db.query('api::meeting.meeting').findMany({
+      where: {
+        status: {
+          $in: Array.from(OPEN_MEETING_STATUSES),
+        },
+        start: {
+          $lt: dayEnd.toUTC().toISO(),
+        },
+        end: {
+          $gt: dayStart.toUTC().toISO(),
+        },
+      },
+      select: ['start', 'end'],
+    });
+
+    return mapBusyIntervals(meetings || [], setting.timezone);
   },
 
   async buildAvailabilityForDate(dateValue: unknown) {
@@ -342,7 +452,8 @@ export default ({ strapi }) => ({
       throw new CalendarApiError('INVALID_DATE', `date cannot be more than ${setting.maxDaysAhead} days ahead`);
     }
 
-    if (!setting.workingDays.includes(weekdayName(date))) {
+    const dayAvailability = setting.weeklyAvailability.find((item) => item.day === weekdayName(date));
+    if (!dayAvailability?.enabled) {
       return {
         date: date.toISODate(),
         timezone: setting.timezone,
@@ -350,22 +461,36 @@ export default ({ strapi }) => ({
       };
     }
 
-    const dayStart = parseTime(date, setting.startTime);
-    const dayEnd = parseTime(date, setting.endTime);
+    const dayStart = parseTime(date, dayAvailability.startTime);
+    const dayEnd = parseTime(date, dayAvailability.endTime);
     if (!dayStart || !dayEnd || dayEnd <= dayStart) {
-      throw new CalendarApiError('CALENDAR_SETTING_INVALID', 'Calendar startTime must be before endTime.', 503, {
-        invalidFields: ['startTime', 'endTime'],
+      throw new CalendarApiError('CALENDAR_SETTING_INVALID', 'Calendar availability startTime must be before endTime.', 503, {
+        invalidFields: ['weeklyAvailability'],
       });
     }
 
     const minStart = DateTime.now().setZone(setting.timezone).plus({ hours: setting.minNoticeHours });
-    const busyIntervals = await this.getBusyIntervals(dayStart, dayEnd, setting);
+    const [googleBusyIntervals, bookedMeetingIntervals] = await Promise.all([
+      this.getBusyIntervals(dayStart, dayEnd, setting),
+      this.getBookedMeetingIntervals(dayStart, dayEnd, setting),
+    ]);
+    const dailyBookingCount = bookedMeetingIntervals.length;
+    const busyIntervals = [...googleBusyIntervals, ...bookedMeetingIntervals];
     const generatedSlots: Array<{ start: string; end: string; label: string }> = [];
     const slots: Array<{ start: string; end: string; label: string }> = [];
 
+    if (dailyBookingCount >= setting.maxBookingsPerDay) {
+      return {
+        date: date.toISODate(),
+        timezone: setting.timezone,
+        slots: [],
+      };
+    }
+
+    const duration = setting.meetingDuration || setting.slotDuration;
     let cursor = dayStart;
-    while (cursor.plus({ minutes: setting.slotDuration }) <= dayEnd) {
-      const slotEnd = cursor.plus({ minutes: setting.slotDuration });
+    while (cursor.plus({ minutes: duration }) <= dayEnd) {
+      const slotEnd = cursor.plus({ minutes: duration });
       generatedSlots.push({
         start: cursor.toISO(),
         end: slotEnd.toISO(),
@@ -373,8 +498,8 @@ export default ({ strapi }) => ({
       });
 
       const blockedByBuffer = Interval.fromDateTimes(
-        cursor.minus({ minutes: setting.bufferTime }),
-        slotEnd.plus({ minutes: setting.bufferTime })
+        cursor.minus({ minutes: setting.bufferBefore }),
+        slotEnd.plus({ minutes: setting.bufferAfter })
       );
       const overlapsBusy = busyIntervals.some((busyInterval) => busyInterval.overlaps(blockedByBuffer));
 
@@ -386,23 +511,26 @@ export default ({ strapi }) => ({
         });
       }
 
-      cursor = cursor.plus({ minutes: setting.slotDuration + setting.bufferTime });
+      cursor = cursor.plus({ minutes: setting.slotDuration });
     }
 
     if (isAvailabilityDebugEnabled()) {
       strapi.log.info('[calendar availability] Slot generation result', {
         date: date.toISODate(),
         timezone: setting.timezone,
-        workingDays: setting.workingDays,
+        weeklyAvailability: setting.weeklyAvailability,
         weekday: weekdayName(date),
-        startTime: setting.startTime,
-        endTime: setting.endTime,
+        startTime: dayAvailability.startTime,
+        endTime: dayAvailability.endTime,
         slotDuration: setting.slotDuration,
-        bufferTime: setting.bufferTime,
+        bufferBefore: setting.bufferBefore,
+        bufferAfter: setting.bufferAfter,
         minNoticeHours: setting.minNoticeHours,
+        maxBookingsPerDay: setting.maxBookingsPerDay,
         minStart: minStart.toISO(),
         generatedSlots,
-        busyIntervals: serializeIntervals(busyIntervals),
+        googleBusyIntervals: serializeIntervals(googleBusyIntervals),
+        bookedMeetingIntervals: serializeIntervals(bookedMeetingIntervals),
         finalSlots: slots,
       });
     }
@@ -496,6 +624,9 @@ export default ({ strapi }) => ({
           end: slotEnd.toISO() || end,
           timezone: setting.timezone,
           calendarId: setting.calendarId,
+          meetingTitle: setting.meetingTitle,
+          meetingLocation: setting.meetingLocation,
+          autoCreateGoogleMeet: setting.autoCreateGoogleMeet,
           serviceInterest: lead.serviceInterest,
           score: lead.score,
           answersJson: normalizeAnswersJson(lead.answersJson),

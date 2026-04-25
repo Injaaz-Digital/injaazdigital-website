@@ -685,6 +685,210 @@ export interface ApiBlogPageBlogPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiBookingPageSettingBookingPageSetting
+  extends Struct.SingleTypeSchema {
+  collectionName: 'booking_page_settings';
+  info: {
+    description: 'Localized copy and labels for the strategy-call booking funnel';
+    displayName: 'Booking Page Setting';
+    pluralName: 'booking-page-settings';
+    singularName: 'booking-page-setting';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    backHomeLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    bookingDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    bookingTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    confirmButtonLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    durationLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    errorDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    errorTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    fallbackCtaHref: Schema.Attribute.String & Schema.Attribute.DefaultTo<'/'>;
+    fallbackCtaLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    fallbackDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    fallbackTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    hostName: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    hostRole: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    introEyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    loadingSlotsLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::booking-page-setting.booking-page-setting'
+    >;
+    meetingDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    meetingName: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    noSlotsDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    noSlotsTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    openMeetLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    pageSubtitle: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    pageTitle: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    qualificationIntroDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    qualificationIntroTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    retryLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    selectedTimeLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    successDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    successTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    timezoneLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCalendarSettingCalendarSetting
   extends Struct.SingleTypeSchema {
   collectionName: 'calendar_settings';
@@ -698,32 +902,45 @@ export interface ApiCalendarSettingCalendarSetting
     draftAndPublish: false;
   };
   attributes: {
-    bufferTime: Schema.Attribute.Integer &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<15>;
+    autoCreateGoogleMeet: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>;
+    bufferAfter: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<15>;
+    bufferBefore: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    bufferTime: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<15>;
     calendarId: Schema.Attribute.String & Schema.Attribute.DefaultTo<'primary'>;
+    calendarName: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Strategy calls'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    endTime: Schema.Attribute.String & Schema.Attribute.Required;
+    endTime: Schema.Attribute.String;
+    googleCalendarId: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'primary'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::calendar-setting.calendar-setting'
     > &
       Schema.Attribute.Private;
+    maxBookingsPerDay: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<4>;
     maxDaysAhead: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<21>;
+    meetingDuration: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<30>;
+    meetingLocation: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Google Meet'>;
+    meetingTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Injaaz Digital Strategy Call'>;
     minNoticeHours: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<4>;
     publishedAt: Schema.Attribute.DateTime;
     slotDuration: Schema.Attribute.Integer & Schema.Attribute.Required;
-    startTime: Schema.Attribute.String & Schema.Attribute.Required;
+    startTime: Schema.Attribute.String;
     timezone: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Africa/Casablanca'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    workingDays: Schema.Attribute.JSON & Schema.Attribute.Required;
+    weeklyAvailability: Schema.Attribute.JSON;
+    workingDays: Schema.Attribute.JSON;
   };
 }
 
@@ -951,30 +1168,55 @@ export interface ApiLeadQuestionLeadQuestion
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
     active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     category: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    helpText: Schema.Attribute.Text;
-    key: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    helpText: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    key: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::lead-question.lead-question'
-    > &
-      Schema.Attribute.Private;
-    options: Schema.Attribute.JSON;
+    >;
+    options: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     order: Schema.Attribute.Integer & Schema.Attribute.Required;
-    placeholder: Schema.Attribute.String;
+    placeholder: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     publishedAt: Schema.Attribute.DateTime;
     required: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     responses: Schema.Attribute.Relation<
       'oneToMany',
       'api::lead-response.lead-response'
     >;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     type: Schema.Attribute.Enumeration<
       [
         'select',
@@ -2015,6 +2257,7 @@ declare module '@strapi/strapi' {
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::blog-page.blog-page': ApiBlogPageBlogPage;
+      'api::booking-page-setting.booking-page-setting': ApiBookingPageSettingBookingPageSetting;
       'api::calendar-setting.calendar-setting': ApiCalendarSettingCalendarSetting;
       'api::growth-engine-page.growth-engine-page': ApiGrowthEnginePageGrowthEnginePage;
       'api::home-page.home-page': ApiHomePageHomePage;

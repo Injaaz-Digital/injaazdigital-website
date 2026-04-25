@@ -41,7 +41,14 @@ function CheckboxGroup({ question, value, onChange }) {
   );
 }
 
-export default function QuestionInput({ question, value, error, onChange }) {
+const labels = {
+  en: { choose: 'Choose one' },
+  ar: { choose: 'اختر إجابة' },
+};
+
+export default function QuestionInput({ question, value, error, onChange, locale = 'en' }) {
+  const ui = labels[locale] || labels.en;
+
   if (question.type === 'select') {
     return (
       <Select
@@ -54,7 +61,7 @@ export default function QuestionInput({ question, value, error, onChange }) {
         hint={question.helpText || undefined}
         onChange={(event) => onChange(event.target.value)}
       >
-        <option value="">Choose one</option>
+        <option value="">{ui.choose}</option>
         {question.options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

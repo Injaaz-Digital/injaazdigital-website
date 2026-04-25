@@ -4,25 +4,30 @@ import { getInitialLang } from '@/lib/i18n/locale.server';
 import { getSiteSetting } from '@/features/cms/lib/cms-page';
 import { loadCustomRouteMetadata } from '@/features/cms/lib/cms-route';
 import BookCallPage from '@/features/book-call/components/BookCallPage';
-import { fetchLeadQuestions } from '@/lib/strapi/queries';
+import { fetchBookingPageSetting } from '@/features/book-call/services/booking.service';
+import { fetchLeadQuestions } from '@/features/book-call/services/lead.service';
 
 export async function generateMetadata() {
   const initialLang = await getInitialLang();
   const isArabic = initialLang?.startsWith('ar');
+  const locale = normalizeLocale(initialLang);
+  const bookingCopy = await fetchBookingPageSetting(locale);
 
   return loadCustomRouteMetadata(initialLang, {
     pathname: '/book-call',
-    title: isArabic ? 'احجز مكالمة استراتيجية | إنجاز ديجيتال' : 'Book a Strategy Call | Injaaz Digital',
-    description: isArabic
-      ? 'احجز مكالمة قصيرة لمراجعة العرض، تحديد أهم فجوة تحويل، والخروج بخطوات عملية واضحة.'
-      : 'Book a focused strategy call to review your offer, identify the biggest conversion gap, and leave with clear next steps.',
+    title: `${bookingCopy.pageTitle} | ${isArabic ? 'إنجاز ديجيتال' : 'Injaaz Digital'}`,
+    description: bookingCopy.pageSubtitle || bookingCopy.meetingDescription,
   });
 }
 
 export default async function Page() {
   const initialLang = await getInitialLang();
   const locale = normalizeLocale(initialLang);
-  const [siteSetting, questions] = await Promise.all([getSiteSetting(initialLang), fetchLeadQuestions()]);
+  const [siteSetting, questions, bookingCopy] = await Promise.all([
+    getSiteSetting(initialLang),
+    fetchLeadQuestions(locale),
+    fetchBookingPageSetting(locale),
+  ]);
   const header = siteSetting.data?.header || null;
 
   return (
@@ -35,7 +40,12 @@ export default async function Page() {
       showFooter={false}
       showBlur={false}
     >
-      <BookCallPage locale={locale} initialQuestions={questions} sourcePage="/book-call" />
+      <BookCallPage
+        locale={locale}
+        initialQuestions={questions}
+        bookingCopy={bookingCopy}
+        sourcePage="/book-call"
+      />
     </CmsSiteClient>
   );
 }

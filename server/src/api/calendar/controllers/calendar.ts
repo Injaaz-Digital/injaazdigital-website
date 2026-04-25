@@ -5,6 +5,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   VALIDATION_ERROR: 'Please check the submitted fields.',
   GOOGLE_CALENDAR_NOT_CONFIGURED:
     'Google Calendar is not configured. Set Google calendar env vars or enable CALENDAR_MOCK_MODE=true for local testing.',
+  GOOGLE_CALENDAR_FAILED: 'Google Calendar availability lookup failed.',
 };
 
 const errorResponse = (ctx, status: number, code: string, message: string, details?: Record<string, unknown>) => {
@@ -39,9 +40,7 @@ export default {
   async availability(ctx) {
     try {
       if (!ctx.query?.date) {
-        ctx.status = 400;
-        ctx.body = { error: 'date is required' };
-        return;
+        return errorResponse(ctx, 400, 'INVALID_DATE', 'date query param is required in YYYY-MM-DD format');
       }
 
       ctx.body = await strapi.service('api::calendar.calendar').getAvailability(ctx.query || {});

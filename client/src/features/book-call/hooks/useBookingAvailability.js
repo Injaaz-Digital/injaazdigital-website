@@ -39,7 +39,7 @@ export function useBookingAvailability(date) {
             timezone: BOOK_CALL_TIMEZONE,
             slots: [],
           });
-          setError('');
+          setError(nextError?.code || nextError?.payload?.error?.code || 'AVAILABILITY_ERROR');
         }
       } finally {
         if (!cancelled) {

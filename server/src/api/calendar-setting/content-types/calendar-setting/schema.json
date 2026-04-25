@@ -11,25 +11,44 @@
     "draftAndPublish": false
   },
   "attributes": {
+    "calendarName": {
+      "type": "string",
+      "default": "Strategy calls"
+    },
+    "googleCalendarId": {
+      "type": "string",
+      "default": "primary"
+    },
+    "weeklyAvailability": {
+      "type": "json"
+    },
     "workingDays": {
       "type": "json",
-      "required": true
+      "required": false
     },
     "startTime": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "endTime": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "slotDuration": {
       "type": "integer",
       "required": true
     },
+    "bufferBefore": {
+      "type": "integer",
+      "default": 0
+    },
+    "bufferAfter": {
+      "type": "integer",
+      "default": 15
+    },
     "bufferTime": {
       "type": "integer",
-      "required": true,
+      "required": false,
       "default": 15
     },
     "timezone": {
@@ -44,6 +63,26 @@
     "maxDaysAhead": {
       "type": "integer",
       "default": 21
+    },
+    "maxBookingsPerDay": {
+      "type": "integer",
+      "default": 4
+    },
+    "meetingTitle": {
+      "type": "string",
+      "default": "Injaaz Digital Strategy Call"
+    },
+    "meetingDuration": {
+      "type": "integer",
+      "default": 30
+    },
+    "meetingLocation": {
+      "type": "string",
+      "default": "Google Meet"
+    },
+    "autoCreateGoogleMeet": {
+      "type": "boolean",
+      "default": true
     },
     "calendarId": {
       "type": "string",

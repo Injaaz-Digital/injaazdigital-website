@@ -44,7 +44,7 @@ const persistSession = (value) => {
   window.localStorage.setItem(BOOK_CALL_SESSION_STORAGE_KEY, JSON.stringify(value));
 };
 
-export function useLeadSession({ sourcePage }) {
+export function useLeadSession({ sourcePage, locale = 'en' }) {
   const [session, setSession] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
@@ -67,6 +67,7 @@ export function useLeadSession({ sourcePage }) {
     const created = await startLeadSessionRequest({
       sourcePage,
       ctaSource: BOOK_CALL_CTA_SOURCE,
+      locale,
     });
 
     const nextSession = {

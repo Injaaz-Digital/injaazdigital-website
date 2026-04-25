@@ -258,12 +258,23 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
       throw new Error('QUESTION_KEY_REQUIRED');
     }
 
-    const question = await strapi.db.query('api::lead-question.lead-question').findOne({
-      where: {
-        key: questionKey,
-        active: true,
-      },
-    });
+    const lead = (await strapi.entityService.findOne('api::lead.lead', leadId, {
+      fields: ['locale'],
+    })) as UnknownRecord | null;
+    const question =
+      (await strapi.db.query('api::lead-question.lead-question').findOne({
+        where: {
+          key: questionKey,
+          active: true,
+          locale: normalizeLocale(lead?.locale),
+        },
+      })) ||
+      (await strapi.db.query('api::lead-question.lead-question').findOne({
+        where: {
+          key: questionKey,
+          active: true,
+        },
+      }));
 
     if (!question?.id) {
       throw new Error('QUESTION_NOT_FOUND');
@@ -393,7 +404,7 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
   async completeLead(leadId: unknown, payload: UnknownRecord = {}) {
     const session = await this.validateSession(leadId, payload.sessionToken);
     const normalizedLeadId = Number(leadId);
-    const [lead, responses, activeQuestions] = await Promise.all([
+    const [lead, responses] = await Promise.all([
       strapi.entityService.findOne('api::lead.lead', normalizedLeadId, {
         populate: {
           meetings: true,
@@ -409,15 +420,17 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
         },
         sort: ['answeredAt:asc'],
       }),
-      strapi.entityService.findMany('api::lead-question.lead-question', {
-        filters: {
-          active: {
-            $eq: true,
-          },
-        },
-        sort: ['order:asc'],
-      }),
     ]);
+
+    const activeQuestions = await strapi.entityService.findMany('api::lead-question.lead-question', {
+      locale: normalizeLocale((lead as UnknownRecord)?.locale),
+      filters: {
+        active: {
+          $eq: true,
+        },
+      },
+      sort: ['order:asc'],
+    });
 
     const questionsByKey = new Map(activeQuestions.map((question: UnknownRecord) => [question.key, question]));
     let totalScore = 0;

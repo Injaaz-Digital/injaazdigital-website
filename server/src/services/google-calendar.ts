@@ -132,6 +132,9 @@ export const createMeetingEvent = async ({
   end,
   timezone,
   calendarId,
+  meetingTitle,
+  meetingLocation,
+  autoCreateGoogleMeet = true,
   serviceInterest,
   score,
   answersJson,
@@ -141,6 +144,9 @@ export const createMeetingEvent = async ({
   end: string;
   timezone?: string;
   calendarId?: string;
+  meetingTitle?: string;
+  meetingLocation?: string;
+  autoCreateGoogleMeet?: boolean;
   serviceInterest?: string;
   score?: number;
   answersJson?: Record<string, unknown>;
@@ -164,10 +170,11 @@ export const createMeetingEvent = async ({
 
   const event = await calendar.events.insert({
     calendarId: calendarId || credentials.calendarId,
-    conferenceDataVersion: 1,
+    conferenceDataVersion: autoCreateGoogleMeet ? 1 : 0,
     requestBody: {
-      summary: `Strategy Call - ${lead.name || lead.fullName || 'Injaaz Lead'}`,
+      summary: `${meetingTitle || 'Injaaz Digital Strategy Call'} - ${lead.name || lead.fullName || 'Injaaz Lead'}`,
       description: descriptionLines.join('\n'),
+      location: meetingLocation || undefined,
       start: {
         dateTime: start,
         timeZone: timezone || credentials.timezone,
@@ -177,14 +184,16 @@ export const createMeetingEvent = async ({
         timeZone: timezone || credentials.timezone,
       },
       attendees: lead.email ? [{ email: lead.email, displayName: lead.name || lead.fullName || undefined }] : undefined,
-      conferenceData: {
-        createRequest: {
-          requestId,
-          conferenceSolutionKey: {
-            type: 'hangoutsMeet',
-          },
-        },
-      },
+      conferenceData: autoCreateGoogleMeet
+        ? {
+            createRequest: {
+              requestId,
+              conferenceSolutionKey: {
+                type: 'hangoutsMeet',
+              },
+            },
+          }
+        : undefined,
     },
   });
 
