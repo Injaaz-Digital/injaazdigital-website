@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lead_responses",
+  "info": {
+    "singularName": "lead-response",
+    "pluralName": "lead-responses",
+    "displayName": "Lead Response",
+    "description": "Saved answers for each lead question"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "lead": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead.lead",
+      "inversedBy": "responses",
+      "required": true
+    },
+    "question": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead-question.lead-question",
+      "inversedBy": "responses"
+    },
+    "questionKey": {
+      "type": "string",
+      "required": true
+    },
+    "questionTitle": {
+      "type": "string"
+    },
+    "answer": {
+      "type": "json",
+      "required": true
+    },
+    "scoreValue": {
+      "type": "integer",
+      "default": 0
+    },
+    "answeredAt": {
+      "type": "datetime"
+    }
+  }
+}

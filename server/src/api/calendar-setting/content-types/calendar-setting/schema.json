@@ -1,0 +1,53 @@
+{
+  "kind": "singleType",
+  "collectionName": "calendar_settings",
+  "info": {
+    "singularName": "calendar-setting",
+    "pluralName": "calendar-settings",
+    "displayName": "Calendar Setting",
+    "description": "Working hours and scheduling rules for bookings"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "workingDays": {
+      "type": "json",
+      "required": true
+    },
+    "startTime": {
+      "type": "string",
+      "required": true
+    },
+    "endTime": {
+      "type": "string",
+      "required": true
+    },
+    "slotDuration": {
+      "type": "integer",
+      "required": true
+    },
+    "bufferTime": {
+      "type": "integer",
+      "required": true,
+      "default": 15
+    },
+    "timezone": {
+      "type": "string",
+      "required": true,
+      "default": "Africa/Casablanca"
+    },
+    "minNoticeHours": {
+      "type": "integer",
+      "default": 4
+    },
+    "maxDaysAhead": {
+      "type": "integer",
+      "default": 21
+    },
+    "calendarId": {
+      "type": "string",
+      "default": "primary"
+    }
+  }
+}

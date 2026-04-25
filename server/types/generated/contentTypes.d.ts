@@ -685,6 +685,48 @@ export interface ApiBlogPageBlogPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiCalendarSettingCalendarSetting
+  extends Struct.SingleTypeSchema {
+  collectionName: 'calendar_settings';
+  info: {
+    description: 'Working hours and scheduling rules for bookings';
+    displayName: 'Calendar Setting';
+    pluralName: 'calendar-settings';
+    singularName: 'calendar-setting';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    bufferTime: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<15>;
+    calendarId: Schema.Attribute.String & Schema.Attribute.DefaultTo<'primary'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    endTime: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::calendar-setting.calendar-setting'
+    > &
+      Schema.Attribute.Private;
+    maxDaysAhead: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<21>;
+    minNoticeHours: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<4>;
+    publishedAt: Schema.Attribute.DateTime;
+    slotDuration: Schema.Attribute.Integer & Schema.Attribute.Required;
+    startTime: Schema.Attribute.String & Schema.Attribute.Required;
+    timezone: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Africa/Casablanca'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    workingDays: Schema.Attribute.JSON & Schema.Attribute.Required;
+  };
+}
+
 export interface ApiGrowthEnginePageGrowthEnginePage
   extends Struct.SingleTypeSchema {
   collectionName: 'growth_engine_pages';
@@ -861,10 +903,181 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiLeadNoteLeadNote extends Struct.CollectionTypeSchema {
+  collectionName: 'lead_notes';
+  info: {
+    description: 'Internal notes attached to a lead';
+    displayName: 'Lead Note';
+    pluralName: 'lead-notes';
+    singularName: 'lead-note';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    body: Schema.Attribute.Text & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    createdByName: Schema.Attribute.String;
+    lead: Schema.Attribute.Relation<'manyToOne', 'api::lead.lead'> &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-note.lead-note'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    type: Schema.Attribute.Enumeration<
+      ['general', 'call_note', 'follow_up', 'proposal', 'decision']
+    > &
+      Schema.Attribute.DefaultTo<'general'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiLeadQuestionLeadQuestion
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'lead_questions';
+  info: {
+    description: 'Dynamic qualification questions for the booking funnel';
+    displayName: 'Lead Question';
+    pluralName: 'lead-questions';
+    singularName: 'lead-question';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    category: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    helpText: Schema.Attribute.Text;
+    key: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-question.lead-question'
+    > &
+      Schema.Attribute.Private;
+    options: Schema.Attribute.JSON;
+    order: Schema.Attribute.Integer & Schema.Attribute.Required;
+    placeholder: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    required: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    responses: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-response.lead-response'
+    >;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    type: Schema.Attribute.Enumeration<
+      [
+        'select',
+        'radio',
+        'checkbox',
+        'text',
+        'textarea',
+        'email',
+        'phone',
+        'url',
+        'number',
+      ]
+    > &
+      Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    weight: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface ApiLeadResponseLeadResponse
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'lead_responses';
+  info: {
+    description: 'Saved answers for each lead question';
+    displayName: 'Lead Response';
+    pluralName: 'lead-responses';
+    singularName: 'lead-response';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    answer: Schema.Attribute.JSON & Schema.Attribute.Required;
+    answeredAt: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    lead: Schema.Attribute.Relation<'manyToOne', 'api::lead.lead'> &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-response.lead-response'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    question: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::lead-question.lead-question'
+    >;
+    questionKey: Schema.Attribute.String & Schema.Attribute.Required;
+    questionTitle: Schema.Attribute.String;
+    scoreValue: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiLeadSessionLeadSession extends Struct.CollectionTypeSchema {
+  collectionName: 'lead_sessions';
+  info: {
+    description: 'Tracks booking funnel progress sessions';
+    displayName: 'Lead Session';
+    pluralName: 'lead-sessions';
+    singularName: 'lead-session';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    completed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    completedAt: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currentStep: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    lastSeenAt: Schema.Attribute.DateTime;
+    lead: Schema.Attribute.Relation<'manyToOne', 'api::lead.lead'> &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-session.lead-session'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    sessionToken: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    startedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiLeadLead extends Struct.CollectionTypeSchema {
   collectionName: 'leads';
   info: {
-    description: 'Inbound project qualification submissions';
+    description: 'Lead records for the qualification funnel and booking workflow';
     displayName: 'Lead';
     pluralName: 'leads';
     singularName: 'lead';
@@ -873,6 +1086,7 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    answersJson: Schema.Attribute.JSON;
     audience: Schema.Attribute.Text;
     budget: Schema.Attribute.String;
     challenge: Schema.Attribute.Text;
@@ -880,24 +1094,64 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    ctaSource: Schema.Attribute.String;
     current_dislikes: Schema.Attribute.Text;
     decision_maker: Schema.Attribute.String;
-    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    email: Schema.Attribute.Email;
     examples: Schema.Attribute.Text;
     experience: Schema.Attribute.String;
     features: Schema.Attribute.Text;
-    fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    fullName: Schema.Attribute.String;
     goal: Schema.Attribute.Text;
+    lastActivityAt: Schema.Attribute.DateTime;
+    leadNotes: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-note.lead-note'
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::lead.lead'> &
       Schema.Attribute.Private;
+    meetingDate: Schema.Attribute.DateTime;
+    meetingLink: Schema.Attribute.String;
+    meetings: Schema.Attribute.Relation<'oneToMany', 'api::meeting.meeting'>;
+    name: Schema.Attribute.String;
+    notes: Schema.Attribute.Text;
     phone: Schema.Attribute.String;
     platform_type: Schema.Attribute.String;
     prev_investment: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     qualificationAnswers: Schema.Attribute.JSON;
+    responses: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-response.lead-response'
+    >;
+    score: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     service: Schema.Attribute.Text;
+    serviceInterest: Schema.Attribute.String;
+    sessions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-session.lead-session'
+    >;
+    sourcePage: Schema.Attribute.String;
     sourcePath: Schema.Attribute.String;
+    status: Schema.Attribute.Enumeration<
+      [
+        'in_progress',
+        'partial',
+        'completed',
+        'unqualified',
+        'qualified',
+        'booked',
+        'attended',
+        'no_show',
+        'proposal_needed',
+        'proposal_sent',
+        'closed_won',
+        'closed_lost',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'in_progress'>;
     submittedAt: Schema.Attribute.DateTime;
     success_metric: Schema.Attribute.Text;
     timeline: Schema.Attribute.String;
@@ -906,6 +1160,50 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     vision: Schema.Attribute.Text;
     website: Schema.Attribute.String;
+    websiteUrl: Schema.Attribute.String;
+  };
+}
+
+export interface ApiMeetingMeeting extends Struct.CollectionTypeSchema {
+  collectionName: 'meetings';
+  info: {
+    description: 'Booked strategy calls and their calendar metadata';
+    displayName: 'Meeting';
+    pluralName: 'meetings';
+    singularName: 'meeting';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    cancelReason: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    duration: Schema.Attribute.Integer & Schema.Attribute.Required;
+    end: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    googleEventId: Schema.Attribute.String;
+    googleHtmlLink: Schema.Attribute.String;
+    lead: Schema.Attribute.Relation<'manyToOne', 'api::lead.lead'> &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::meeting.meeting'
+    > &
+      Schema.Attribute.Private;
+    meetLink: Schema.Attribute.String;
+    notes: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    start: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    status: Schema.Attribute.Enumeration<
+      ['scheduled', 'done', 'canceled', 'no_show', 'rescheduled']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'scheduled'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1717,9 +2015,15 @@ declare module '@strapi/strapi' {
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::blog-page.blog-page': ApiBlogPageBlogPage;
+      'api::calendar-setting.calendar-setting': ApiCalendarSettingCalendarSetting;
       'api::growth-engine-page.growth-engine-page': ApiGrowthEnginePageGrowthEnginePage;
       'api::home-page.home-page': ApiHomePageHomePage;
+      'api::lead-note.lead-note': ApiLeadNoteLeadNote;
+      'api::lead-question.lead-question': ApiLeadQuestionLeadQuestion;
+      'api::lead-response.lead-response': ApiLeadResponseLeadResponse;
+      'api::lead-session.lead-session': ApiLeadSessionLeadSession;
       'api::lead.lead': ApiLeadLead;
+      'api::meeting.meeting': ApiMeetingMeeting;
       'api::page.page': ApiPagePage;
       'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'api::tag.tag': ApiTagTag;

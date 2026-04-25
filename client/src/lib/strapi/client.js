@@ -2,11 +2,13 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || process.env.NEXT_PUBLIC_STRAPI_API_TOKEN || '';
 
 export class StrapiRequestError extends Error {
-  constructor(message, status, path) {
+  constructor(message, status, path, payload = null) {
     super(message);
     this.name = 'StrapiRequestError';
     this.status = status;
     this.path = path;
+    this.payload = payload;
+    this.code = payload?.error?.code || payload?.code || '';
   }
 }
 
@@ -46,11 +48,18 @@ export const request = async (path, params) => {
     next: { revalidate: 60 },
   });
 
+  const payload = await response.json().catch(() => null);
+
   if (!response.ok) {
-    throw new StrapiRequestError(`Request failed (${response.status}) for ${path}`, response.status, path);
+    throw new StrapiRequestError(
+      payload?.error?.message || payload?.message || `Request failed (${response.status}) for ${path}`,
+      response.status,
+      path,
+      payload
+    );
   }
 
-  return response.json();
+  return payload;
 };
 
 export const requestJson = async (path, options = {}) => {
@@ -70,9 +79,9 @@ export const requestJson = async (path, options = {}) => {
     const error = new StrapiRequestError(
       payload?.error?.message || payload?.message || `Request failed (${response.status}) for ${path}`,
       response.status,
-      path
+      path,
+      payload
     );
-    error.payload = payload;
     throw error;
   }
 

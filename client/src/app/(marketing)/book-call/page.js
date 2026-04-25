@@ -3,7 +3,8 @@ import { normalizeLocale } from '@/lib/i18n/locale';
 import { getInitialLang } from '@/lib/i18n/locale.server';
 import { getSiteSetting } from '@/features/cms/lib/cms-page';
 import { loadCustomRouteMetadata } from '@/features/cms/lib/cms-route';
-import HomeworkForm from '@/features/book-call/components/HomeworkForm';
+import BookCallPage from '@/features/book-call/components/BookCallPage';
+import { fetchLeadQuestions } from '@/lib/strapi/queries';
 
 export async function generateMetadata() {
   const initialLang = await getInitialLang();
@@ -21,7 +22,7 @@ export async function generateMetadata() {
 export default async function Page() {
   const initialLang = await getInitialLang();
   const locale = normalizeLocale(initialLang);
-  const siteSetting = await getSiteSetting(initialLang);
+  const [siteSetting, questions] = await Promise.all([getSiteSetting(initialLang), fetchLeadQuestions()]);
   const header = siteSetting.data?.header || null;
 
   return (
@@ -34,7 +35,7 @@ export default async function Page() {
       showFooter={false}
       showBlur={false}
     >
-      <HomeworkForm locale={locale} />
+      <BookCallPage locale={locale} initialQuestions={questions} sourcePage="/book-call" />
     </CmsSiteClient>
   );
 }

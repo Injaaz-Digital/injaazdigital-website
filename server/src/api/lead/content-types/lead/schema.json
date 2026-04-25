@@ -5,16 +5,18 @@
     "singularName": "lead",
     "pluralName": "leads",
     "displayName": "Lead",
-    "description": "Inbound project qualification submissions"
+    "description": "Lead records for the qualification funnel and booking workflow"
   },
   "options": {
     "draftAndPublish": false
   },
   "attributes": {
-    "fullName": { "type": "string", "required": true },
-    "email": { "type": "email", "required": true },
+    "name": { "type": "string" },
+    "fullName": { "type": "string" },
+    "email": { "type": "email" },
     "phone": { "type": "string" },
     "companyName": { "type": "string" },
+    "websiteUrl": { "type": "string" },
     "website": { "type": "string" },
     "service": { "type": "text" },
     "audience": { "type": "text" },
@@ -31,6 +33,34 @@
     "budget": { "type": "string" },
     "timeline": { "type": "string" },
     "decision_maker": { "type": "string" },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "in_progress",
+        "partial",
+        "completed",
+        "unqualified",
+        "qualified",
+        "booked",
+        "attended",
+        "no_show",
+        "proposal_needed",
+        "proposal_sent",
+        "closed_won",
+        "closed_lost"
+      ],
+      "required": true,
+      "default": "in_progress"
+    },
+    "score": { "type": "integer", "default": 0 },
+    "sourcePage": { "type": "string" },
+    "ctaSource": { "type": "string" },
+    "serviceInterest": { "type": "string" },
+    "meetingDate": { "type": "datetime" },
+    "meetingLink": { "type": "string" },
+    "notes": { "type": "text" },
+    "lastActivityAt": { "type": "datetime" },
+    "answersJson": { "type": "json" },
     "qualificationAnswers": { "type": "json" },
     "sourcePath": { "type": "string" },
     "locale": {
@@ -38,6 +68,30 @@
       "enum": ["en", "ar"],
       "default": "en"
     },
-    "submittedAt": { "type": "datetime" }
+    "submittedAt": { "type": "datetime" },
+    "responses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lead-response.lead-response",
+      "mappedBy": "lead"
+    },
+    "sessions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lead-session.lead-session",
+      "mappedBy": "lead"
+    },
+    "meetings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::meeting.meeting",
+      "mappedBy": "lead"
+    },
+    "leadNotes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lead-note.lead-note",
+      "mappedBy": "lead"
+    }
   }
 }

@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "meetings",
+  "info": {
+    "singularName": "meeting",
+    "pluralName": "meetings",
+    "displayName": "Meeting",
+    "description": "Booked strategy calls and their calendar metadata"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "lead": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead.lead",
+      "inversedBy": "meetings",
+      "required": true
+    },
+    "start": {
+      "type": "datetime",
+      "required": true
+    },
+    "end": {
+      "type": "datetime",
+      "required": true
+    },
+    "duration": {
+      "type": "integer",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["scheduled", "done", "canceled", "no_show", "rescheduled"],
+      "required": true,
+      "default": "scheduled"
+    },
+    "meetLink": {
+      "type": "string"
+    },
+    "googleEventId": {
+      "type": "string"
+    },
+    "googleHtmlLink": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "cancelReason": {
+      "type": "text"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lead_sessions",
+  "info": {
+    "singularName": "lead-session",
+    "pluralName": "lead-sessions",
+    "displayName": "Lead Session",
+    "description": "Tracks booking funnel progress sessions"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "lead": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead.lead",
+      "inversedBy": "sessions",
+      "required": true
+    },
+    "sessionToken": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "currentStep": {
+      "type": "integer",
+      "default": 0
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "startedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "completedAt": {
+      "type": "datetime"
+    },
+    "lastSeenAt": {
+      "type": "datetime"
+    }
+  }
+}

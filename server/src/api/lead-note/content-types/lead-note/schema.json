@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lead_notes",
+  "info": {
+    "singularName": "lead-note",
+    "pluralName": "lead-notes",
+    "displayName": "Lead Note",
+    "description": "Internal notes attached to a lead"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "lead": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead.lead",
+      "inversedBy": "leadNotes",
+      "required": true
+    },
+    "body": {
+      "type": "text",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["general", "call_note", "follow_up", "proposal", "decision"],
+      "default": "general"
+    },
+    "createdByName": {
+      "type": "string"
+    }
+  }
+}

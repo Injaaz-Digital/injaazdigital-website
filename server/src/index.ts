@@ -140,6 +140,8 @@ export default {
         `${CONTENT_UID.author}.findOne`,
         `${CONTENT_UID.tag}.find`,
         `${CONTENT_UID.tag}.findOne`,
+        'api::lead-question.lead-question.find',
+        'api::lead-question.lead-question.findOne',
       ];
 
       for (const action of publicReadActions) {

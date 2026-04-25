@@ -110,3 +110,28 @@ export const createLeadSubmission = async (data) =>
       data,
     },
   });
+
+export const fetchLeadQuestions = async (params = {}) => {
+  try {
+    const response = await request('/api/lead-questions', {
+      sort: ['order:asc'],
+      filters: {
+        active: {
+          $eq: true,
+        },
+      },
+      pagination: {
+        pageSize: 100,
+      },
+      ...params,
+    });
+
+    const entries = Array.isArray(response?.data) ? response.data : [];
+    return entries.map((entry) => normalizeValue(entry));
+  } catch (error) {
+    if (isSoftContentError(error)) {
+      return [];
+    }
+    throw error;
+  }
+};

@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lead_questions",
+  "info": {
+    "singularName": "lead-question",
+    "pluralName": "lead-questions",
+    "displayName": "Lead Question",
+    "description": "Dynamic qualification questions for the booking funnel"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "key": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["select", "radio", "checkbox", "text", "textarea", "email", "phone", "url", "number"],
+      "required": true
+    },
+    "options": {
+      "type": "json"
+    },
+    "order": {
+      "type": "integer",
+      "required": true
+    },
+    "weight": {
+      "type": "integer",
+      "default": 0
+    },
+    "required": {
+      "type": "boolean",
+      "default": true
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "helpText": {
+      "type": "text"
+    },
+    "placeholder": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "responses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lead-response.lead-response",
+      "mappedBy": "question"
+    }
+  }
+}
