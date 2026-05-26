@@ -132,6 +132,7 @@ export default {
         `${CONTENT_UID.webStudioPage}.find`,
         `${CONTENT_UID.aboutPage}.find`,
         `${CONTENT_UID.blogPage}.find`,
+        `${CONTENT_UID.bookingPageSetting}.find`,
         `${CONTENT_UID.page}.find`,
         `${CONTENT_UID.page}.findOne`,
         `${CONTENT_UID.article}.find`,

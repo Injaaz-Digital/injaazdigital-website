@@ -9,6 +9,22 @@ type CalendarCredentials = {
   timezone: string;
 };
 
+type GoogleProviderError = {
+  code?: string | number;
+  message?: string;
+  response?: {
+    data?: {
+      error?: string;
+      error_description?: string;
+      errorDescription?: string;
+    };
+  };
+  errors?: Array<{
+    reason?: string;
+    message?: string;
+  }>;
+};
+
 const readCredentials = (): CalendarCredentials => {
   const clientId = process.env.GOOGLE_CALENDAR_CLIENT_ID || '';
   const clientSecret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET || '';
@@ -38,6 +54,26 @@ export const isGoogleCalendarConfigured = () =>
       process.env.GOOGLE_CALENDAR_REDIRECT_URI &&
       process.env.GOOGLE_CALENDAR_REFRESH_TOKEN
   );
+
+export const getGoogleCalendarErrorInfo = (error: unknown) => {
+  const providerError = error as GoogleProviderError;
+  const responseData = providerError?.response?.data || {};
+  const nestedError = providerError?.errors?.[0] || {};
+  const code = String(responseData.error || nestedError.reason || providerError?.code || '').trim();
+  const message = String(
+    responseData.error_description ||
+      responseData.errorDescription ||
+      nestedError.message ||
+      providerError?.message ||
+      'Google Calendar rejected the request.'
+  ).trim();
+
+  return {
+    code,
+    message,
+    isAuthInvalid: code === 'invalid_grant' || message.includes('invalid_grant'),
+  };
+};
 
 const getCalendarClient = () => {
   const credentials = readCredentials();

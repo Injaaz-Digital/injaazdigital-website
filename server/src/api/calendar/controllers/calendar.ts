@@ -3,6 +3,8 @@ import { CalendarApiError } from '../services/calendar';
 const ERROR_MESSAGES: Record<string, string> = {
   INVALID_SESSION: 'Invalid session token.',
   VALIDATION_ERROR: 'Please check the submitted fields.',
+  GOOGLE_CALENDAR_AUTH_INVALID:
+    'Google Calendar refresh token is invalid or expired. Reconnect Google Calendar and update GOOGLE_CALENDAR_REFRESH_TOKEN.',
   GOOGLE_CALENDAR_NOT_CONFIGURED:
     'Google Calendar is not configured. Set Google calendar env vars or enable CALENDAR_MOCK_MODE=true for local testing.',
   GOOGLE_CALENDAR_FAILED: 'Google Calendar availability lookup failed.',

@@ -1,8 +1,20 @@
+const LOCAL_DEV_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
+
+const isLocalDevOrigin = (origin: string) => {
+  try {
+    const parsed = new URL(origin);
+    return ['http:', 'https:'].includes(parsed.protocol) && LOCAL_DEV_HOSTS.has(parsed.hostname);
+  } catch {
+    return false;
+  }
+};
+
 export default ({ env }) => {
   const allowedOrigins = env('CORS_ORIGIN', 'http://localhost:3000,http://localhost:5173')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
+  const allowLocalDevOrigins = env('NODE_ENV') !== 'production';
 
   return [
     'strapi::logger',
@@ -24,7 +36,23 @@ export default ({ env }) => {
     {
       name: 'strapi::cors',
       config: {
-        origin: allowedOrigins,
+        origin: (ctx) => {
+          const requestOrigin = ctx.get('Origin');
+
+          if (!requestOrigin) {
+            return '*';
+          }
+
+          if (allowedOrigins.includes(requestOrigin)) {
+            return requestOrigin;
+          }
+
+          if (allowLocalDevOrigins && isLocalDevOrigin(requestOrigin)) {
+            return requestOrigin;
+          }
+
+          return '';
+        },
         headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         credentials: true,

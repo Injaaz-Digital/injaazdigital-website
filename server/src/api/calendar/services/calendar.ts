@@ -1,5 +1,10 @@
 import { DateTime, IANAZone, Interval } from 'luxon';
-import { createMeetingEvent, getBusyEvents, isGoogleCalendarConfigured } from '../../../services/google-calendar';
+import {
+  createMeetingEvent,
+  getBusyEvents,
+  getGoogleCalendarErrorInfo,
+  isGoogleCalendarConfigured,
+} from '../../../services/google-calendar';
 
 const DEFAULT_TIMEZONE = process.env.GOOGLE_CALENDAR_TIMEZONE || 'Africa/Casablanca';
 const DATE_PARAM_REGEX = /^\d{4}-\d{2}-\d{2}$/;
@@ -55,6 +60,7 @@ type CalendarErrorCode =
   | 'INVALID_DATE'
   | 'CALENDAR_SETTING_MISSING'
   | 'CALENDAR_SETTING_INVALID'
+  | 'GOOGLE_CALENDAR_AUTH_INVALID'
   | 'GOOGLE_CALENDAR_NOT_CONFIGURED'
   | 'GOOGLE_CALENDAR_FAILED'
   | 'SLOT_UNAVAILABLE'
@@ -219,12 +225,42 @@ const isAvailabilityDebugEnabled = () =>
   String(process.env.CALENDAR_AVAILABILITY_DEBUG || '').toLowerCase() === 'true';
 const shouldIgnoreGoogleBusy = () =>
   String(process.env.CALENDAR_IGNORE_GOOGLE_BUSY || '').toLowerCase() === 'true';
+const normalizeBooleanEnv = (value: string | undefined) => {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
+  if (['false', '0', 'no', 'off'].includes(normalized)) return false;
+  return null;
+};
+const shouldUseLocalCalendarFallback = () =>
+  normalizeBooleanEnv(process.env.CALENDAR_LOCAL_FALLBACK) ?? process.env.NODE_ENV !== 'production';
+let localCalendarFallbackReason: 'auth_invalid' | 'not_configured' | null = null;
 
 const serializeIntervals = (intervals: Interval[]) =>
   intervals.map((interval) => ({
     start: interval.start?.toISO(),
     end: interval.end?.toISO(),
   }));
+
+const slotConflictsWithBusy = (slotStart: DateTime, slotEnd: DateTime, busyIntervals: Interval[], setting: ValidatedCalendarSetting) => {
+  const slotInterval = Interval.fromDateTimes(slotStart, slotEnd);
+  const slotWithOwnBuffer = Interval.fromDateTimes(
+    slotStart.minus({ minutes: setting.bufferBefore }),
+    slotEnd.plus({ minutes: setting.bufferAfter })
+  );
+
+  return busyIntervals.some((busyInterval) => {
+    if (!busyInterval.start || !busyInterval.end) {
+      return false;
+    }
+
+    const busyWithBuffer = Interval.fromDateTimes(
+      busyInterval.start.minus({ minutes: setting.bufferBefore }),
+      busyInterval.end.plus({ minutes: setting.bufferAfter })
+    );
+
+    return slotInterval.overlaps(busyWithBuffer) || slotWithOwnBuffer.overlaps(busyInterval);
+  });
+};
 
 const generateMockSlots = (date: string) => ({
   date,
@@ -364,8 +400,14 @@ export default ({ strapi }) => ({
       return [];
     }
 
+    if (shouldUseLocalCalendarFallback() && localCalendarFallbackReason) {
+      return [];
+    }
+
     if (!isGoogleCalendarConfigured()) {
-      if (isMockModeEnabled()) {
+      if (isMockModeEnabled() || shouldUseLocalCalendarFallback()) {
+        localCalendarFallbackReason = 'not_configured';
+        strapi.log.warn('[calendar availability] Google Calendar is not configured; using local availability fallback.');
         return [];
       }
 
@@ -385,14 +427,35 @@ export default ({ strapi }) => ({
         timezone: setting.timezone,
       });
     } catch (error) {
-      const message = (error as { message?: string })?.message || 'Google Calendar rejected the free/busy request.';
+      const providerError = getGoogleCalendarErrorInfo(error);
+      if (providerError.isAuthInvalid) {
+        if (shouldUseLocalCalendarFallback()) {
+          localCalendarFallbackReason = 'auth_invalid';
+          strapi.log.warn(
+            '[calendar availability] Google Calendar auth is invalid; using local availability fallback.'
+          );
+          return [];
+        }
+
+        throw new CalendarApiError(
+          'GOOGLE_CALENDAR_AUTH_INVALID',
+          'Google Calendar refresh token is invalid or expired. Reconnect Google Calendar and update GOOGLE_CALENDAR_REFRESH_TOKEN.',
+          503,
+          {
+            providerCode: providerError.code || 'invalid_grant',
+            providerMessage: providerError.message,
+          }
+        );
+      }
+
       strapi.log.error('[calendar availability] Google busy lookup failed', error);
       throw new CalendarApiError(
         'GOOGLE_CALENDAR_FAILED',
         'Google Calendar availability lookup failed.',
         502,
         {
-          providerMessage: message,
+          providerCode: providerError.code || undefined,
+          providerMessage: providerError.message,
         }
       );
     }
@@ -497,11 +560,7 @@ export default ({ strapi }) => ({
         label: slotLabel(cursor),
       });
 
-      const blockedByBuffer = Interval.fromDateTimes(
-        cursor.minus({ minutes: setting.bufferBefore }),
-        slotEnd.plus({ minutes: setting.bufferAfter })
-      );
-      const overlapsBusy = busyIntervals.some((busyInterval) => busyInterval.overlaps(blockedByBuffer));
+      const overlapsBusy = slotConflictsWithBusy(cursor, slotEnd, busyIntervals, setting);
 
       if (cursor >= minStart && !overlapsBusy) {
         slots.push({
@@ -616,21 +675,55 @@ export default ({ strapi }) => ({
     }
 
     const { setting, slotStart, slotEnd } = await this.ensureSlotFree(start, end);
-    const event = isMockModeEnabled()
-      ? null
-      : await createMeetingEvent({
-          lead,
-          start: slotStart.toISO() || start,
-          end: slotEnd.toISO() || end,
-          timezone: setting.timezone,
-          calendarId: setting.calendarId,
-          meetingTitle: setting.meetingTitle,
-          meetingLocation: setting.meetingLocation,
-          autoCreateGoogleMeet: setting.autoCreateGoogleMeet,
-          serviceInterest: lead.serviceInterest,
-          score: lead.score,
-          answersJson: normalizeAnswersJson(lead.answersJson),
-        });
+    let event: any = null;
+
+    if (!isMockModeEnabled()) {
+      if (!isGoogleCalendarConfigured() && shouldUseLocalCalendarFallback()) {
+        strapi.log.warn('[calendar booking] Google Calendar is not configured; creating local meeting only.');
+      } else {
+        try {
+          event = await createMeetingEvent({
+            lead,
+            start: slotStart.toISO() || start,
+            end: slotEnd.toISO() || end,
+            timezone: setting.timezone,
+            calendarId: setting.calendarId,
+            meetingTitle: setting.meetingTitle,
+            meetingLocation: setting.meetingLocation,
+            autoCreateGoogleMeet: setting.autoCreateGoogleMeet,
+            serviceInterest: lead.serviceInterest,
+            score: lead.score,
+            answersJson: normalizeAnswersJson(lead.answersJson),
+          });
+        } catch (error) {
+          const providerError = getGoogleCalendarErrorInfo(error);
+          if (providerError.isAuthInvalid && shouldUseLocalCalendarFallback()) {
+            strapi.log.warn('[calendar booking] Google Calendar auth is invalid; creating local meeting only.');
+          } else if ((error as { message?: string })?.message === 'GOOGLE_CALENDAR_NOT_CONFIGURED') {
+            throw new CalendarApiError(
+              'GOOGLE_CALENDAR_NOT_CONFIGURED',
+              'Google Calendar is not configured. Set Google calendar env vars or enable CALENDAR_MOCK_MODE=true for local testing.',
+              503
+            );
+          } else if (providerError.isAuthInvalid) {
+            throw new CalendarApiError(
+              'GOOGLE_CALENDAR_AUTH_INVALID',
+              'Google Calendar refresh token is invalid or expired. Reconnect Google Calendar and update GOOGLE_CALENDAR_REFRESH_TOKEN.',
+              503,
+              {
+                providerCode: providerError.code || 'invalid_grant',
+                providerMessage: providerError.message,
+              }
+            );
+          } else {
+            throw new CalendarApiError('GOOGLE_CALENDAR_FAILED', 'Google Calendar event creation failed.', 502, {
+              providerCode: providerError.code || undefined,
+              providerMessage: providerError.message,
+            });
+          }
+        }
+      }
+    }
 
     const meetLink =
       event?.conferenceData?.entryPoints?.find((entry) => entry.entryPointType === 'video')?.uri ||

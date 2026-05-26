@@ -5,6 +5,7 @@ export const CONTENT_UID = {
   webStudioPage: 'api::web-studio-page.web-studio-page',
   aboutPage: 'api::about-page.about-page',
   blogPage: 'api::blog-page.blog-page',
+  bookingPageSetting: 'api::booking-page-setting.booking-page-setting',
   page: 'api::page.page',
   article: 'api::article.article',
   author: 'api::author.author',
