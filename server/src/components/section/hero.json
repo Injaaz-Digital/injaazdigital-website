@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_section_heroes",
+  "info": {
+    "displayName": "Hero",
+    "description": "Premium landing page hero"
+  },
+  "options": {},
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "text"
+    },
+    "primaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "secondaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "imageKeyword": {
+      "type": "string",
+      "default": "premium-digital-studio"
+    },
+    "variant": {
+      "type": "enumeration",
+      "enum": ["visual", "editorial"],
+      "default": "visual"
+    }
+  }
+}

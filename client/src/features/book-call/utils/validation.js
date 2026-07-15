@@ -9,41 +9,41 @@ export const isAnswerEmpty = (answer) => {
   return String(answer ?? '').trim() === '';
 };
 
-export const validateQuestionAnswer = (question, answer) => {
+export const validateQuestionAnswer = (question, answer, messages = {}) => {
   if (!question?.required) {
     return '';
   }
 
   if (isAnswerEmpty(answer)) {
-    return 'This step needs an answer before you continue.';
+    return messages.validationRequired || 'This step needs an answer before you continue.';
   }
 
   if (question.type === 'email' && !EMAIL_REGEX.test(String(answer || '').trim())) {
-    return 'Please enter a valid email address.';
+    return messages.validationEmail || 'Please enter a valid email address.';
   }
 
   if (question.type === 'phone' && !PHONE_REGEX.test(String(answer || '').trim())) {
-    return 'Please enter a valid phone number.';
+    return messages.validationPhone || 'Please enter a valid phone number.';
   }
 
   return '';
 };
 
-export const validateContact = (contact) => {
+export const validateContact = (contact, messages = {}, contactFields = null) => {
   const errors = {};
 
   if (!String(contact.name || '').trim()) {
-    errors.name = 'Your name is required.';
+    errors.name = messages.validationNameRequired || 'Your name is required.';
   }
 
   if (!String(contact.email || '').trim()) {
-    errors.email = 'Your email is required.';
+    errors.email = messages.validationEmailRequired || 'Your email is required.';
   } else if (!EMAIL_REGEX.test(String(contact.email || '').trim())) {
-    errors.email = 'Please enter a valid email address.';
+    errors.email = messages.validationEmail || 'Please enter a valid email address.';
   }
 
   if (contact.phone && !PHONE_REGEX.test(String(contact.phone).trim())) {
-    errors.phone = 'Please enter a valid phone number.';
+    errors.phone = messages.validationPhone || 'Please enter a valid phone number.';
   }
 
   if (contact.websiteUrl) {
@@ -51,7 +51,13 @@ export const validateContact = (contact) => {
       const candidate = /^https?:\/\//i.test(contact.websiteUrl) ? contact.websiteUrl : `https://${contact.websiteUrl}`;
       new URL(candidate);
     } catch {
-      errors.websiteUrl = 'Please enter a valid website URL.';
+      errors.websiteUrl = messages.validationUrl || 'Please enter a valid website URL.';
+    }
+  }
+
+  for (const field of ['phone', 'companyName', 'websiteUrl']) {
+    if (contactFields?.[field]?.visible !== false && contactFields?.[field]?.required && !String(contact[field] || '').trim()) {
+      errors[field] = messages.validationRequired || 'This field is required.';
     }
   }
 

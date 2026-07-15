@@ -289,8 +289,8 @@
 
 @layer base {
   :root {
-    --font-sans: var(--font-manrope), sans-serif;
-    --font-display: var(--font-syne), var(--font-manrope), sans-serif;
+    --font-sans: var(--font-geist), var(--font-manrope), sans-serif;
+    --font-display: var(--font-geist), var(--font-syne), sans-serif;
     --font-editorial: var(--font-domaine), "Iowan Old Style", "Times New Roman", serif;
     --font-rtl: var(--font-ibm-arabic), sans-serif;
     --tracking-display: 0em;
@@ -407,6 +407,11 @@
     letter-spacing: 0;
   }
 
+  h1.booking-title {
+    font-family: var(--font-sans) !important;
+    font-feature-settings: "kern" 1;
+  }
+
   [dir="rtl"] h3,
   [dir="rtl"] h4,
   [dir="rtl"] h5,
@@ -418,6 +423,10 @@
 @layer utilities {
   .bg-brand-gradient {
     background-image: linear-gradient(273.7deg, #28aec3 -29.91%, #084299 126.54%);
+  }
+
+  .premium-geist {
+    font-family: var(--font-geist), var(--font-manrope), sans-serif !important;
   }
 }
 
@@ -457,6 +466,25 @@
   .layout-container--hero {
     @apply mx-auto;
     width: min(var(--layout-max), calc(100% - 1rem));
+  }
+
+  .hero-page-shell {
+    min-height: clamp(29rem, 62svh, 43rem);
+  }
+
+  .hero-top-spacing {
+    padding-top: calc(var(--header-offset) );
+  }
+
+  .hero-top-spacing--generous {
+    padding-top: calc(var(--header-offset) + 3.6rem);
+  }
+
+  .hero-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
   }
 
   .layout-content-narrow {
@@ -547,7 +575,7 @@
 
   .section h2 {
     max-width: none;
-    font-size: clamp(1.5rem, 3.9vw, 2.75rem);
+    font-size: clamp(1.65rem, 4.2vw, 3rem);
     font-weight: 500;
     line-height: 1.08;
     letter-spacing: -0.016em;
@@ -572,7 +600,7 @@
     max-width: none;
     color: #090909;
     font-family: var(--font-domaine), "Iowan Old Style", "Times New Roman", serif !important;
-    font-size: clamp(1.5rem, 3.9vw, 2.75rem);
+    font-size: clamp(1.65rem, 4.2vw, 3rem);
     font-weight: 500;
     line-height: 1.08;
     letter-spacing: -0.016em;
@@ -587,7 +615,6 @@
 
   .section-title--article {
     max-width: 100%;
-    font-size: clamp(1.4rem, 2.8vw, 2.2rem);
     line-height: 1.12;
   }
 
@@ -613,6 +640,17 @@
   [dir="rtl"] .section-title--center {
     margin-inline: auto;
     text-align: center;
+  }
+
+  html[dir="ltr"] .premium-section-title {
+    max-width: 54rem;
+    margin-inline: auto;
+    text-align: center;
+    font-size: clamp(2rem, 4vw, 3.75rem);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.028em;
+    text-wrap: balance;
   }
 
   .section-head {
@@ -698,6 +736,26 @@
     font-feature-settings: "liga" 1, "kern" 1, "clig" 1, "dlig" 1;
     font-kerning: normal;
     text-shadow: 0 10px 22px rgba(8, 41, 89, 0.08);
+  }
+
+  .animated-text-statement {
+    font-family: var(--font-editorial) !important;
+    font-weight: 500;
+    line-height: 1.09;
+    letter-spacing: -0.026em;
+    word-spacing: 0.035em;
+    text-wrap: balance;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "liga" 1, "kern" 1, "clig" 1, "dlig" 1;
+    font-kerning: normal;
+  }
+
+  [dir="rtl"] .animated-text-statement {
+    font-family: var(--font-rtl) !important;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0;
+    word-spacing: 0.06em;
   }
 
   .hero-lead {
@@ -2782,6 +2840,26 @@
       width: min(var(--layout-max), calc(100% - (var(--layout-gutter) * 2)));
     }
 
+    .hero-page-shell {
+      min-height: clamp(22rem, 54svh, 31rem);
+    }
+
+
+
+    .hero-top-spacing--generous {
+      padding-top: calc(var(--header-offset) );
+    }
+
+    .hero-cta-row {
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-cta-row > button {
+      width: min(14.5rem, 100%);
+    }
+
     .blog-body {
       line-height: 1.75;
     }
@@ -2894,4 +2972,12 @@
       --space-3: 2rem;
     }
   }
+}
+
+h1.premium-geist,
+h2.premium-geist,
+h3.premium-geist,
+p.premium-geist,
+.premium-geist {
+  font-family: var(--font-geist), var(--font-manrope), sans-serif !important;
 }

@@ -44,14 +44,17 @@ const persistSession = (value) => {
   window.localStorage.setItem(BOOK_CALL_SESSION_STORAGE_KEY, JSON.stringify(value));
 };
 
-export function useLeadSession({ sourcePage, locale = 'en' }) {
+export function useLeadSession({ sourcePage, locale = 'en', stepperKey = '', stepperVersion = 0 }) {
   const [session, setSession] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    setSession(loadStoredSession());
-  }, []);
+    const stored = loadStoredSession();
+    const matchesStepper = stored?.stepperKey === stepperKey && Number(stored?.stepperVersion) === Number(stepperVersion);
+    setSession(matchesStepper ? stored : null);
+    if (stored && !matchesStepper) persistSession(null);
+  }, [stepperKey, stepperVersion]);
 
   useEffect(() => {
     if (session) {
@@ -60,7 +63,7 @@ export function useLeadSession({ sourcePage, locale = 'en' }) {
   }, [session]);
 
   const ensureSession = async () => {
-    if (session?.leadId && session?.sessionToken) {
+    if (session?.leadId && session?.sessionToken && session.stepperKey === stepperKey && Number(session.stepperVersion) === Number(stepperVersion)) {
       return session;
     }
 
@@ -68,6 +71,8 @@ export function useLeadSession({ sourcePage, locale = 'en' }) {
       sourcePage,
       ctaSource: BOOK_CALL_CTA_SOURCE,
       locale,
+      stepperKey,
+      stepperVersion,
     });
 
     const nextSession = {
@@ -76,6 +81,8 @@ export function useLeadSession({ sourcePage, locale = 'en' }) {
       answers: {},
       contact: {},
       currentStep: 0,
+      stepperKey: created?.stepperKey,
+      stepperVersion: created?.stepperVersion,
     };
 
     setSession(nextSession);

@@ -10,6 +10,12 @@ export const fetchLeadQuestions = async (locale = 'en') => {
   return result.data || [];
 };
 
+export const fetchBookingStepper = async ({ key, locale = 'en' }) => {
+  if (!key) return null;
+  const response = await requestJson(`/api/booking/steppers/${encodeURIComponent(key)}/runtime?locale=${encodeURIComponent(locale)}`);
+  return response?.data || response || null;
+};
+
 export const startLeadSession = async (payload) => {
   const response = await requestJson('/api/lead-sessions/start', {
     method: 'POST',

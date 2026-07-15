@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, RotateCw } from 'lucide-react';
 import Button from '@/shared/ui/Button';
-import { bookMeetingRequest, fetchAvailability } from '../services/calendar.service';
+import { bookMeetingRequest, fetchAvailabilityRange, rescheduleMeeting } from '../services/calendar.service';
 import { useBookingAvailability } from '../hooks/useBookingAvailability';
 import { BOOK_CALL_TIMEZONE } from '../constants/bookCall.constants';
 
@@ -49,6 +49,11 @@ const formatMonthLabel = (date, locale = 'en') =>
     year: 'numeric',
   }).format(date);
 
+const buildWeekdayLabels = (locale = 'en') => {
+  const formatter = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : 'en', { weekday: 'short', timeZone: 'UTC' });
+  return Array.from({ length: 7 }, (_, index) => formatter.format(new Date(Date.UTC(2024, 0, 1 + index))).replace('.', ''));
+};
+
 const formatDateLabel = (value, weekday = 'short', locale = 'en') =>
   new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : 'en', {
     weekday,
@@ -64,56 +69,21 @@ const formatSlotLabel = (value, timezone = BOOK_CALL_TIMEZONE, locale = 'en') =>
     timeZone: timezone,
   }).format(new Date(value));
 
-const labels = {
-  en: {
-    chooseDate: 'Choose date',
-    availableTimes: 'Available times',
-    selected: 'Selected',
-    to: 'to',
-    selectTime: 'Select a time to continue.',
-    booking: 'Booking...',
-    previousMonth: 'Previous month',
-    nextMonth: 'Next month',
-    slotTaken: 'That time was just taken. Please choose another slot.',
-    calendarNotConfigured: 'Calendar connection is not configured yet.',
-    calendarAuthInvalid: 'Calendar connection needs to be reconnected.',
-    leadNotQualified: 'This lead is not eligible to book a call yet.',
-    bookingFailed: 'Something went wrong while booking. Please try again.',
-    weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  },
-  ar: {
-    chooseDate: 'اختر التاريخ',
-    availableTimes: 'الأوقات المتاحة',
-    selected: 'تم الاختيار',
-    to: 'إلى',
-    selectTime: 'اختر وقتا للمتابعة.',
-    booking: 'جاري الحجز...',
-    previousMonth: 'الشهر السابق',
-    nextMonth: 'الشهر التالي',
-    slotTaken: 'تم حجز هذا الوقت للتو. اختر وقتا آخر.',
-    calendarNotConfigured: 'اتصال التقويم غير معد بعد.',
-    calendarAuthInvalid: 'يجب إعادة ربط التقويم.',
-    leadNotQualified: 'هذا الطلب غير مؤهل للحجز حاليا.',
-    bookingFailed: 'حدث خطأ أثناء الحجز. أعد المحاولة.',
-    weekdays: ['إثن', 'ثلا', 'أرب', 'خمي', 'جمع', 'سبت', 'أحد'],
-  },
-};
-
-const getBookingError = (error, ui) => {
+const getBookingError = (error, copy) => {
   const code = error?.payload?.error?.code || error?.code;
   if (code === 'SLOT_UNAVAILABLE' || error?.status === 409) {
-    return ui.slotTaken;
+    return copy.slotTakenLabel || 'That time was just taken. Please choose another slot.';
   }
   if (code === 'GOOGLE_CALENDAR_NOT_CONFIGURED') {
-    return ui.calendarNotConfigured;
+    return copy.calendarNotConfiguredLabel || 'Calendar connection is not configured yet.';
   }
   if (code === 'GOOGLE_CALENDAR_AUTH_INVALID') {
-    return ui.calendarAuthInvalid;
+    return copy.calendarAuthInvalidLabel || 'Calendar connection needs to be reconnected.';
   }
   if (code === 'LEAD_NOT_QUALIFIED') {
-    return ui.leadNotQualified;
+    return copy.leadNotQualifiedLabel || 'This lead is not eligible to book a call yet.';
   }
-  return ui.bookingFailed;
+  return copy.bookingFailedLabel || 'Something went wrong while booking. Please try again.';
 };
 
 function LoadingSkeleton({ label }) {
@@ -126,8 +96,7 @@ function LoadingSkeleton({ label }) {
   );
 }
 
-export default function BookingCalendar({ leadId, sessionToken, copy, locale = 'en', onBooked }) {
-  const ui = labels[locale] || labels.en;
+export default function BookingCalendar({ leadId, sessionToken, copy = {}, locale = 'en', onBooked, rescheduleMeetingId = null }) {
   const todayValue = useMemo(() => formatLocalDateValue(new Date()), []);
   const [visibleMonth, setVisibleMonth] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState(todayValue);
@@ -137,6 +106,7 @@ export default function BookingCalendar({ leadId, sessionToken, copy, locale = '
   const [monthAvailability, setMonthAvailability] = useState({});
 
   const monthDays = useMemo(() => buildMonthDays(visibleMonth), [visibleMonth]);
+  const weekdayLabels = useMemo(() => buildWeekdayLabels(locale), [locale]);
   const {
     slots,
     availability,
@@ -152,28 +122,13 @@ export default function BookingCalendar({ leadId, sessionToken, copy, locale = '
     const inMonthDays = monthDays.filter((day) => day.inMonth && day.value >= todayValue);
 
     const loadMonthAvailability = async () => {
-      const entries = [];
-
-      for (const day of inMonthDays) {
-        if (cancelled) {
-          return;
-        }
-
-        try {
-          const result = await fetchAvailability({ date: day.value });
-          entries.push([day.value, (result.slots || []).length > 0]);
-        } catch (nextError) {
-          const code = nextError?.code || nextError?.payload?.error?.code;
-          entries.push([day.value, false]);
-
-          if (code === 'GOOGLE_CALENDAR_AUTH_INVALID' || code === 'GOOGLE_CALENDAR_NOT_CONFIGURED') {
-            break;
-          }
-        }
-      }
-
-      if (!cancelled) {
-        setMonthAvailability(Object.fromEntries(entries));
+      if (inMonthDays.length === 0) return;
+      try {
+        const result = await fetchAvailabilityRange({ from: inMonthDays[0].value, to: inMonthDays[inMonthDays.length - 1].value });
+        const entries = (result.days || []).map((day) => [day.date, (day.slots || []).length > 0]);
+        if (!cancelled) setMonthAvailability(Object.fromEntries(entries));
+      } catch {
+        if (!cancelled) setMonthAvailability(Object.fromEntries(inMonthDays.map((day) => [day.value, false])));
       }
     };
 
@@ -194,16 +149,20 @@ export default function BookingCalendar({ leadId, sessionToken, copy, locale = '
     setError('');
 
     try {
-      const result = await bookMeetingRequest({
+      const bookingPayload = {
         leadId,
         sessionToken,
         start: selectedSlot.start,
         end: selectedSlot.end,
-      });
+        slotToken: selectedSlot.slotToken,
+      };
+      const result = rescheduleMeetingId
+        ? await rescheduleMeeting({ meetingId: rescheduleMeetingId, ...bookingPayload })
+        : await bookMeetingRequest(bookingPayload);
 
       onBooked(result);
     } catch (nextError) {
-      setError(getBookingError(nextError, ui));
+      setError(getBookingError(nextError, copy));
       retry();
     } finally {
       setIsBooking(false);
@@ -223,49 +182,48 @@ export default function BookingCalendar({ leadId, sessionToken, copy, locale = '
   };
 
   return (
-    <section className="space-y-7">
+    <section className="flex min-h-0 flex-col gap-4 xl:h-full">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#617894]">{ui.chooseDate}</p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#0a2546]">{copy?.bookingTitle}</h2>
-        <p className="mt-2 text-sm leading-7 text-[#607693]">{copy?.bookingDescription}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#617894]">{copy.chooseDateLabel || 'Choose date'}</p>
+        <h2 className="mt-1 text-xl font-semibold tracking-[-0.04em] text-[#0a2546] md:text-2xl">{copy?.bookingTitle}</h2>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
-        <div className="min-w-0 rounded-2xl border border-[#d8e3ef] bg-white p-4">
-          <div className="mb-5 flex items-center justify-between gap-3">
-            <h3 className="text-xl font-semibold tracking-[-0.03em] text-[#0a2546]">
+      <div className="grid min-h-0 flex-1 gap-3 overflow-hidden lg:grid-cols-[minmax(0,1fr)_19rem]">
+        <div className="min-w-0 rounded-2xl corner-squircle border border-[#d8e3ef] bg-white p-2.5">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <h3 className="text-base font-semibold tracking-[-0.03em] text-[#0a2546]">
               {formatMonthLabel(visibleMonth, locale)}
             </h3>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                aria-label={ui.previousMonth}
+                aria-label={copy.previousMonthLabel || 'Previous month'}
                 disabled={!canGoPrevious}
                 onClick={() => moveMonth(-1)}
-                className="grid h-9 w-9 place-items-center rounded-full border border-[#d6e1ee] text-[#17314d] transition hover:border-[#30a2c3] disabled:cursor-not-allowed disabled:opacity-35"
+                className="grid h-8 w-8 place-items-center rounded-full border border-[#d6e1ee] text-[#17314d] transition hover:border-[#30a2c3] disabled:cursor-not-allowed disabled:opacity-35"
               >
                 <ChevronLeft className="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
               </button>
               <button
                 type="button"
-                aria-label={ui.nextMonth}
+                aria-label={copy.nextMonthLabel || 'Next month'}
                 onClick={() => moveMonth(1)}
-                className="grid h-9 w-9 place-items-center rounded-full border border-[#d6e1ee] text-[#17314d] transition hover:border-[#30a2c3]"
+                className="grid h-8 w-8 place-items-center rounded-full border border-[#d6e1ee] text-[#17314d] transition hover:border-[#30a2c3]"
               >
                 <ChevronRight className="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase tracking-[0.12em] text-[#7b8fa7]">
-            {ui.weekdays.map((weekday) => (
-              <div key={weekday} className="py-2">
+          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase tracking-[0.12em] text-[#7b8fa7]">
+            {weekdayLabels.map((weekday) => (
+              <div key={weekday} className="py-1.5">
                 {weekday}
               </div>
             ))}
           </div>
 
-          <div className="mt-1 grid grid-cols-7 gap-2">
+          <div className="mt-1 grid grid-cols-7 gap-1">
             {monthDays.map((day) => {
               const isPast = day.value < todayValue;
               const isSelected = day.value === selectedDate;
@@ -282,7 +240,7 @@ export default function BookingCalendar({ leadId, sessionToken, copy, locale = '
                     setSelectedSlot(null);
                     setError('');
                   }}
-                  className={`relative grid aspect-square min-h-11 place-items-center rounded-xl border text-sm font-semibold transition sm:min-h-14 ${
+                  className={`relative grid aspect-square min-h-10 place-items-center rounded-xl corner-squircle border text-sm font-semibold transition sm:min-h-12 ${
                     isSelected
                       ? 'border-[#0b5da8] bg-[#0b5da8] text-white shadow-[0_12px_26px_rgba(11,93,168,0.24)]'
                       : hasSlots
@@ -302,11 +260,11 @@ export default function BookingCalendar({ leadId, sessionToken, copy, locale = '
           </div>
         </div>
 
-        <div className="min-w-0 space-y-4 rounded-2xl border border-[#d8e3ef] bg-[#fbfdff] p-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl corner-squircle border border-[#d8e3ef] bg-[#fbfdff]">
+          <div className="shrink-0 flex flex-wrap items-center justify-between gap-2 px-3 pt-3 pb-2">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-[#617894]">{ui.availableTimes}</p>
-              <h3 className="mt-2 text-xl font-semibold text-[#15314f]">{selectedDateLabel}</h3>
+              <p className="text-xs uppercase tracking-[0.2em] text-[#617894]">{copy.availableTimesLabel || 'Available times'}</p>
+              <h3 className="mt-1 text-base font-semibold text-[#15314f]">{selectedDateLabel}</h3>
             </div>
             {availabilityError ? (
               <Button variant="outline" size="sm" onClick={retry}>
@@ -316,68 +274,70 @@ export default function BookingCalendar({ leadId, sessionToken, copy, locale = '
             ) : null}
           </div>
 
-          {isLoading ? <LoadingSkeleton label={copy?.loadingSlotsLabel} /> : null}
+          <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
+            {isLoading ? <LoadingSkeleton label={copy?.loadingSlotsLabel} /> : null}
 
-          {!isLoading && availabilityError ? (
-            <div className="rounded-xl border border-[#f5c8c8] bg-[#fff6f6] px-4 py-3 text-sm text-[#9b1c1c]">
-              <p className="font-semibold">{copy?.errorTitle}</p>
-              <p className="mt-1 text-[#9b1c1c]/80">{copy?.errorDescription}</p>
-            </div>
-          ) : null}
+            {!isLoading && availabilityError ? (
+              <div className="rounded-xl border border-[#f5c8c8] bg-[#fff6f6] px-4 py-3 text-sm text-[#9b1c1c]">
+                <p className="font-semibold">{copy?.errorTitle}</p>
+                <p className="mt-1 text-[#9b1c1c]/80">{copy?.errorDescription}</p>
+              </div>
+            ) : null}
 
-          {!isLoading && !availabilityError && slots.length === 0 ? (
-            <div className="rounded-xl border border-[#d6e1ee] bg-white px-4 py-3 text-sm text-[#607693]">
-              <p className="font-semibold text-[#15314f]">{copy?.noSlotsTitle}</p>
-              <p className="mt-1">{copy?.noSlotsDescription}</p>
-            </div>
-          ) : null}
+            {!isLoading && !availabilityError && slots.length === 0 ? (
+              <div className="rounded-xl border border-[#d6e1ee] bg-white px-4 py-3 text-sm text-[#607693]">
+                <p className="font-semibold text-[#15314f]">{copy?.noSlotsTitle}</p>
+                <p className="mt-1">{copy?.noSlotsDescription}</p>
+              </div>
+            ) : null}
 
-          {!isLoading && !availabilityError && slots.length > 0 ? (
-            <div className="space-y-3">
-              {slots.map((slot) => {
-                const isActive = selectedSlot?.start === slot.start;
-                return (
-                  <button
-                    key={slot.start}
-                    type="button"
-                    className={`min-h-[3.75rem] w-full rounded-xl border px-4 py-3 text-center text-sm font-semibold transition ${
-                      isActive
-                        ? 'border-[#0b5da8] bg-[#edf6ff] text-[#0a2546] shadow-[0_10px_24px_rgba(11,93,168,0.12)]'
-                        : 'border-[#d6e1ee] bg-white text-[#15314f] hover:border-[#30a2c3] hover:bg-[#f8fbff]'
-                    }`}
-                    onClick={() => {
-                      setSelectedSlot(slot);
-                      setError('');
-                    }}
-                  >
-                    <span>{slot.label || formatSlotLabel(slot.start, timezone, locale)}</span>
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
+            {!isLoading && !availabilityError && slots.length > 0 ? (
+              <div className="grid grid-cols-2 gap-2">
+                {slots.map((slot) => {
+                  const isActive = selectedSlot?.start === slot.start;
+                  return (
+                    <button
+                      key={slot.start}
+                      type="button"
+                      className={`w-full rounded-xl corner-squircle border py-2.5 text-center text-sm font-semibold transition ${
+                        isActive
+                          ? 'border-[#0b5da8] bg-[#edf6ff] text-[#0a2546] shadow-[0_10px_24px_rgba(11,93,168,0.12)]'
+                          : 'border-[#d6e1ee] bg-white text-[#15314f] hover:border-[#30a2c3] hover:bg-[#f8fbff]'
+                      }`}
+                      onClick={() => {
+                        setSelectedSlot(slot);
+                        setError('');
+                      }}
+                    >
+                      <span>{slot.label || formatSlotLabel(slot.start, timezone, locale)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-[#f5c8c8] bg-[#fff6f6] px-5 py-4 text-sm text-[#9b1c1c]">
+        <div className="rounded-xl border border-[#f5c8c8] bg-[#fff6f6] px-4 py-2.5 text-sm text-[#9b1c1c]">
           {error}
         </div>
       ) : null}
 
-      <div className="sticky bottom-3 z-10 flex flex-col gap-3 rounded-2xl border border-[#d6e1ee] bg-white/95 p-3 shadow-[0_18px_48px_rgba(8,41,89,0.14)] backdrop-blur md:static md:flex-row md:items-center md:justify-between md:border-0 md:bg-transparent md:p-0 md:shadow-none">
-        <p className="text-sm text-[#607693]">
+      <div className="sticky bottom-2 z-10 flex shrink-0 items-center gap-3 rounded-2xl border border-[#d6e1ee] bg-white/95 p-2.5 shadow-[0_14px_36px_rgba(8,41,89,0.12)] backdrop-blur md:static md:justify-between md:border-0 md:bg-transparent md:p-0 md:shadow-none">
+        <p className="hidden text-xs text-[#607693] sm:block">
           {selectedSlot
             ? `${copy?.selectedTimeLabel}: ${formatSlotLabel(selectedSlot.start, timezone, locale)} - ${selectedDateLabel}`
-            : ui.selectTime}
+            : (copy.selectTimeLabel || 'Select a time to continue.')}
         </p>
         <Button
           variant="primary"
           onClick={handleBook}
           disabled={!selectedSlot || isBooking || isLoading}
-          className="w-full md:w-auto"
+          className="w-full shrink-0 sm:w-auto"
         >
-          {isBooking ? ui.booking : copy?.confirmButtonLabel}
+          {isBooking ? (copy.bookingLabel || 'Booking...') : copy?.confirmButtonLabel}
         </Button>
       </div>
     </section>

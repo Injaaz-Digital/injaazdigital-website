@@ -6,12 +6,10 @@ export const BLOCK_UID = blockRegistry.blocks;
 export const BLOCK_SET = blockRegistry.blockSets;
 export const CONTENT_TYPE_BLOCK_SET = blockRegistry.contentTypeBlockSet;
 
-export const MARKETING_PAGE_BLOCKS = [...BLOCK_SET.marketing];
-export const SERVICE_PAGE_BLOCKS = [...BLOCK_SET.service];
-export const ABOUT_PAGE_BLOCKS = [...BLOCK_SET.about];
+export const PAGE_BLOCKS = [...BLOCK_SET.page];
 export const BLOG_PAGE_BLOCKS = [...BLOCK_SET.blog];
 
-const FALLBACK_BLOCK_SET: BlockSetName = 'marketing';
+const FALLBACK_BLOCK_SET: BlockSetName = 'page';
 
 export const getBlockSetForContentType = (uid: string): BlockSetName => {
   const setName = CONTENT_TYPE_BLOCK_SET[uid as keyof typeof CONTENT_TYPE_BLOCK_SET] as BlockSetName | undefined;

@@ -1,4 +1,4 @@
-import { ABOUT_PAGE_BLOCKS, BLOCK_UID, BLOG_PAGE_BLOCKS, MARKETING_PAGE_BLOCKS, SERVICE_PAGE_BLOCKS } from './blocks';
+import { BLOCK_UID, BLOG_PAGE_BLOCKS, PAGE_BLOCKS } from './blocks';
 
 type QueryShape = Record<string, unknown>;
 
@@ -30,6 +30,7 @@ export const layoutPopulate = {
   header: {
     populate: {
       navLinks: true,
+      serviceLinks: true,
       primaryCta: true,
     },
   },
@@ -63,154 +64,10 @@ const BLOCK_POPULATE: Record<string, QueryShape> = {
       gallery: mediaComponentPopulate,
     },
   },
-  [BLOCK_UID.dashboardShowcase]: {
-    populate: {
-      stats: true,
-      insights: true,
-      primaryCta: linkPopulate,
-      secondaryCta: linkPopulate,
-    },
-  },
-  [BLOCK_UID.featureMosaic]: {
-    populate: {
-      cards: {
-        populate: {
-          artwork: mediaComponentPopulate,
-        },
-      },
-    },
-  },
-  [BLOCK_UID.trustRow]: {
-    populate: {
-      items: true,
-    },
-  },
-  [BLOCK_UID.personaGrid]: {
-    populate: {
-      personas: {
-        populate: {
-          cta: linkPopulate,
-        },
-      },
-    },
-  },
-  [BLOCK_UID.problem]: {
-    populate: {
-      bullets: true,
-    },
-  },
-  [BLOCK_UID.solutionSystem]: {
-    populate: {
-      steps: true,
-    },
-  },
-  [BLOCK_UID.processTimeline]: {
-    populate: {
-      steps: true,
-    },
-  },
-  [BLOCK_UID.proof]: {
-    populate: {
-      trackedMetrics: true,
-      artifact: mediaComponentPopulate,
-    },
-  },
-  [BLOCK_UID.packages]: {
-    populate: {
-      packages: {
-        populate: {
-          cta: linkPopulate,
-        },
-      },
-    },
-  },
-  [BLOCK_UID.faq]: {
-    populate: {
-      items: true,
-    },
-  },
   [BLOCK_UID.ctaBanner]: {
     populate: {
       primaryCta: linkPopulate,
       secondaryCta: linkPopulate,
-    },
-  },
-  [BLOCK_UID.bookingMeeting]: {
-    populate: {
-      bookingLink: linkPopulate,
-      benefits: true,
-    },
-  },
-  [BLOCK_UID.aboutMosaic]: {
-    populate: {
-      csatEmojis: mediaComponentPopulate,
-      strategyImage: mediaComponentPopulate,
-      strategySlides: {
-        populate: {
-          artwork: mediaComponentPopulate,
-        },
-      },
-      discussBackground: mediaComponentPopulate,
-      discussCta: linkPopulate,
-      teamMembers: {
-        populate: {
-          avatar: mediaComponentPopulate,
-        },
-      },
-      seoMetrics: true,
-      caseStudyLink: linkPopulate,
-      caseStudyImage: mediaComponentPopulate,
-      industries: true,
-      testimonialVideo: mediaComponentPopulate,
-      testimonialPoster: mediaComponentPopulate,
-    },
-  },
-  [BLOCK_UID.brandProofGrid]: {
-    populate: {
-      satisfactionPanel: {
-        populate: {
-          reactionIcons: mediaComponentPopulate,
-        },
-      },
-      strategyPanel: {
-        populate: {
-          icon: mediaComponentPopulate,
-          coverMedia: mediaComponentPopulate,
-        },
-      },
-      consultationPanel: {
-        populate: {
-          backgroundMedia: mediaComponentPopulate,
-          cta: linkPopulate,
-          teamMembers: {
-            populate: {
-              avatar: mediaComponentPopulate,
-            },
-          },
-        },
-      },
-      performancePanel: {
-        populate: {
-          metrics: true,
-        },
-      },
-      caseStudyPanel: {
-        populate: {
-          cta: linkPopulate,
-          coverMedia: mediaComponentPopulate,
-        },
-      },
-      industriesPanel: {
-        populate: {
-          items: true,
-        },
-      },
-      testimonialPanel: {
-        populate: {
-          video: mediaComponentPopulate,
-          poster: mediaComponentPopulate,
-        },
-      },
     },
   },
   [BLOCK_UID.richText]: {
@@ -218,6 +75,84 @@ const BLOCK_POPULATE: Record<string, QueryShape> = {
       primaryCta: linkPopulate,
     },
   },
+  [BLOCK_UID.sectionHero]: {
+    populate: {
+      primaryCta: true,
+      secondaryCta: true,
+    },
+  },
+  [BLOCK_UID.sectionAnimatedText]: {
+    fields: ['eyebrow', 'text', 'highlightedText', 'alignment', 'size', 'animationStyle', 'sticky', 'theme'],
+  },
+  [BLOCK_UID.sectionProblem]: {
+    populate: {
+      items: true,
+    },
+  },
+  [BLOCK_UID.sectionServiceOverview]: {
+    populate: {
+      services: true,
+    },
+  },
+  [BLOCK_UID.sectionFeatureList]: {
+    populate: {
+      items: true,
+    },
+  },
+  [BLOCK_UID.sectionProcess]: {
+    populate: {
+      steps: {
+        populate: {
+          visual: mediaPopulate,
+        },
+      },
+    },
+  },
+  [BLOCK_UID.sectionOutcomes]: {
+    populate: {
+      items: true,
+    },
+  },
+  [BLOCK_UID.sectionFaq]: {
+    populate: {
+      items: true,
+    },
+  },
+  [BLOCK_UID.sectionFinalCta]: {
+    populate: {
+      primaryCta: true,
+      secondaryCta: true,
+    },
+  },
+  [BLOCK_UID.sectionBookCall]: {
+    populate: '*',
+  },
+  [BLOCK_UID.sectionEditorialContent]: {
+    populate: { statements: true },
+  },
+  [BLOCK_UID.sectionSystemFlow]: {
+    populate: { steps: true, signals: true },
+  },
+  [BLOCK_UID.sectionDiagnosis]: {
+    populate: { items: true },
+  },
+  [BLOCK_UID.sectionTimeline]: {
+    populate: { stages: true },
+  },
+  [BLOCK_UID.sectionStatementPair]: {
+    populate: { first: true, second: true },
+  },
+  [BLOCK_UID.sectionPrinciples]: {
+    populate: { items: true },
+  },
+};
+
+export const offerPopulate = {
+  capabilities: true,
+  flowSteps: true,
+  icon: mediaPopulate,
+  visual: mediaPopulate,
+  seo: seoPopulate,
 };
 
 export const createBlockDynamicZonePopulate = (allowedBlocks: string[]) => ({
@@ -230,28 +165,15 @@ export const createBlockDynamicZonePopulate = (allowedBlocks: string[]) => ({
   }, {}),
 });
 
-export const marketingPagePopulate = {
-  ...layoutPopulate,
+export const pagePopulate = {
   seo: seoPopulate,
-  blocks: createBlockDynamicZonePopulate(MARKETING_PAGE_BLOCKS),
+  blocks: createBlockDynamicZonePopulate(PAGE_BLOCKS),
 };
 
 export const blogPagePopulate = {
   ...layoutPopulate,
   seo: seoPopulate,
   blocks: createBlockDynamicZonePopulate(BLOG_PAGE_BLOCKS),
-};
-
-export const servicePagePopulate = {
-  ...layoutPopulate,
-  seo: seoPopulate,
-  blocks: createBlockDynamicZonePopulate(SERVICE_PAGE_BLOCKS),
-};
-
-export const aboutPagePopulate = {
-  ...layoutPopulate,
-  seo: seoPopulate,
-  blocks: createBlockDynamicZonePopulate(ABOUT_PAGE_BLOCKS),
 };
 
 export const siteSettingPopulate = {

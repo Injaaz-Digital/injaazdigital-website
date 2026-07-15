@@ -53,7 +53,7 @@ export default ({ env }) => {
 
           return '';
         },
-        headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+        headers: ['Content-Type', 'Authorization', 'Origin', 'Accept', 'Idempotency-Key', 'X-Request-Id'],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         credentials: true,
       },

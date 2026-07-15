@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_shared_statements",
+  "info": { "displayName": "Statement" },
+  "options": {},
+  "attributes": {
+    "label": { "type": "string", "required": true, "maxLength": 80 },
+    "statement": { "type": "text", "required": true },
+    "explanation": { "type": "text" }
+  }
+}

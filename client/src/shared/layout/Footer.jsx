@@ -303,9 +303,13 @@ function Footer({ locale = 'en', navItems = [], footerData = null, onNavigate })
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {columns.map((column, index) => (
-            <div key={`${column.title || 'column'}-${index}`} className="space-y-3">
+            <nav
+              key={`${column.title || 'column'}-${index}`}
+              aria-label={column.title || (isArabic ? 'روابط التذييل' : 'Footer links')}
+              className="space-y-3"
+            >
               {column.title ? (
-                <h3 className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-[#607792]">{column.title}</h3>
+                <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-[#607792]">{column.title}</p>
               ) : null}
 
               <div className="grid gap-2">
@@ -318,7 +322,7 @@ function Footer({ locale = 'en', navItems = [], footerData = null, onNavigate })
                   />
                 ))}
               </div>
-            </div>
+            </nav>
           ))}
         </div>
       </div>

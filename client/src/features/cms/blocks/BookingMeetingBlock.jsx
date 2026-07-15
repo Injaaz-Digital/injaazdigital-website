@@ -9,8 +9,8 @@ export default function BookingMeetingBlock({ block, onNavigate, locale }) {
   }
 
   return (
-    <section className="section section--tight">
-      <div className="grid gap-[21px] rounded-[30px] border border-[rgba(8,66,153,0.14)] bg-white p-[21px] shadow-[0_16px_36px_rgba(8,41,89,0.07)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] lg:items-start sm:p-[34px]">
+    <section>
+      <div className="grid gap-[21px] rounded-[40px] corner-squircle border border-[rgba(8,66,153,0.14)] bg-white p-[21px] shadow-[0_16px_36px_rgba(8,41,89,0.07)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] lg:items-start sm:p-[34px]">
         <div>
           <div className="section-head" dir={locale === 'ar' ? 'rtl' : 'ltr'} lang={locale === 'ar' ? 'ar' : 'en'}>
             {block.eyebrow ? <p className="section-head-kicker">{block.eyebrow}</p> : null}
@@ -25,7 +25,7 @@ export default function BookingMeetingBlock({ block, onNavigate, locale }) {
           {bookingBenefits.length > 0 ? (
             <div className="mt-[21px] grid gap-[13px] sm:grid-cols-2">
               {bookingBenefits.map((item, index) => (
-                <article key={`${item.title}-${index}`} className="rounded-[16px] border border-[rgba(8,66,153,0.1)] bg-[#f8fbff] px-[13px] py-[13px]">
+                <article key={`${item.title}-${index}`} className="rounded-[26px] corner-squircle border border-[rgba(8,66,153,0.1)] bg-[#f8fbff] px-[13px] py-[13px]">
                   <strong className="text-sm text-[#0a2546]">{item.title}</strong>
                   {item.description ? <p className="mt-[8px] text-xs leading-6 text-[#5c7696]">{item.description}</p> : null}
                 </article>
@@ -34,7 +34,7 @@ export default function BookingMeetingBlock({ block, onNavigate, locale }) {
           ) : null}
         </div>
 
-        <aside className="rounded-[22px] border border-[rgba(8,66,153,0.12)] bg-[#f6f9ff] p-[21px]">
+        <aside className="rounded-[32px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-[#f6f9ff] p-[21px]">
           <p className="section-head-kicker">
             {block.cardTitle || (locale === 'ar' ? 'حجز اجتماع' : 'Book a Meeting')}
           </p>

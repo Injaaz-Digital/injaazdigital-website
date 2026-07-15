@@ -1,7 +1,7 @@
 import { factories } from '@strapi/strapi';
 import crypto from 'node:crypto';
 
-const QUALIFICATION_THRESHOLD = 8;
+const DEFAULT_QUALIFICATION_THRESHOLD = 8;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const URL_PROTOCOL_REGEX = /^https?:\/\//i;
 const PHONE_REGEX = /^[\d\s+()\-]{7,25}$/;
@@ -53,6 +53,25 @@ const sanitizeText = (value: unknown): string => {
 const normalizeLocale = (value: unknown): 'en' | 'ar' => {
   const lowered = String(value || '').toLowerCase();
   return lowered.startsWith('ar') ? 'ar' : 'en';
+};
+
+const normalizeBoolean = (value: unknown, fallback = true): boolean => {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
+    if (['false', '0', 'no', 'off'].includes(normalized)) return false;
+  }
+
+  return fallback;
+};
+
+const normalizeThreshold = (value: unknown, fallback = DEFAULT_QUALIFICATION_THRESHOLD): number => {
+  const threshold = Number(value);
+  return Number.isFinite(threshold) && threshold >= 0 ? threshold : fallback;
 };
 
 const normalizeSourcePath = (value: unknown): string => {
@@ -154,19 +173,21 @@ const resolveScoreValue = (question: UnknownRecord | null, answer: unknown): num
   const options = asArray(question.options);
   const answers = Array.isArray(answer) ? answer : [answer];
   let matchedScore = 0;
+  let matchedScoredOption = false;
 
   for (const item of answers) {
     for (const option of options) {
       if (optionMatchesAnswer(option, item)) {
         const optionScore = getOptionScore(option);
         if (optionScore !== null) {
+          matchedScoredOption = true;
           matchedScore += optionScore;
         }
       }
     }
   }
 
-  if (matchedScore > 0) {
+  if (matchedScoredOption) {
     return matchedScore;
   }
 
@@ -183,45 +204,95 @@ const buildAnswersJson = (responses: UnknownRecord[]) =>
 const toJsonField = (value: unknown) => JSON.stringify(value ?? null);
 
 const nowIso = () => new Date().toISOString();
+const hashSessionToken = (token: string) => {
+  const pepper = process.env.BOOKING_SESSION_PEPPER || process.env.APP_KEYS?.split(',')[0] || '';
+  return crypto.createHash('sha256').update(`${pepper}|${token}`).digest('hex');
+};
 
 export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
   sanitizeString,
   normalizeSourcePath,
   normalizeUrlValue,
 
+  async getBookingQuestionSettings(_localeValue: unknown = 'en') {
+    const calendarSetting = (await strapi.entityService.findMany(
+      'api::calendar-setting.calendar-setting'
+    )) as UnknownRecord | null;
+    return {
+      questionsBeforeBookingEnabled: normalizeBoolean(
+        calendarSetting?.questionsBeforeBookingEnabled,
+        true
+      ),
+      qualificationThreshold: normalizeThreshold(
+        calendarSetting?.qualificationThreshold,
+        DEFAULT_QUALIFICATION_THRESHOLD
+      ),
+    };
+  },
+
   async startSession(payload: UnknownRecord = {}) {
     const sourcePage = normalizeSourcePath(payload.sourcePage || payload.sourcePath || '/');
     const ctaSource = sanitizeString(payload.ctaSource);
     const locale = normalizeLocale(payload.locale);
     const timestamp = nowIso();
+    const stepperKey = sanitizeString(payload.stepperKey);
+    let stepperSnapshot: UnknownRecord | null = null;
+    if (stepperKey) {
+      stepperSnapshot = await strapi.plugin('booking').service('stepper').getRuntime(stepperKey, locale, true);
+      if (Number(payload.stepperVersion) !== Number(stepperSnapshot.version)) {
+        const error = new Error('STEPPER_VERSION_CHANGED');
+        (error as any).status = 409;
+        throw error;
+      }
+    }
+    const globalQuestionSettings = await this.getBookingQuestionSettings(locale);
+    const questionsBeforeBookingEnabled = stepperSnapshot
+      ? stepperSnapshot.qualificationEnabled !== false
+      : globalQuestionSettings.questionsBeforeBookingEnabled;
+    const qualificationThreshold = stepperSnapshot
+      ? normalizeThreshold(stepperSnapshot.qualificationThreshold, 0)
+      : globalQuestionSettings.qualificationThreshold;
 
     const lead = await strapi.entityService.create('api::lead.lead', {
       data: {
         status: 'in_progress',
         score: 0,
+        questionsBeforeBookingEnabled,
+        qualificationThreshold,
         sourcePage,
         sourcePath: sourcePage,
         ctaSource,
         locale,
+        stepperKey: stepperSnapshot?.key || null,
+        stepperVersion: stepperSnapshot?.version || null,
         lastActivityAt: timestamp,
       },
     });
 
     const sessionToken = crypto.randomBytes(32).toString('hex');
+    const sessionTokenHash = hashSessionToken(sessionToken);
+    const sessionTtlHours = Number(process.env.BOOKING_SESSION_TTL_HOURS || 24);
     await strapi.entityService.create('api::lead-session.lead-session', {
       data: {
         lead: lead.id,
-        sessionToken,
+        sessionToken: sessionTokenHash,
+        sessionTokenHash,
+        expiresAt: new Date(Date.now() + sessionTtlHours * 3600000).toISOString(),
         currentStep: Math.max(0, Number(payload.currentStep) || 0),
         completed: false,
         startedAt: timestamp,
         lastSeenAt: timestamp,
+        stepperKey: stepperSnapshot?.key || null,
+        stepperVersion: stepperSnapshot?.version || null,
+        stepperSnapshot: stepperSnapshot || null,
       },
     });
 
     return {
       leadId: lead.id,
       sessionToken,
+      stepperKey: stepperSnapshot?.key || null,
+      stepperVersion: stepperSnapshot?.version || null,
     };
   },
 
@@ -233,16 +304,31 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
       throw new Error('INVALID_SESSION');
     }
 
+    const tokenHash = hashSessionToken(normalizedToken);
+    const legacyUntil = process.env.BOOKING_LEGACY_TOKEN_UNTIL ? new Date(process.env.BOOKING_LEGACY_TOKEN_UNTIL) : null;
+    const allowLegacy = Boolean(legacyUntil && !Number.isNaN(legacyUntil.valueOf()) && legacyUntil > new Date());
     const session = await strapi.db.query('api::lead-session.lead-session').findOne({
       where: {
         lead: normalizedLeadId,
-        sessionToken: normalizedToken,
+        revokedAt: { $null: true },
+        $or: [
+          { sessionTokenHash: tokenHash },
+          { sessionToken: tokenHash },
+          ...(allowLegacy ? [{ sessionToken: normalizedToken }] : []),
+        ],
       },
       populate: SESSION_POPULATE,
     });
 
-    if (!session?.id) {
+    if (!session?.id || (session.expiresAt && new Date(session.expiresAt) <= new Date())) {
       throw new Error('INVALID_SESSION');
+    }
+
+    if (!session.sessionTokenHash && allowLegacy) {
+      await strapi.db.query('api::lead-session.lead-session').update({
+        where: { id: session.id },
+        data: { sessionToken: tokenHash, sessionTokenHash: tokenHash, expiresAt: new Date(Date.now() + Number(process.env.BOOKING_SESSION_TTL_HOURS || 24) * 3600000).toISOString() },
+      });
     }
 
     return session;
@@ -259,9 +345,29 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
     }
 
     const lead = (await strapi.entityService.findOne('api::lead.lead', leadId, {
-      fields: ['locale'],
+      fields: ['locale', 'questionsBeforeBookingEnabled', 'qualificationThreshold'],
     })) as UnknownRecord | null;
-    const question =
+    const globalQuestionSettings = await this.getBookingQuestionSettings(lead?.locale);
+    const bookingQuestionSettings = {
+      questionsBeforeBookingEnabled: normalizeBoolean(
+        lead?.questionsBeforeBookingEnabled,
+        globalQuestionSettings.questionsBeforeBookingEnabled
+      ),
+      qualificationThreshold: normalizeThreshold(
+        lead?.qualificationThreshold,
+        globalQuestionSettings.qualificationThreshold
+      ),
+    };
+
+    if (!bookingQuestionSettings.questionsBeforeBookingEnabled) {
+      throw new Error('QUESTION_NOT_FOUND');
+    }
+
+    const sessionSnapshot = typeof session.stepperSnapshot === 'string'
+      ? JSON.parse(session.stepperSnapshot)
+      : session.stepperSnapshot;
+    const snapshotQuestion = sessionSnapshot?.questions?.find((item: UnknownRecord) => item.key === questionKey);
+    const question = snapshotQuestion ||
       (await strapi.db.query('api::lead-question.lead-question').findOne({
         where: {
           key: questionKey,
@@ -276,7 +382,7 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
         },
       }));
 
-    if (!question?.id) {
+    if (!question?.key) {
       throw new Error('QUESTION_NOT_FOUND');
     }
 
@@ -297,7 +403,7 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
 
     const responseData = {
       lead: leadId,
-      question: question.id,
+      question: question.id || null,
       questionKey,
       questionTitle,
       answer: toJsonField(answer),
@@ -336,21 +442,24 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
   },
 
   async updateContact(leadId: unknown, payload: UnknownRecord = {}) {
-    await this.validateSession(leadId, payload.sessionToken);
+    const session = await this.validateSession(leadId, payload.sessionToken);
+    const sessionSnapshot = typeof session.stepperSnapshot === 'string' ? JSON.parse(session.stepperSnapshot) : session.stepperSnapshot;
+    const contactFields = sessionSnapshot?.contactFields || {};
 
     const data: UnknownRecord = {};
     const fieldErrors: Record<string, string> = {};
 
     for (const field of CONTACT_FIELDS) {
-      if (field in payload) {
+      const configKey = field === 'fullName' ? 'name' : field === 'website' ? 'websiteUrl' : field;
+      if (field in payload && contactFields?.[configKey]?.visible !== false) {
         data[field] = sanitizeString(payload[field]);
       }
     }
 
     const name = data.name || data.fullName;
     const email = sanitizeString(payload.email);
-    const phone = sanitizeString(payload.phone);
-    const websiteUrl = normalizeUrlValue(payload.websiteUrl || payload.website);
+    const phone = sanitizeString(data.phone);
+    const websiteUrl = normalizeUrlValue(data.websiteUrl || data.website);
 
     if (!name) {
       fieldErrors.name = 'Name is required.';
@@ -366,8 +475,13 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
       fieldErrors.phone = 'Please enter a valid phone number.';
     }
 
-    if ((payload.websiteUrl || payload.website) && !websiteUrl) {
+    if ((data.websiteUrl || data.website) && !websiteUrl) {
       fieldErrors.websiteUrl = 'Please enter a valid URL.';
+    }
+    for (const field of ['phone', 'companyName', 'websiteUrl']) {
+      if (contactFields?.[field]?.visible !== false && contactFields?.[field]?.required && !sanitizeString(data[field])) {
+        fieldErrors[field] = `${field} is required.`;
+      }
     }
 
     if (Object.keys(fieldErrors).length > 0) {
@@ -382,7 +496,7 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
         fullName: name,
         email,
         phone,
-        companyName: sanitizeString(payload.companyName),
+        companyName: sanitizeString(data.companyName),
         websiteUrl,
         website: websiteUrl,
         status: 'partial',
@@ -422,15 +536,29 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
       }),
     ]);
 
-    const activeQuestions = await strapi.entityService.findMany('api::lead-question.lead-question', {
-      locale: normalizeLocale((lead as UnknownRecord)?.locale),
-      filters: {
-        active: {
-          $eq: true,
-        },
-      },
-      sort: ['order:asc'],
-    });
+    const globalQuestionSettings = await this.getBookingQuestionSettings((lead as UnknownRecord)?.locale);
+    const bookingQuestionSettings = {
+      questionsBeforeBookingEnabled: normalizeBoolean(
+        (lead as UnknownRecord)?.questionsBeforeBookingEnabled,
+        globalQuestionSettings.questionsBeforeBookingEnabled
+      ),
+      qualificationThreshold: normalizeThreshold(
+        (lead as UnknownRecord)?.qualificationThreshold,
+        globalQuestionSettings.qualificationThreshold
+      ),
+    };
+    const sessionSnapshot = typeof session.stepperSnapshot === 'string' ? JSON.parse(session.stepperSnapshot) : session.stepperSnapshot;
+    const activeQuestions = sessionSnapshot?.questions || (bookingQuestionSettings.questionsBeforeBookingEnabled
+      ? await strapi.entityService.findMany('api::lead-question.lead-question', {
+          locale: normalizeLocale((lead as UnknownRecord)?.locale),
+          filters: {
+            active: {
+              $eq: true,
+            },
+          },
+          sort: ['order:asc'],
+        })
+      : []);
 
     const questionsByKey = new Map(activeQuestions.map((question: UnknownRecord) => [question.key, question]));
     let totalScore = 0;
@@ -458,7 +586,9 @@ export default factories.createCoreService('api::lead.lead', ({ strapi }) => ({
     const serviceInterest = String(
       answersJson.service_interest ?? answersJson.serviceInterest ?? answersJson.service ?? lead?.serviceInterest ?? ''
     ).trim();
-    const qualified = totalScore >= QUALIFICATION_THRESHOLD;
+    const qualified =
+      !bookingQuestionSettings.questionsBeforeBookingEnabled ||
+      totalScore >= bookingQuestionSettings.qualificationThreshold;
     const status = qualified ? 'qualified' : 'unqualified';
     const timestamp = nowIso();
 

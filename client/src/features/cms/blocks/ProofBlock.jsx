@@ -21,7 +21,7 @@ export default function ProofBlock({ block, locale }) {
       </div>
 
       <div className="mt-[34px] grid gap-[21px] lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-        <article className="rounded-[26px] border border-[rgba(8,66,153,0.14)] bg-white p-[34px] shadow-[0_16px_36px_rgba(8,41,89,0.07)]">
+        <article className="rounded-[36px] corner-squircle border border-[rgba(8,66,153,0.14)] bg-white p-[34px] shadow-[0_16px_36px_rgba(8,41,89,0.07)]">
           <p className="text-sm tracking-[0.14em] text-[#0b4f8c]">★★★★★</p>
           <p className="mt-[13px] text-[1.05rem] leading-8 text-[#24466f]">{block.evidenceText || block.afterLabel || block.beforeLabel}</p>
 
@@ -46,7 +46,7 @@ export default function ProofBlock({ block, locale }) {
           {[leadMetric, secondaryMetric].filter(Boolean).map((metric, index) => (
             <article
               key={`${metric.label || 'metric'}-${index}`}
-              className="rounded-[22px] border border-[rgba(8,66,153,0.12)] bg-white p-[21px] shadow-[0_12px_28px_rgba(8,41,89,0.06)]"
+              className="rounded-[32px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-white p-[21px] shadow-[0_12px_28px_rgba(8,41,89,0.06)]"
             >
               {metric.value ? <p className="text-2xl tracking-[-0.02em] text-[#0a2546]">{metric.value}</p> : null}
               {metric.label ? <p className="mt-[8px] text-sm text-[#4f6a89]">{metric.label}</p> : null}
@@ -61,7 +61,7 @@ export default function ProofBlock({ block, locale }) {
           {metrics.slice(2).map((metric, index) => (
             <article
               key={`${metric.label}-${index}`}
-              className="rounded-[20px] border border-[rgba(8,66,153,0.1)] bg-white p-[21px] shadow-[0_10px_24px_rgba(8,41,89,0.05)]"
+              className="rounded-[30px] corner-squircle border border-[rgba(8,66,153,0.1)] bg-white p-[21px] shadow-[0_10px_24px_rgba(8,41,89,0.05)]"
             >
               <h3 className="text-sm font-medium text-[#0a2546]">{metric.label}</h3>
               <p className="mt-[8px] text-lg text-[#0b4f8c]">{metric.value}</p>

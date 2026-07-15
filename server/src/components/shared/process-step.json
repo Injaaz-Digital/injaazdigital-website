@@ -20,6 +20,14 @@
     },
     "timeframe": {
       "type": "string"
+    },
+    "visual": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

@@ -1,23 +1,27 @@
 import { cache } from 'react';
 import {
   fetchContentIndex,
+  fetchCollection,
   fetchFirstBySlug,
   fetchSingleType,
   fetchWithLocaleFallback,
+  getPageBySlug,
   normalizeMedia,
 } from '@/lib/strapi';
 import { CMS_SINGLE_TYPE_BY_PATH, STATIC_SITE_PATHS, isExternalUrl, normalizeCmsUrl, toAbsoluteSiteUrl } from '@/lib/config/site-config';
+import { fetchBookingStepper } from '@/features/book-call/services/lead.service';
+import { fetchBookingPresentationConfig } from '@/features/book-call/services/calendar.service';
 
 const DEFAULT_SITE_NAME = 'Injaaz Digital';
 const DEFAULT_DESCRIPTION = 'Data-driven digital growth systems for ambitious brands.';
 const HERO_CTA_FALLBACKS = Object.freeze({
   en: Object.freeze({
     primary: Object.freeze({ label: 'Book a Call', url: '/book-call', style: 'primary' }),
-    secondary: Object.freeze({ label: 'See How It Works', url: '/growth-engine', style: 'secondary' }),
+    secondary: Object.freeze({ label: 'See How It Works', url: '/growth-system', style: 'secondary' }),
   }),
   ar: Object.freeze({
     primary: Object.freeze({ label: 'احجز مكالمة', url: '/book-call', style: 'primary' }),
-    secondary: Object.freeze({ label: 'شاهد كيف نعمل', url: '/growth-engine', style: 'secondary' }),
+    secondary: Object.freeze({ label: 'شاهد كيف نعمل', url: '/growth-system', style: 'secondary' }),
   }),
 });
 
@@ -51,21 +55,25 @@ const BLOG_ARTICLE_POPULATE = Object.freeze({
 });
 
 const PAGE_BLOCK_COMPONENTS = [
+  'section.hero',
+  'section.animated-text',
+  'section.problem',
+  'section.service-overview',
+  'section.feature-list',
+  'section.process',
+  'section.outcomes',
+  'section.faq',
+  'section.final-cta',
+  'section.book-call',
+  'section.editorial-content',
+  'section.system-flow',
+  'section.diagnosis',
+  'section.timeline',
+  'section.statement-pair',
+  'section.principles',
   'blocks.hero',
   'blocks.hero-minimal',
-  'blocks.dashboard-showcase',
-  'blocks.feature-mosaic',
-  'blocks.trust-row',
-  'blocks.persona-grid',
-  'blocks.problem',
-  'blocks.solution-system',
-  'blocks.process-timeline',
-  'blocks.proof',
-  'blocks.packages',
-  'blocks.faq',
   'blocks.cta-banner',
-  'blocks.booking-meeting',
-  'blocks.brand-proof-grid',
   'blocks.rich-text',
 ];
 
@@ -73,6 +81,23 @@ const PAGE_BLOCKS_ON_POPULATE = PAGE_BLOCK_COMPONENTS.reduce((accumulator, compo
   accumulator[componentUid] = { populate: '*' };
   return accumulator;
 }, {});
+
+PAGE_BLOCKS_ON_POPULATE['section.process'] = {
+  populate: {
+    steps: {
+      populate: {
+        visual: true,
+      },
+    },
+  },
+};
+
+const PAGE_COLLECTION_POPULATE = Object.freeze({
+  seo: { populate: '*' },
+  blocks: {
+    on: PAGE_BLOCKS_ON_POPULATE,
+  },
+});
 
 const PAGE_POPULATE = Object.freeze({
   header: { populate: '*' },
@@ -381,15 +406,66 @@ const normalizeBrandProofGridBlock = (block) => {
   };
 };
 
+const normalizeSectionBlock = (block) => {
+  if (!block || typeof block !== 'object') return block;
+  if (!asText(block.__component).startsWith('section.')) return block;
+
+  return {
+    ...block,
+    primaryCta: normalizeCmsLink(block.primaryCta),
+    secondaryCta: normalizeCmsLink(block.secondaryCta, { defaultStyle: 'secondary' }),
+  };
+};
+
+const normalizeOffer = (offer) => {
+  if (!offer || typeof offer !== 'object' || offer.isActive !== true) return null;
+  const name = asText(offer.name);
+  const href = normalizeCmsUrl(offer.primaryCtaHref);
+  if (!name || !href) return null;
+
+  return {
+    ...offer,
+    name,
+    title: name,
+    description: asText(offer.shortDescription),
+    shortDescription: asText(offer.shortDescription),
+    positioningLine: asText(offer.positioningLine),
+    outcome: asText(offer.outcome),
+    primaryCtaHref: href,
+    url: href,
+    primaryCtaLabel: asText(offer.primaryCtaLabel),
+    ctaLabel: asText(offer.primaryCtaLabel),
+    capabilities: asCollection(offer.capabilities),
+    flowSteps: asCollection(offer.flowSteps),
+    displayOrder: Number(offer.displayOrder || 0),
+  };
+};
+
+const hydrateOfferBlocks = (pageData, offers) => {
+  if (!pageData || !Array.isArray(pageData.blocks)) return pageData;
+  const activeOffers = asCollection(offers)
+    .map(normalizeOffer)
+    .filter(Boolean)
+    .sort((left, right) => left.displayOrder - right.displayOrder);
+
+  return {
+    ...pageData,
+    blocks: pageData.blocks.map((block) => block?.__component === 'section.service-overview'
+      ? { ...block, services: activeOffers }
+      : block),
+  };
+};
+
 const normalizeCmsBlock = (block, locale = 'en') => {
   const heroNormalized = normalizeHeroBlock(block, locale);
-  return normalizeBrandProofGridBlock(heroNormalized);
+  return normalizeSectionBlock(normalizeBrandProofGridBlock(heroNormalized));
 };
 
 const normalizeHeader = (header) => {
   if (!header || typeof header !== 'object') return null;
 
   const navLinks = Array.isArray(header.navLinks) ? header.navLinks.map(normalizeLink).filter(Boolean) : [];
+  const serviceLinks = Array.isArray(header.serviceLinks) ? header.serviceLinks.map(normalizeLink).filter(Boolean) : [];
   const primaryCta = normalizeLink(header.primaryCta);
   const showLanguageSwitcher = header.showLanguageSwitcher !== false;
 
@@ -401,6 +477,8 @@ const normalizeHeader = (header) => {
     ...header,
     logoText: asText(header.logoText) || DEFAULT_SITE_NAME,
     navLinks,
+    servicesLabel: asText(header.servicesLabel) || 'Services',
+    serviceLinks,
     primaryCta,
     showLanguageSwitcher,
   };
@@ -600,6 +678,74 @@ const mergePageWithSiteLayout = (pageData, siteSetting) => {
   return null;
 };
 
+const BOOK_CALL_EDITORIAL_FIELDS = Object.freeze([
+  'introEyebrow',
+  'pageTitle',
+  'qualificationIntroTitle',
+  'contactStepTitle',
+  'contactStepHelp',
+  'bookingTitle',
+  'successTitle',
+  'fallbackTitle',
+  'fallbackDescription',
+]);
+
+const pickBookCallEditorialCopy = (block) =>
+  Object.fromEntries(
+    BOOK_CALL_EDITORIAL_FIELDS
+      .filter((field) => block?.[field] !== undefined && block?.[field] !== null)
+      .map((field) => [field, block[field]])
+  );
+
+const hydrateBookCallBlocks = async (pageData, locale, pathname) => {
+  const blocks = Array.isArray(pageData?.blocks) ? pageData.blocks : [];
+  const hasBookCallBlock = blocks.some((block) => block?.__component === 'section.book-call');
+
+  if (!hasBookCallBlock) {
+    return pageData;
+  }
+
+  const stepperKeys = [...new Set(blocks
+    .filter((block) => block?.__component === 'section.book-call')
+    .map((block) => block?.stepper?.key)
+    .filter(Boolean))];
+  const [steppers, bookingConfig] = await Promise.all([
+    Promise.all(stepperKeys.map((key) => fetchBookingStepper({ key, locale }).catch(() => null))),
+    fetchBookingPresentationConfig().catch(() => null),
+  ]);
+  const steppersByKey = new Map(steppers.filter(Boolean).map((stepper) => [stepper.key, stepper]));
+  const duration = Number(bookingConfig?.meetingDuration || 30);
+
+  return {
+    ...pageData,
+    blocks: blocks.map((block) => {
+      if (block?.__component !== 'section.book-call') {
+        return block;
+      }
+      const stepper = steppersByKey.get(block.stepper?.key) || null;
+      const questionsEnabled = Boolean(stepper) && stepper.qualificationEnabled !== false;
+
+      return {
+        id: block.id,
+        __component: block.__component,
+        ...pickBookCallEditorialCopy(block),
+        stepperKey: stepper?.key || block.stepper?.key || '',
+        stepperVersion: Number(stepper?.version || 0),
+        contactFields: stepper?.contactFields || null,
+        ...(bookingConfig?.meetingTitle ? { meetingName: bookingConfig.meetingTitle } : {}),
+        durationLabel: locale === 'ar' ? `${duration} دقيقة` : `${duration} min`,
+        timezoneLabel: locale === 'ar'
+          ? `توقيت ${bookingConfig?.timezone || 'Africa/Casablanca'}`
+          : (bookingConfig?.timezone || 'Africa/Casablanca'),
+        meetingLocation: bookingConfig?.meetingLocation || 'Google Meet',
+        questionsBeforeBookingEnabled: questionsEnabled,
+        sourcePage: pathname || '/book-call',
+        initialQuestions: questionsEnabled ? (stepper?.questions || []) : [],
+      };
+    }),
+  };
+};
+
 const splitKeywords = (keywords) =>
   asText(keywords)
     .split(',')
@@ -657,6 +803,14 @@ const toSlug = (pathname) => {
   return raw;
 };
 
+const PAGE_SLUG_BY_PATH = Object.freeze({
+  '/': 'home',
+  '/website-development': 'website-development',
+  '/growth-system': 'growth-system',
+});
+
+const pageSlugFromPathname = (pathname) => PAGE_SLUG_BY_PATH[pathname] || toSlug(pathname);
+
 const buildLayoutOnlyData = (siteSetting) => ({
   data: mergePageWithSiteLayout(null, siteSetting?.data),
   fallback: false,
@@ -708,6 +862,20 @@ async function loadBlogArticlePage(pathname, locale, siteSettingPromise) {
     siteSettingPromise,
   ]);
 
+  if (locale === 'ar' && articleResult.data && !articleResult.data?.author?.avatar) {
+    try {
+      const enArticle = await fetchFirstBySlug('articles', 'en', articleSlug, {
+        populate: BLOG_ARTICLE_POPULATE,
+      });
+      if (enArticle?.author?.avatar) {
+        articleResult.data.author = articleResult.data.author || {};
+        articleResult.data.author.avatar = enArticle.author.avatar;
+      }
+    } catch {
+      // English fetch is best-effort
+    }
+  }
+
   return {
     data: articleResult.data
       ? {
@@ -733,8 +901,10 @@ async function loadSingleTypePage(singleType, locale, siteSettingPromise) {
     siteSettingPromise,
   ]);
 
+  const pageData = mergePageWithSiteLayout(result.data, siteSetting.data);
+
   return {
-    data: mergePageWithSiteLayout(result.data, siteSetting.data),
+    data: await hydrateBookCallBlocks(pageData, locale, `/${singleType}`),
     fallback: result.fallback,
     error: false,
     settings: siteSetting.data,
@@ -742,20 +912,44 @@ async function loadSingleTypePage(singleType, locale, siteSettingPromise) {
 }
 
 async function loadGenericSlugPage(pathname, locale, siteSettingPromise) {
-  const slug = toSlug(pathname);
-  const siteSetting = await siteSettingPromise;
+  const slug = pageSlugFromPathname(pathname);
 
   if (!slug || slug.includes('/')) {
+    const siteSetting = await siteSettingPromise;
     return buildLayoutOnlyData(siteSetting);
   }
 
-  const result = await fetchWithLocaleFallback(
-    (activeLocale) => fetchFirstBySlug('pages', activeLocale, slug, { populate: PAGE_POPULATE }),
-    locale
-  );
+  const [result, offersResult, siteSetting] = await Promise.all([
+    fetchWithLocaleFallback(
+      (activeLocale) => getPageBySlug(slug, activeLocale, { populate: PAGE_COLLECTION_POPULATE }),
+      locale
+    ),
+    fetchWithLocaleFallback(
+      (activeLocale) => fetchCollection('offers', activeLocale, {
+        filters: {
+          isActive: { $eq: true },
+          featuredOnHomepage: { $eq: true },
+        },
+        sort: ['displayOrder:asc'],
+        pagination: { pageSize: 20 },
+        populate: {
+          capabilities: true,
+          flowSteps: true,
+          icon: true,
+          visual: true,
+          seo: { populate: '*' },
+        },
+      }),
+      locale,
+      { acceptEmpty: true }
+    ),
+    siteSettingPromise,
+  ]);
+
+  const pageData = hydrateOfferBlocks(mergePageWithSiteLayout(result.data, siteSetting.data), offersResult.data);
 
   return {
-    data: mergePageWithSiteLayout(result.data, siteSetting.data),
+    data: await hydrateBookCallBlocks(pageData, locale, pathname),
     fallback: result.fallback,
     error: false,
     settings: siteSetting.data,
@@ -886,10 +1080,17 @@ export async function getCustomPageMetadata(locale, { pathname, title, descripti
 }
 
 export const getSitemapEntries = cache(async () => {
-  const articles = await fetchContentIndex('articles', 'en', {
-    fields: ['slug', 'updatedAt'],
-    sort: ['featured:desc', 'publishedAt:desc', 'updatedAt:desc'],
-  }).catch(() => []);
+  const [articles, offers] = await Promise.all([
+    fetchContentIndex('articles', 'en', {
+      fields: ['slug', 'updatedAt'],
+      sort: ['featured:desc', 'publishedAt:desc', 'updatedAt:desc'],
+    }).catch(() => []),
+    fetchContentIndex('offers', 'en', {
+      fields: ['primaryCtaHref', 'updatedAt'],
+      filters: { isActive: { $eq: true } },
+      sort: ['displayOrder:asc'],
+    }).catch(() => []),
+  ]);
 
   const entries = new Map();
 
@@ -908,6 +1109,15 @@ export const getSitemapEntries = cache(async () => {
     entries.set(pathname, {
       url: toAbsoluteSiteUrl(pathname),
       lastModified: article?.updatedAt ? new Date(article.updatedAt) : new Date(),
+    });
+  });
+
+  offers.forEach((offer) => {
+    const pathname = normalizeCmsUrl(offer?.primaryCtaHref);
+    if (!pathname || pathname === '/onboarding-engine') return;
+    entries.set(pathname, {
+      url: toAbsoluteSiteUrl(pathname),
+      lastModified: offer?.updatedAt ? new Date(offer.updatedAt) : new Date(),
     });
   });
 

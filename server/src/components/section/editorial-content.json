@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_section_editorial_contents",
+  "info": {
+    "displayName": "Editorial Content",
+    "description": "Long-form institutional copy with controlled statements"
+  },
+  "options": {},
+  "attributes": {
+    "eyebrow": { "type": "string", "maxLength": 80 },
+    "heading": { "type": "string", "required": true, "maxLength": 180 },
+    "body": { "type": "text", "required": true },
+    "statements": {
+      "type": "component",
+      "component": "shared.list-item",
+      "repeatable": true,
+      "max": 10
+    },
+    "closingStatement": { "type": "text" },
+    "variant": {
+      "type": "enumeration",
+      "enum": ["default", "manifesto", "vision"],
+      "default": "default"
+    }
+  }
+}

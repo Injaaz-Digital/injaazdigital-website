@@ -11,6 +11,7 @@ const toAllowedSet = (value) => {
 export default function CmsBlocksRenderer({
   blocks,
   locale,
+  route,
   onNavigate,
   allowedComponents,
   registry = CMS_BLOCK_REGISTRY,
@@ -31,7 +32,7 @@ export default function CmsBlocksRenderer({
         }
 
         const renderBlock = registry[componentName];
-        return renderBlock ? renderBlock({ block, index, locale, onNavigate }) : null;
+        return renderBlock ? renderBlock({ block, index, locale, route, onNavigate }) : null;
       })}
     </>
   );
@@ -40,6 +41,7 @@ export default function CmsBlocksRenderer({
 CmsBlocksRenderer.propTypes = {
   blocks: PropTypes.array,
   locale: PropTypes.oneOf(['en', 'ar']).isRequired,
+  route: PropTypes.string,
   onNavigate: PropTypes.func,
   allowedComponents: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.instanceOf(Set)]),
   registry: PropTypes.object,

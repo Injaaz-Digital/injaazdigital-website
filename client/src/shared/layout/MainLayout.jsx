@@ -8,6 +8,8 @@ function MainLayout({
   activePath,
   mainClassName = 'pt-24',
   navItems,
+  servicesLabel,
+  serviceLinks,
   cta,
   footerData,
   showLanguageSwitcher = true,
@@ -23,6 +25,8 @@ function MainLayout({
         locale={locale}
         activePath={activePath}
         navItems={navItems}
+        servicesLabel={servicesLabel}
+        serviceLinks={serviceLinks}
         cta={cta}
         showLanguageSwitcher={showLanguageSwitcher}
         onLocaleChange={onLocaleChange}
@@ -50,6 +54,8 @@ MainLayout.propTypes = {
       url: PropTypes.string.isRequired,
     })
   ).isRequired,
+  servicesLabel: PropTypes.string,
+  serviceLinks: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string.isRequired, url: PropTypes.string.isRequired })),
   cta: PropTypes.shape({
     label: PropTypes.string,
     url: PropTypes.string,

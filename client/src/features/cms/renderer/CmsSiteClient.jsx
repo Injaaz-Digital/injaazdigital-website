@@ -58,6 +58,7 @@ function InnerSite({
   const headerData = cmsData?.header;
   const footerLayout = cmsData?.footer;
   const navItems = useMemo(() => (Array.isArray(headerData?.navLinks) ? headerData.navLinks : []), [headerData]);
+  const serviceLinks = useMemo(() => (Array.isArray(headerData?.serviceLinks) ? headerData.serviceLinks : []), [headerData]);
   const pageCta = useMemo(() => headerData?.primaryCta || null, [headerData]);
 
   const showLanguageSwitcher = headerData?.showLanguageSwitcher !== false;
@@ -98,6 +99,8 @@ function InnerSite({
       locale={locale}
       activePath={route}
       navItems={navItems}
+      servicesLabel={headerData?.servicesLabel}
+      serviceLinks={serviceLinks}
       cta={pageCta}
       footerData={footerData}
       showLanguageSwitcher={showLanguageSwitcher}
@@ -115,16 +118,17 @@ function InnerSite({
             : 'Showing English fallback while Arabic content is not available for this route.'}
         </div>
       ) : null}
-      {hasBlocks ? <CmsBlocksRenderer blocks={cmsData?.blocks} locale={locale} onNavigate={navigate} /> : null}
+      {hasBlocks ? <CmsBlocksRenderer blocks={cmsData?.blocks} locale={locale} route={route} onNavigate={navigate} /> : null}
       {hasBlogListBlocks ? (
         <CmsBlocksRenderer
           blocks={blogListBlocks}
           locale={locale}
+          route={route}
           onNavigate={navigate}
           allowedComponents={BLOG_PAGE_BLOCKS}
         />
       ) : null}
-      {cmsData?.type === 'blog-list' ? <BlogList articles={cmsData.articles || []} locale={locale} /> : null}
+      {cmsData?.type === 'blog-list' ? <BlogList articles={cmsData.articles || []} locale={locale} title={cmsData?.page?.title} description={cmsData?.page?.description} /> : null}
       {cmsData?.type === 'blog-post' ? <BlogPost article={cmsData.article} locale={locale} /> : null}
       {hasCustomContent ? children : null}
       {!hasRenderableBlocks && !isBlogPage && !hasCustomContent ? (

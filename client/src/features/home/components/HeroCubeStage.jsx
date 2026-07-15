@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -68,19 +68,49 @@ const createPremiumMeshTexture = () => {
 // VIP Easing: Smooth start, swift middle, buttery soft stop
 const easeInOutQuint = (t) => t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
 
+const canCreateWebGlContext = () => {
+  try {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('webgl2') || canvas.getContext('webgl');
+
+    if (!context) {
+      return false;
+    }
+
+    context.getExtension('WEBGL_lose_context')?.loseContext();
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 export default function VipPlayingCube() {
   const mountRef = useRef(null);
   const frameRef = useRef(0);
+  const [isWebGlUnavailable, setIsWebGlUnavailable] = useState(false);
 
   useEffect(() => {
     const mountNode = mountRef.current;
     if (!mountNode) return;
 
+    if (!canCreateWebGlContext()) {
+      setIsWebGlUnavailable(true);
+      return undefined;
+    }
+
     // --- 1. Scene Setup ---
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
     
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+    } catch {
+      setIsWebGlUnavailable(true);
+      return undefined;
+    }
+
+    setIsWebGlUnavailable(false);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -285,6 +315,18 @@ export default function VipPlayingCube() {
   return (
     <div className="relative mx-auto flex w-full max-w-[760px] items-center justify-center overflow-hidden rounded-[2.4rem] bg-transparent cursor-grab active:cursor-grabbing touch-action-none aspect-[1/1] min-h-[320px] max-h-[42rem] sm:min-h-[360px] sm:aspect-[6/5] md:min-h-[430px] md:aspect-[5/4] lg:min-h-[500px] lg:aspect-[5/6] xl:min-h-[580px] xl:aspect-[1/1]">
       <div ref={mountRef} className="absolute inset-0 flex h-full w-full items-center justify-center" />
+      {isWebGlUnavailable ? (
+        <div className="absolute inset-0 grid place-items-center">
+          <div className="grid h-56 w-56 rotate-[-10deg] grid-cols-3 gap-2 rounded-[2rem] bg-white/10 p-3 shadow-[0_28px_80px_rgba(8,66,153,0.16)] backdrop-blur sm:h-72 sm:w-72">
+            {Array.from({ length: 9 }).map((_, index) => (
+              <span
+                key={index}
+                className="rounded-[1rem] border border-white/60 bg-[linear-gradient(145deg,#ffffff,#dbe7f5)] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_12px_26px_rgba(8,41,89,0.12)]"
+              />
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

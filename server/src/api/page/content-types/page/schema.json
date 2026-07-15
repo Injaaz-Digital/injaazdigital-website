@@ -5,7 +5,7 @@
     "singularName": "page",
     "pluralName": "pages",
     "displayName": "Page",
-    "description": "Reusable landing and micro pages"
+    "description": "CMS-driven marketing pages"
   },
   "options": {
     "draftAndPublish": true
@@ -30,72 +30,27 @@
       "targetField": "title",
       "required": true
     },
-    "template": {
-      "type": "enumeration",
-      "enum": [
-        "generic",
-        "micro-landing",
-        "niche-city"
-      ],
-      "default": "generic"
-    },
-    "niche": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "city": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
     "blocks": {
       "type": "dynamiczone",
       "components": [
         "blocks.hero",
-        "blocks.hero-minimal",
-        "blocks.dashboard-showcase",
-        "blocks.feature-mosaic",
-        "blocks.trust-row",
-        "blocks.persona-grid",
-        "blocks.problem",
-        "blocks.solution-system",
-        "blocks.process-timeline",
-        "blocks.proof",
-        "blocks.packages",
-        "blocks.faq",
-        "blocks.cta-banner",
-        "blocks.booking-meeting",
-        "blocks.rich-text",
-        "blocks.about-mosaic",
-        "blocks.brand-proof-grid"
+        "section.hero",
+        "section.animated-text",
+        "section.problem",
+        "section.service-overview",
+        "section.feature-list",
+        "section.process",
+        "section.outcomes",
+        "section.faq",
+        "section.final-cta",
+        "section.book-call"
+        ,"section.editorial-content"
+        ,"section.system-flow"
+        ,"section.diagnosis"
+        ,"section.timeline"
+        ,"section.statement-pair"
+        ,"section.principles"
       ],
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "header": {
-      "type": "component",
-      "component": "layout.header",
-      "repeatable": false,
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "footer": {
-      "type": "component",
-      "component": "layout.footer",
-      "repeatable": false,
       "pluginOptions": {
         "i18n": {
           "localized": true

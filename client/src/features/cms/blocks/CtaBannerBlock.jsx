@@ -10,7 +10,7 @@ export default function CtaBannerBlock({ block, locale, onNavigate }) {
 
   return (
     <section className="section section--tight">
-      <div className="relative overflow-hidden rounded-[30px] border border-[rgba(103,190,255,0.28)] bg-[linear-gradient(144deg,#071a35_0%,#0a3164_50%,#0f5ea8_100%)] px-[21px] py-[34px] text-white shadow-[0_24px_60px_rgba(8,41,89,0.35)] sm:px-[34px] sm:py-[55px]">
+      <div className="relative overflow-hidden rounded-[40px] corner-squircle border border-[rgba(103,190,255,0.28)] bg-[linear-gradient(144deg,#071a35_0%,#0a3164_50%,#0f5ea8_100%)] px-[21px] py-[34px] text-white shadow-[0_24px_60px_rgba(8,41,89,0.35)] sm:px-[34px] sm:py-[55px]">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-[28%] -top-[198px] h-[386px] w-[86%] rotate-[-15deg] rounded-[999px] bg-[linear-gradient(120deg,rgba(109,133,255,0.95)_0%,rgba(34,38,150,0.92)_36%,rgba(6,13,88,0.96)_100%)] shadow-[inset_0_18px_36px_rgba(198,208,255,0.36),inset_0_-24px_42px_rgba(4,7,45,0.74)]" />
           <div className="absolute -right-[24%] -top-[156px] h-[352px] w-[78%] rotate-[20deg] rounded-[999px] bg-[linear-gradient(138deg,rgba(90,170,230,0.92)_0%,rgba(18,63,132,0.9)_44%,rgba(4,19,80,0.96)_100%)] shadow-[inset_0_16px_34px_rgba(187,230,255,0.25),inset_0_-26px_42px_rgba(4,14,56,0.72)]" />

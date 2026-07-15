@@ -26,6 +26,8 @@ type CalendarSetting = {
   minNoticeHours?: number;
   maxDaysAhead?: number;
   maxBookingsPerDay?: number;
+  questionsBeforeBookingEnabled?: boolean;
+  qualificationThreshold?: number;
   meetingTitle?: string;
   meetingDuration?: number;
   meetingLocation?: string;
@@ -49,6 +51,8 @@ type ValidatedCalendarSetting = {
   minNoticeHours: number;
   maxDaysAhead: number;
   maxBookingsPerDay: number;
+  questionsBeforeBookingEnabled: boolean;
+  qualificationThreshold: number;
   meetingTitle: string;
   meetingDuration: number;
   meetingLocation: string;
@@ -355,6 +359,7 @@ export default ({ strapi }) => ({
     const minNoticeHours = Number(setting.minNoticeHours ?? 4);
     const maxDaysAhead = Number(setting.maxDaysAhead ?? 21);
     const maxBookingsPerDay = Number(setting.maxBookingsPerDay ?? 4);
+    const qualificationThreshold = Number(setting.qualificationThreshold ?? 8);
     const meetingDuration = Number(setting.meetingDuration ?? slotDuration);
 
     if (weeklyAvailability.length === 0) invalidFields.push('weeklyAvailability');
@@ -368,6 +373,7 @@ export default ({ strapi }) => ({
     if (!Number.isFinite(minNoticeHours) || minNoticeHours < 0) invalidFields.push('minNoticeHours');
     if (!Number.isFinite(maxDaysAhead) || maxDaysAhead < 0) invalidFields.push('maxDaysAhead');
     if (!Number.isFinite(maxBookingsPerDay) || maxBookingsPerDay <= 0) invalidFields.push('maxBookingsPerDay');
+    if (!Number.isFinite(qualificationThreshold) || qualificationThreshold < 0) invalidFields.push('qualificationThreshold');
     if (!Number.isFinite(meetingDuration) || meetingDuration <= 0) invalidFields.push('meetingDuration');
 
     if (invalidFields.length > 0) {
@@ -386,6 +392,8 @@ export default ({ strapi }) => ({
       minNoticeHours,
       maxDaysAhead,
       maxBookingsPerDay,
+      questionsBeforeBookingEnabled: setting.questionsBeforeBookingEnabled !== false,
+      qualificationThreshold,
       meetingTitle: setting.meetingTitle || 'Injaaz Digital Strategy Call',
       meetingDuration,
       meetingLocation: setting.meetingLocation || 'Google Meet',
@@ -601,8 +609,49 @@ export default ({ strapi }) => ({
     };
   },
 
+  async buildAvailabilityForRange(from: string, to: string) {
+    const rawSetting = await this.getCalendarSetting();
+    const setting = this.validateCalendarSetting(rawSetting);
+    const start = DateTime.fromISO(from, { zone: setting.timezone });
+    const end = DateTime.fromISO(to, { zone: setting.timezone });
+    if (!start.isValid || !end.isValid || end < start) {
+      throw new CalendarApiError('INVALID_DATE', 'Invalid availability range.', 400);
+    }
+    const days = Math.floor(end.diff(start, 'days').days) + 1;
+    if (days > Math.min(setting.maxDaysAhead + 1, 45)) {
+      throw new CalendarApiError('INVALID_DATE', 'Availability range is too large.', 400);
+    }
+    const results: Array<{ date: string; timezone: string; slots: Array<{ start: string; end: string; label: string }> }> = [];
+    for (let i = 0; i < days; i++) {
+      const dateStr = start.plus({ days: i }).toISODate();
+      if (dateStr) {
+        // eslint-disable-next-line no-await-in-loop
+        results.push(await this.buildAvailabilityForDate(dateStr));
+      }
+    }
+    return { from, to, timezone: setting.timezone, days: results };
+  },
+
   async getAvailability(query: Record<string, unknown> = {}) {
-    return this.buildAvailabilityForDate(query.date);
+    if (query.date) {
+      return this.buildAvailabilityForDate(query.date);
+    }
+    if (query.from && query.to) {
+      return this.buildAvailabilityForRange(query.from as string, query.to as string);
+    }
+    return this.buildAvailabilityForDate(new Date().toISOString().slice(0, 10));
+  },
+
+  async getPublicConfig() {
+    const setting = this.validateCalendarSetting(await this.getCalendarSetting());
+    return {
+      meetingTitle: setting.meetingTitle,
+      meetingDuration: setting.meetingDuration,
+      meetingLocation: setting.meetingLocation,
+      timezone: setting.timezone,
+      questionsBeforeBookingEnabled: setting.questionsBeforeBookingEnabled,
+      qualificationThreshold: setting.qualificationThreshold,
+    };
   },
 
   async ensureSlotFree(start: string, end: string) {

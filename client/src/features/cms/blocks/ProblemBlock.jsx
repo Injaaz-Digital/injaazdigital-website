@@ -28,7 +28,7 @@ export default function ProblemBlock({ block, locale }) {
           {bullets.map((bullet, index) => (
             <article
               key={`${bullet.title}-${index}`}
-              className="rounded-[22px] border border-[rgba(8,66,153,0.12)] bg-white p-[21px] shadow-[0_12px_26px_rgba(8,41,89,0.05)]"
+              className="rounded-[32px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-white p-[21px] shadow-[0_12px_26px_rgba(8,41,89,0.05)]"
             >
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6d85a1]">{String(index + 1).padStart(2, '0')}</p>
               <h3 className="mt-[13px] text-lg tracking-[-0.02em] text-[#0a2546]">{bullet.title}</h3>
@@ -39,7 +39,7 @@ export default function ProblemBlock({ block, locale }) {
       ) : null}
 
       {block.insight ? (
-        <div className="layout-content-narrow mt-[34px] rounded-[22px] border border-[rgba(8,66,153,0.12)] bg-[#f5f9ff] px-[21px] py-[13px] text-sm leading-7 text-[#24466f]">
+        <div className="layout-content-narrow mt-[34px] rounded-[32px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-[#f5f9ff] px-[21px] py-[13px] text-sm leading-7 text-[#24466f]">
           {block.insight}
         </div>
       ) : null}

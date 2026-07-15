@@ -249,7 +249,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
         <div className="framer-yagov1 corner-squircle">
           <div className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-12 xl:[grid-template-rows:repeat(3,minmax(0,300px))] xl:auto-rows-[300px] xl:items-stretch">
             {hasSatisfaction ? (
-              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle min-h-[214px] rounded-[38px] p-4 sm:p-5 md:min-h-[248px] xl:col-span-3 xl:h-full">
+              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle min-h-[214px] rounded-[48px] p-4 sm:p-5 md:min-h-[248px] xl:col-span-3 xl:h-full">
                 {satisfactionTitle ? <h3 className="text-center text-balance text-[1.16rem] sm:text-[1.42rem] font-medium leading-[1.08] tracking-[-0.04em] text-[#111111]">{satisfactionTitle}</h3> : null}
                 {satisfactionDescription ? <p className="mt-2 text-center text-[0.96rem] leading-7 text-[#69686e]">{satisfactionDescription}</p> : null}
                 {satisfactionRatingLabel ? (
@@ -274,7 +274,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
             ) : null}
 
             {hasStrategy ? (
-              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle min-h-[214px] overflow-hidden rounded-[38px] md:min-h-[248px] xl:col-span-9 xl:h-full" style={{ animationDelay: '60ms' }}>
+              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle min-h-[214px] overflow-hidden rounded-[48px] md:min-h-[248px] xl:col-span-9 xl:h-full" style={{ animationDelay: '60ms' }}>
                 <div className="grid h-full gap-0 lg:grid-cols-[1.03fr_1fr]">
                   {activeStrategyImage?.url ? (
                     <div className="about-mosaic-image-wrap relative min-h-[170px] overflow-hidden sm:min-h-[214px] xl:min-h-0">
@@ -296,7 +296,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
 
                   <div className="flex min-h-[170px] flex-col justify-between p-4 sm:min-h-[214px] md:p-5 xl:min-h-0">
                     <div className="flex items-start justify-between gap-3">
-                      <span className="brand-proof-strategy-icon grid h-10 w-10 place-items-center rounded-[8px] border border-[rgba(6,6,18,0.1)] bg-[#f5f4f3]">
+                      <span className="brand-proof-strategy-icon grid h-10 w-10 place-items-center rounded-[18px] border border-[rgba(6,6,18,0.1)] bg-[#f5f4f3]">
                         {activeStrategyIcon?.url ? (
                           <img src={activeStrategyIcon.url} alt={activeStrategyIcon.alt || 'Strategy icon'} className="h-5 w-5 object-contain" loading="lazy" />
                         ) : null}
@@ -305,7 +305,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
                         <button
                           type="button"
                           onClick={handleStrategyPrev}
-                          className="about-mosaic-switch-btn brand-proof-switch-btn grid h-8 w-8 place-items-center rounded-[6px] bg-[#ececea]"
+                          className="about-mosaic-switch-btn brand-proof-switch-btn grid h-8 w-8 place-items-center rounded-[16px] bg-[#ececea]"
                           disabled={strategyCardCount <= 1}
                           aria-label="Previous strategy"
                         >
@@ -314,7 +314,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
                         <button
                           type="button"
                           onClick={handleStrategyNext}
-                          className="about-mosaic-switch-btn brand-proof-switch-btn grid h-8 w-8 place-items-center rounded-[6px] bg-[#ececea]"
+                          className="about-mosaic-switch-btn brand-proof-switch-btn grid h-8 w-8 place-items-center rounded-[16px] bg-[#ececea]"
                           disabled={strategyCardCount <= 1}
                           aria-label="Next strategy"
                         >
@@ -347,7 +347,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
 
             {hasConsultation ? (
               <article
-                className="about-mosaic-panel about-mosaic-reveal corner-squircle relative min-h-[270px] overflow-hidden rounded-[38px] p-5 sm:min-h-[262px] sm:p-6 md:p-7 xl:col-span-6 xl:h-full"
+                className="about-mosaic-panel about-mosaic-reveal corner-squircle relative min-h-[270px] overflow-hidden rounded-[48px] p-5 sm:min-h-[262px] sm:p-6 md:p-7 xl:col-span-6 xl:h-full"
                 style={{ animationDelay: '100ms' }}
               >
                 {consultationBackground?.url ? (
@@ -378,7 +378,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
                       {teamMembers.map((member, index) => (
                         <figure
                           key={member.id}
-                          className={`about-mosaic-team-card relative h-[92px] w-[68px] overflow-hidden rounded-[9px] border-4 border-white sm:h-[118px] sm:w-[88px] md:h-[130px] md:w-[96px] ${TEAM_ROTATIONS[index % TEAM_ROTATIONS.length]} max-[430px]:rotate-0`}
+                          className={`about-mosaic-team-card relative h-[92px] w-[68px] overflow-hidden rounded-[19px] border-4 border-white sm:h-[118px] sm:w-[88px] md:h-[130px] md:w-[96px] ${TEAM_ROTATIONS[index % TEAM_ROTATIONS.length]} max-[430px]:rotate-0`}
                           style={{ marginInlineStart: index === 0 ? 0 : '-10px', animationDelay: `${index * 90}ms` }}
                         >
                           {member.avatar?.url ? <img src={member.avatar.url} alt={member.avatar.alt || member.name} className="h-full w-full object-cover object-top" loading="lazy" /> : null}
@@ -391,7 +391,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
             ) : null}
 
             {hasPerformance ? (
-              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle min-h-[250px] rounded-[38px] p-5 sm:min-h-[262px] sm:p-6 md:p-7 xl:col-span-6 xl:h-full" style={{ animationDelay: '140ms' }}>
+              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle min-h-[250px] rounded-[48px] p-5 sm:min-h-[262px] sm:p-6 md:p-7 xl:col-span-6 xl:h-full" style={{ animationDelay: '140ms' }}>
                 {performanceHeadline ? <h3 className="text-center text-balance text-[1.16rem] sm:text-[1.42rem] font-medium leading-[1.08] tracking-[-0.04em] text-[#111111]">{performanceHeadline}</h3> : null}
                 {performanceSummary ? <p className="mx-auto mt-2 max-w-[42ch] text-center text-[0.95rem] leading-7 text-[rgba(6,6,18,0.5)]">{performanceSummary}</p> : null}
 
@@ -412,7 +412,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
                   onClick={(event) => handleLinkClick(event, caseStudyLink)}
                   target={caseStudyLink.isExternal ? '_blank' : undefined}
                   rel={caseStudyLink.isExternal ? 'noopener noreferrer' : undefined}
-                  className="about-mosaic-panel about-mosaic-case about-mosaic-reveal corner-squircle flex min-h-[208px] flex-col overflow-hidden rounded-[38px] p-4 xl:col-span-3 xl:h-full"
+                  className="about-mosaic-panel about-mosaic-case about-mosaic-reveal corner-squircle flex min-h-[208px] flex-col overflow-hidden rounded-[48px] p-4 xl:col-span-3 xl:h-full"
                   style={{ animationDelay: '180ms' }}
                 >
                   <div>
@@ -423,13 +423,13 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
                     <img
                       src={caseStudyImage.url}
                       alt={caseStudyImage.alt || ''}
-                      className="about-mosaic-case-image mt-auto pt-4 w-full aspect-[2/1] max-h-[148px] min-h-[94px] rounded-[8px] object-cover object-center"
+                      className="about-mosaic-case-image mt-auto pt-4 w-full aspect-[2/1] max-h-[148px] min-h-[94px] rounded-[18px] object-cover object-center"
                       loading="lazy"
                     />
                   ) : null}
                 </a>
               ) : (
-                <article className="about-mosaic-panel about-mosaic-case about-mosaic-reveal corner-squircle flex min-h-[208px] flex-col overflow-hidden rounded-[38px] p-4 xl:col-span-3 xl:h-full" style={{ animationDelay: '180ms' }}>
+                <article className="about-mosaic-panel about-mosaic-case about-mosaic-reveal corner-squircle flex min-h-[208px] flex-col overflow-hidden rounded-[48px] p-4 xl:col-span-3 xl:h-full" style={{ animationDelay: '180ms' }}>
                   <div>
                     {caseStudyHeadline ? <p className="text-balance text-[1.16rem] sm:text-[1.42rem] font-medium leading-[1.08] tracking-[-0.04em] text-[#111111]">{caseStudyHeadline}</p> : null}
                     {caseStudyResult ? <p className="mt-2 text-sm text-[#69686e]">{caseStudyResult}</p> : null}
@@ -438,7 +438,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
                     <img
                       src={caseStudyImage.url}
                       alt={caseStudyImage.alt || ''}
-                      className="about-mosaic-case-image mt-auto pt-4 w-full aspect-[2/1] max-h-[148px] min-h-[94px] rounded-[8px] object-cover object-center"
+                      className="about-mosaic-case-image mt-auto pt-4 w-full aspect-[2/1] max-h-[148px] min-h-[94px] rounded-[18px] object-cover object-center"
                       loading="lazy"
                     />
                   ) : null}
@@ -447,7 +447,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
             ) : null}
 
             {hasIndustries ? (
-              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle flex min-h-[208px] flex-col rounded-[38px] p-4 xl:col-span-6 xl:h-full" style={{ animationDelay: '220ms' }}>
+              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle flex min-h-[208px] flex-col rounded-[48px] p-4 xl:col-span-6 xl:h-full" style={{ animationDelay: '220ms' }}>
                 {industriesHeadline ? <h3 className="text-center text-balance text-[1.16rem] sm:text-[1.42rem] font-medium leading-[1.08] tracking-[-0.04em] text-[#111111]">{industriesHeadline}</h3> : null}
                 {industries.length > 0 ? (
                   <div className="about-mosaic-industries mt-3 flex-1 min-h-0">
@@ -469,7 +469,7 @@ export default function BrandProofGridBlock({ block, locale, onNavigate }) {
             ) : null}
 
             {hasTestimonial ? (
-              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle relative min-h-[208px] overflow-hidden rounded-[38px] xl:col-span-3 xl:h-full" style={{ animationDelay: '260ms' }}>
+              <article className="about-mosaic-panel about-mosaic-reveal corner-squircle relative min-h-[208px] overflow-hidden rounded-[48px] xl:col-span-3 xl:h-full" style={{ animationDelay: '260ms' }}>
                 {testimonialVideo?.url ? (
                   <video
                     src={testimonialVideo.url}

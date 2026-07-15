@@ -1,0 +1,20 @@
+{
+  "name": "injaaz-booking",
+  "version": "0.1.0",
+  "private": true,
+  "main": "server/index.js",
+  "exports": {
+    "./strapi-admin": {
+      "source": "./admin/src/index.jsx",
+      "import": "./admin/src/index.jsx",
+      "default": "./admin/src/index.jsx"
+    },
+    "./strapi-server": "./server/index.js"
+  },
+  "strapi": {
+    "kind": "plugin",
+    "name": "booking",
+    "displayName": "Booking Engine",
+    "description": "Reliable booking orchestration for Injaaz Digital"
+  }
+}

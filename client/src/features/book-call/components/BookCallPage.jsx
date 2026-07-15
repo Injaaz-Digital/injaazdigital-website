@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { CalendarDays, Clock, ShieldCheck, Video } from 'lucide-react';
+import { CalendarDays, Clock, Video } from 'lucide-react';
 import { getLocaleDirection } from '@/lib/i18n/locale';
 import { normalizeQuestions } from '../utils/normalizeQuestions';
 import { FUNNEL_STATES } from '../constants/bookCall.constants';
@@ -12,20 +12,22 @@ import BookingCalendar from './BookingCalendar';
 import BookingConfirmation from './BookingConfirmation';
 import BookingFallback from './BookingFallback';
 
-export default function BookCallPage({ locale = 'en', initialQuestions, bookingCopy, sourcePage = '/book-call' }) {
+export default function BookCallPage({ locale = 'en', initialQuestions, bookingCopy, sourcePage = '/book-call', stepperKey = '', stepperVersion = 0, contactFields = null }) {
   const questions = useMemo(() => normalizeQuestions(initialQuestions), [initialQuestions]);
   const copy = useMemo(
     () => ({ ...getBookingFallbackCopy(locale), ...(bookingCopy || {}) }),
     [bookingCopy, locale]
   );
+  const questionsBeforeBookingEnabled = copy.questionsBeforeBookingEnabled !== false;
   const direction = getLocaleDirection(locale);
-  const session = useLeadSession({ sourcePage, locale });
+  const session = useLeadSession({ sourcePage, locale, stepperKey, stepperVersion });
   const [sessionResetKey, setSessionResetKey] = useState(0);
   const [funnelState, setFunnelState] = useState(
-    questions.length > 0 ? FUNNEL_STATES.STEPPER : FUNNEL_STATES.ERROR
+    questionsBeforeBookingEnabled && questions.length === 0 ? FUNNEL_STATES.ERROR : FUNNEL_STATES.STEPPER
   );
   const [qualificationResult, setQualificationResult] = useState(null);
   const [bookingResult, setBookingResult] = useState(null);
+  const [rescheduleMeetingId, setRescheduleMeetingId] = useState(null);
 
   const handleRestart = () => {
     session.clearSession();
@@ -36,47 +38,33 @@ export default function BookCallPage({ locale = 'en', initialQuestions, bookingC
   };
 
   return (
-    <div dir={direction} className="mx-auto w-[min(1120px,calc(100%-1rem))] px-0 md:w-[min(1120px,calc(100%-2rem))]">
-      <div className="overflow-hidden rounded-[2rem] border border-[#d8e3ef] bg-white shadow-[0_30px_90px_rgba(8,41,89,0.12)]">
-        <div className="grid xl:grid-cols-[22.5rem_minmax(0,1fr)]">
-        <aside className="border-b border-[#d8e3ef] bg-[#f7fafc] p-5 md:p-7 xl:border-b-0 xl:border-r">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#5d7393]">{copy.introEyebrow}</p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#0a2546] md:text-[2.35rem]">
-            {copy.pageTitle}
+    <div dir={direction} className="mx-auto px-3 sm:px-0" style={{ width: '100%', maxWidth: '1120px' }}>
+      <div className="overflow-hidden rounded-[1.25rem] corner-squircle border border-[#d8e3ef] bg-white shadow-[0_20px_60px_rgba(8,41,89,0.1)] sm:rounded-[1.5rem] xl:h-[calc(100svh-var(--header-height)-3rem)] xl:min-h-[36rem] xl:max-h-[46rem]">
+        <div className="grid h-full xl:grid-cols-[17rem_minmax(0,1fr)]">
+        <aside className="border-b border-[#d8e3ef] bg-[#f7fafc] p-3 sm:p-4 md:p-5 xl:border-b-0 xl:border-r">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#5d7393] sm:text-xs">{copy.introEyebrow}</p>
+          <h1 className="booking-title mt-1.5 text-lg font-semibold leading-tight tracking-[-0.025em] text-[#0a2546] sm:text-xl md:text-2xl xl:text-[1.85rem]">
+            <span style={{ fontFamily: 'var(--font-sans)' }}>{copy.pageTitle}</span>
           </h1>
-          <p className="mt-3 text-sm leading-7 text-[#536b87]">{copy.pageSubtitle}</p>
-
-          <div className="mt-7 rounded-2xl border border-[#d8e3ef] bg-white p-4 shadow-[0_10px_28px_rgba(8,41,89,0.06)]">
-            <h2 className="text-lg font-semibold text-[#0a2546]">{copy.meetingName}</h2>
-            <p className="mt-2 text-sm leading-7 text-[#536b87]">{copy.meetingDescription}</p>
-            <div className="mt-5 space-y-3 text-sm text-[#17314d]">
-              <div className="flex items-center gap-3">
-                <Clock className="h-4 w-4 text-[#0b5da8]" aria-hidden="true" />
+          <div className="mt-2 grid grid-cols-2 gap-1.5 sm:gap-2 xl:mt-4 xl:flex xl:flex-col">
+              <div className="inline-flex min-w-0 items-center gap-1.5 rounded-full corner-squircle border border-[#d8e3ef] bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#17314d] sm:px-3 sm:py-2 sm:text-xs">
+                <Clock className="h-3.5 w-3.5 text-[#0b5da8] sm:h-4 sm:w-4" aria-hidden="true" />
                 <span>{copy.durationLabel}</span>
               </div>
-              <div className="flex items-center gap-3">
-                <Video className="h-4 w-4 text-[#0b5da8]" aria-hidden="true" />
+              <div className="inline-flex min-w-0 items-center gap-1.5 rounded-full corner-squircle border border-[#d8e3ef] bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#17314d] sm:px-3 sm:py-2 sm:text-xs">
+                <Video className="h-3.5 w-3.5 text-[#0b5da8] sm:h-4 sm:w-4" aria-hidden="true" />
                 <span>{copy.meetingLocation || 'Google Meet'}</span>
               </div>
-              <div className="flex items-center gap-3">
-                <CalendarDays className="h-4 w-4 text-[#0b5da8]" aria-hidden="true" />
-                <span>{copy.timezoneLabel}</span>
+              <div className="col-span-2 inline-flex min-w-0 items-center gap-1.5 rounded-full corner-squircle border border-[#d8e3ef] bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#17314d] sm:px-3 sm:py-2 sm:text-xs xl:col-auto">
+                <CalendarDays className="h-3.5 w-3.5 text-[#0b5da8] sm:h-4 sm:w-4" aria-hidden="true" />
+                <span className="min-w-0 truncate">{copy.timezoneLabel}</span>
               </div>
-            </div>
           </div>
 
-          <div className="mt-4 rounded-2xl border border-[#d8e3ef] bg-[#eef6fb] p-4 text-sm text-[#4f6784]">
-            <div className="flex gap-3">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#0b5da8]" aria-hidden="true" />
-              <div>
-                <p className="font-medium text-[#17314d]">{copy.qualificationIntroTitle}</p>
-                <p className="mt-1 leading-7">{copy.qualificationIntroDescription}</p>
-              </div>
-            </div>
-          </div>
+          <p className="mt-3 hidden text-sm font-semibold text-[#0a2546] xl:block">{copy.meetingName}</p>
         </aside>
 
-        <div className="min-w-0 bg-white p-4 md:p-7">
+        <div className="min-h-0 min-w-0 bg-white p-3 sm:p-4 md:p-5 xl:overflow-y-auto">
           {funnelState === FUNNEL_STATES.ERROR ? (
             <section className="rounded-2xl border border-[#d8e3ef] bg-[#f8fbff] p-6 md:p-8">
               <div className="space-y-4">
@@ -93,6 +81,7 @@ export default function BookCallPage({ locale = 'en', initialQuestions, bookingC
               session={session}
               copy={copy}
               locale={locale}
+              contactFields={contactFields}
               onQualified={(result) => {
                 setQualificationResult(result);
                 setFunnelState(FUNNEL_STATES.BOOKING);
@@ -111,8 +100,10 @@ export default function BookCallPage({ locale = 'en', initialQuestions, bookingC
               copy={copy}
               locale={locale}
               qualificationResult={qualificationResult}
+              rescheduleMeetingId={rescheduleMeetingId}
               onBooked={(result) => {
                 setBookingResult(result);
+                setRescheduleMeetingId(null);
                 setFunnelState(FUNNEL_STATES.CONFIRMED);
               }}
             />
@@ -123,7 +114,15 @@ export default function BookCallPage({ locale = 'en', initialQuestions, bookingC
           ) : null}
 
           {funnelState === FUNNEL_STATES.CONFIRMED ? (
-            <BookingConfirmation booking={bookingResult} copy={copy} locale={locale} />
+            <BookingConfirmation
+              booking={bookingResult}
+              copy={copy}
+              locale={locale}
+              leadId={session.leadId}
+              sessionToken={session.sessionToken}
+              onCanceled={() => { setBookingResult(null); setFunnelState(FUNNEL_STATES.BOOKING); }}
+              onReschedule={() => { setRescheduleMeetingId(bookingResult?.meetingId); setFunnelState(FUNNEL_STATES.BOOKING); }}
+            />
           ) : null}
         </div>
         </div>

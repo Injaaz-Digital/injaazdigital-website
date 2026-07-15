@@ -27,7 +27,7 @@ export default function PersonaGridBlock({ block, locale, onNavigate }) {
         {personas.map((persona, index) => (
           <article
             key={`${persona.persona}-${index}`}
-            className="grid gap-[13px] rounded-[26px] border border-[rgba(8,66,153,0.12)] bg-white p-[21px] shadow-[0_14px_34px_rgba(8,41,89,0.06)] sm:grid-cols-[1fr_144px] sm:items-center"
+            className="grid gap-[13px] rounded-[36px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-white p-[21px] shadow-[0_14px_34px_rgba(8,41,89,0.06)] sm:grid-cols-[1fr_144px] sm:items-center"
           >
             <div>
               <h3 className="text-xl tracking-[-0.02em] text-[#0a2546]">{persona.persona}</h3>

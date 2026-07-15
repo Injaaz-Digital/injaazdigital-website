@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Check, Languages, Menu, X } from 'lucide-react';
+import { Check, ChevronDown, Languages, Menu, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import LogoEn from '@/shared/brand/Logo_name2.svg';
 import LogoAr from '@/shared/brand/logo_name_ar2.svg';
 import Button from '@/shared/ui/Button';
@@ -25,6 +26,8 @@ function Header({
   activePath = '/',
   onLocaleChange,
   navItems = [],
+  servicesLabel = 'Services',
+  serviceLinks = [],
   cta,
   showLanguageSwitcher = true,
   onNavigate,
@@ -32,11 +35,14 @@ function Header({
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const desktopLangRef = useRef(null);
   const mobileLangRef = useRef(null);
+  const servicesRef = useRef(null);
   const normalizedLocale = normalizeLocale(locale);
   const isArabic = normalizedLocale === 'ar';
+  const servicesActive = serviceLinks.some((item) => matchPathname(item.url, activePath));
   const logoSrc = isArabic ? (LogoAr?.src || LogoAr) : (LogoEn?.src || LogoEn);
   const headerMaxWidth = 1200 - scrollProgress * 400;
   const hasScrolled = scrollProgress > 0.06;
@@ -85,6 +91,7 @@ function Header({
 
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsServicesOpen(false);
   }, [activePath]);
 
   useEffect(() => {
@@ -92,10 +99,12 @@ function Header({
       const target = event.target;
       const outsideDesktop = !desktopLangRef.current || !desktopLangRef.current.contains(target);
       const outsideMobile = !mobileLangRef.current || !mobileLangRef.current.contains(target);
+      const outsideServices = !servicesRef.current || !servicesRef.current.contains(target);
 
       if (outsideDesktop && outsideMobile) {
         setIsLangOpen(false);
       }
+      if (outsideServices) setIsServicesOpen(false);
     };
 
     document.addEventListener('pointerdown', onPointerDown);
@@ -107,6 +116,7 @@ function Header({
       if (event.key !== 'Escape') return;
       setIsLangOpen(false);
       setIsMenuOpen(false);
+      setIsServicesOpen(false);
     };
 
     document.addEventListener('keydown', onEscape);
@@ -278,125 +288,240 @@ function Header({
     </div>
   );
 
+  const renderServicesMenu = () => serviceLinks.length ? (
+    <div className="relative" ref={servicesRef}>
+      <button
+        type="button"
+        className={cx(
+          'corner-squircle flex items-center gap-1 rounded-full px-3.5 py-2 text-sm font-medium transition-[color,background-color,box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#28aec3]/40',
+          servicesActive || isServicesOpen
+            ? 'bg-white/20 text-[#0b4f8c] shadow-[inset_0_1px_0_rgba(255,255,255,0.88),0_10px_22px_rgba(8,41,89,0.08)]'
+            : 'text-[#21456d]/88 hover:bg-white/18 hover:text-[#0b4f8c]'
+        )}
+        aria-expanded={isServicesOpen}
+        aria-haspopup="menu"
+        onClick={() => setIsServicesOpen((open) => !open)}
+      >
+        {servicesLabel}
+        <ChevronDown className={cx('h-3.5 w-3.5 transition-transform', isServicesOpen && 'rotate-180')} aria-hidden="true" />
+      </button>
+      {isServicesOpen ? (
+        <div className={cx('absolute top-full z-50 mt-2 w-64', DROPDOWN_PANEL_CLASS, 'ltr:left-0 rtl:right-0')} role="menu" aria-label={servicesLabel}>
+          {serviceLinks.map((item) => (
+            <Link
+              key={item.url}
+              href={item.url}
+              role="menuitem"
+              className={cx('block rounded-[15px] px-3 py-3 text-sm font-medium text-[#27436b] transition-colors hover:bg-white hover:text-[#0b4f8c]', matchPathname(item.url, activePath) && 'bg-white text-[#0b4f8c]')}
+              onClick={(event) => {
+                setIsServicesOpen(false);
+                if (!onNavigate) return;
+                event.preventDefault();
+                onNavigate(item.url);
+              }}
+              onMouseEnter={() => prefetchRoute(item.url)}
+              onFocus={() => prefetchRoute(item.url)}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  ) : null;
+
   return (
-    <header
-      className="fixed left-1/2 top-[max(0.7rem,env(safe-area-inset-top))] z-[70] w-[calc(100%-1.1rem)] -translate-x-1/2 transition-[max-width] duration-300 ease-out motion-reduce:transition-none max-[520px]:w-[calc(100%-0.75rem)]"
-      style={{ maxWidth: `${headerMaxWidth.toFixed(2)}px` }}
-    >
-      <div className={headerShellClass} style={{ transform: hasScrolled ? 'translateY(0px)' : 'translateY(4px)' }}>
-        <Link
-          href="/"
-          className="relative -mx-4  block h-[54px] w-[138px] shrink-0 rounded-xl transition-opacity hover:opacity-90 max-[520px]:h-[54px] max-[520px]:w-[138px]"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <img src={logoSrc} alt="Injaaz Digital" width="138" height="54" className="h-full w-full object-contain" />
-        </Link>
+    <>
+      <header
+        className="fixed left-1/2 top-[max(0.7rem,env(safe-area-inset-top))] z-[70] w-[calc(100%-1.1rem)] -translate-x-1/2 transition-[max-width] duration-300 ease-out motion-reduce:transition-none max-[520px]:w-[calc(100%-0.75rem)]"
+        style={{ maxWidth: `${headerMaxWidth.toFixed(2)}px` }}
+      >
+        <div className={headerShellClass} style={{ transform: hasScrolled ? 'translateY(0px)' : 'translateY(4px)' }}>
+          <Link
+            href="/"
+            className="relative -mx-4  block h-[54px] w-[138px] shrink-0 rounded-xl transition-opacity hover:opacity-90 max-[520px]:h-[54px] max-[520px]:w-[138px]"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <img src={logoSrc} alt="Injaaz Digital" width="138" height="54" className="h-full w-full object-contain" />
+          </Link>
 
-        <nav className="relative hidden items-center gap-1 corner-squircle rounded-2xl p-1.5 md:flex">
-          {navItems.map((item) => renderNavLink(item, false))}
-        </nav>
+          <nav className="relative hidden items-center gap-1 corner-squircle rounded-2xl p-1.5 md:flex">
+            {navItems.slice(0, 1).map((item) => renderNavLink(item, false))}
+            {renderServicesMenu()}
+            {navItems.slice(1).map((item) => renderNavLink(item, false))}
+          </nav>
 
-        <div className="relative hidden items-center gap-2 md:flex">
-          {showLanguageSwitcher ? (
-            <div className="relative" ref={desktopLangRef}>
+          <div className="relative hidden items-center gap-2 md:flex">
+            {showLanguageSwitcher ? (
+              <div className="relative" ref={desktopLangRef}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsLangOpen((open) => !open)}
+                  className={desktopControlClass}
+                  aria-label={isArabic ? 'تبديل اللغة' : 'Switch language'}
+                  aria-expanded={isLangOpen}
+                  aria-haspopup="menu"
+                >
+                  <Languages size={18} strokeWidth={1.85} />
+                </Button>
+                {isLangOpen ? renderLanguageMenu(false) : null}
+              </div>
+            ) : null}
+
+            {cta?.label ? (
+              <div className="relative py-1">
+                <Button
+                  variant="primary"
+                  size="md"
+                  className="relative shadow-[0_18px_34px_rgba(8,66,153,0.28)]"
+                  onClick={() => navigateTo(cta.url, true)}
+                  onMouseEnter={() => prefetchRoute(cta.url)}
+                  onFocus={() => prefetchRoute(cta.url)}
+                >
+                  {cta.label}
+                </Button>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="relative flex items-center gap-2 md:hidden" ref={mobileLangRef}>
+            {showLanguageSwitcher ? (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsLangOpen((open) => !open)}
-                className={desktopControlClass}
+                className={mobileControlClass}
                 aria-label={isArabic ? 'تبديل اللغة' : 'Switch language'}
                 aria-expanded={isLangOpen}
                 aria-haspopup="menu"
               >
-                <Languages size={18} strokeWidth={1.85} />
+                <Languages size={20} strokeWidth={1.65} />
               </Button>
-              {isLangOpen ? renderLanguageMenu(false) : null}
-            </div>
-          ) : null}
+            ) : null}
 
-          {cta?.label ? (
-            <div className="relative py-1">
-              <Button
-                variant="primary"
-                size="md"
-                className="relative shadow-[0_18px_34px_rgba(8,66,153,0.28)]"
-                onClick={() => navigateTo(cta.url, true)}
-                onMouseEnter={() => prefetchRoute(cta.url)}
-                onFocus={() => prefetchRoute(cta.url)}
-              >
-                {cta.label}
-              </Button>
-            </div>
-          ) : null}
-        </div>
-
-        <div className="relative flex items-center gap-2 md:hidden" ref={mobileLangRef}>
-          {showLanguageSwitcher ? (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsLangOpen((open) => !open)}
-              className={mobileControlClass}
-              aria-label={isArabic ? 'تبديل اللغة' : 'Switch language'}
-              aria-expanded={isLangOpen}
-              aria-haspopup="menu"
+              onClick={() => {
+                setIsMenuOpen((open) => !open);
+                setIsLangOpen(false);
+              }}
+              className={mobileMenuButtonClass}
+              aria-label={isArabic ? 'فتح وإغلاق القائمة' : 'Toggle menu'}
+              aria-expanded={isMenuOpen}
             >
-              <Languages size={20} strokeWidth={1.65} />
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </Button>
-          ) : null}
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setIsMenuOpen((open) => !open);
-              setIsLangOpen(false);
-            }}
-            className={mobileMenuButtonClass}
-            aria-label={isArabic ? 'فتح وإغلاق القائمة' : 'Toggle menu'}
-            aria-expanded={isMenuOpen}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </Button>
-
-          {showLanguageSwitcher && isLangOpen ? renderLanguageMenu(true) : null}
-        </div>
-      </div>
-
-      {isMenuOpen ? (
-        <>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsMenuOpen(false)}
-            aria-label="Close menu backdrop"
-            className="fixed inset-0 h-full w-full rounded-none border-0 bg-[rgba(2,18,40,0.42)] px-0 py-0 backdrop-blur-[3px] hover:bg-[rgba(2,18,40,0.42)] md:hidden"
-          />
-
-          <div className="fixed inset-x-3 top-[calc(max(0.7rem,env(safe-area-inset-top))+4.7rem)] z-50 md:hidden">
-            <div className={cx(MOBILE_SHEET_CLASS, 'mx-auto max-w-[28rem]')}>
-              <div className="pointer-events-none absolute inset-x-[16%] top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
-              <div className="pointer-events-none absolute -right-4 top-0 h-16 w-24 rounded-full bg-white/55 blur-3xl" />
-              <div className="pointer-events-none absolute left-3 bottom-0 h-16 w-28 rounded-full bg-[#def1ff] blur-3xl" />
-
-              <nav className="relative flex flex-col gap-1.5">
-                {navItems.map((item) => renderNavLink(item, true))}
-                {cta?.label ? (
-                  <Button
-                    variant="primary"
-                    size="md"
-                    className="mt-2 h-11 w-full shadow-[0_18px_32px_rgba(8,66,153,0.24)]"
-                    onClick={() => navigateTo(cta.url, true)}
-                  >
-                    {cta.label}
-                  </Button>
-                ) : null}
-              </nav>
-            </div>
+            {showLanguageSwitcher && isLangOpen ? renderLanguageMenu(true) : null}
           </div>
-        </>
-      ) : null}
-    </header>
+        </div>
+      </header>
+
+      <AnimatePresence>
+        {isMenuOpen ? (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-40 md:hidden"
+          >
+            <motion.div
+              initial={{ opacity: 0, backdropFilter: 'blur(0px) saturate(100%)' }}
+              animate={{ opacity: 1, backdropFilter: 'blur(6px) saturate(140%)' }}
+              exit={{ opacity: 0, backdropFilter: 'blur(0px) saturate(100%)' }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 bg-white/20"
+            >
+              <button
+                type="button"
+                onClick={() => setIsMenuOpen(false)}
+                aria-label="Close menu backdrop"
+                className="absolute inset-0 h-full w-full cursor-default"
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 340, damping: 32, mass: 0.9 }}
+              className="fixed inset-x-3 top-[calc(max(0.7rem,env(safe-area-inset-top))+4.7rem)] z-50"
+            >
+              <div className={cx(MOBILE_SHEET_CLASS, 'mx-auto max-w-[28rem]')}>
+                <div className="pointer-events-none absolute inset-x-[16%] top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
+                <div className="pointer-events-none absolute -right-4 top-0 h-16 w-24 rounded-full bg-white/55 blur-3xl" />
+                <div className="pointer-events-none absolute left-3 bottom-0 h-16 w-28 rounded-full bg-[#def1ff] blur-3xl" />
+
+                <motion.nav
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={{
+                    visible: { transition: { staggerChildren: 0.055, delayChildren: 0.08 } },
+                    hidden: { transition: { staggerChildren: 0.03, staggerDirection: -1 } },
+                  }}
+                  className="relative flex flex-col gap-1.5"
+                >
+                  {navItems.slice(0, 1).map((item) => (
+                    <motion.div
+                      key={item.url}
+                      variants={{
+                        visible: { opacity: 1, y: 0, scale: 1 },
+                        hidden: { opacity: 0, y: 16, scale: 0.96 },
+                      }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 28, mass: 0.8 }}
+                    >
+                      {renderNavLink(item, true)}
+                    </motion.div>
+                  ))}
+                  {serviceLinks.length ? (
+                    <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 12 } }} className="rounded-[18px] border border-white bg-white/35 p-2">
+                      <p className="px-2 pb-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#6b85a2]">{servicesLabel}</p>
+                      <div className="grid gap-1">
+                        {serviceLinks.map((item) => (
+                          <Link key={item.url} href={item.url} className="rounded-[14px] px-3 py-2.5 text-sm font-medium text-[#21456d] hover:bg-white/80" onClick={(event) => { setIsMenuOpen(false); if (!onNavigate) return; event.preventDefault(); onNavigate(item.url); }}>{item.label}</Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  ) : null}
+                  {navItems.slice(1).map((item) => (
+                    <motion.div
+                      key={item.url}
+                      variants={{ visible: { opacity: 1, y: 0, scale: 1 }, hidden: { opacity: 0, y: 16, scale: 0.96 } }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 28, mass: 0.8 }}
+                    >
+                      {renderNavLink(item, true)}
+                    </motion.div>
+                  ))}
+                  {cta?.label ? (
+                    <motion.div
+                      variants={{
+                        visible: { opacity: 1, y: 0, scale: 1 },
+                        hidden: { opacity: 0, y: 20, scale: 0.95 },
+                      }}
+                      transition={{ type: 'spring', stiffness: 320, damping: 26, mass: 0.8 }}
+                    >
+                      <Button
+                        variant="primary"
+                        size="md"
+                        className="mt-2 h-11 w-full shadow-[0_18px_32px_rgba(8,66,153,0.24)]"
+                        onClick={() => navigateTo(cta.url, true)}
+                      >
+                        {cta.label}
+                      </Button>
+                    </motion.div>
+                  ) : null}
+                </motion.nav>
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -411,6 +536,8 @@ Header.propTypes = {
       isExternal: PropTypes.bool,
     })
   ),
+  servicesLabel: PropTypes.string,
+  serviceLinks: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string.isRequired, url: PropTypes.string.isRequired })),
   cta: PropTypes.shape({
     label: PropTypes.string,
     url: PropTypes.string,

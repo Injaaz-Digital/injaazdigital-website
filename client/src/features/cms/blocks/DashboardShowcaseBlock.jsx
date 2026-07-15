@@ -46,7 +46,7 @@ export default function DashboardShowcaseBlock({ block, locale, onNavigate }) {
               {insights.map((item, index) => (
                 <article
                   key={`${item.title || 'insight'}-${index}`}
-                  className="rounded-[20px] border border-[rgba(8,66,153,0.12)] bg-white/88 p-5 shadow-[0_18px_44px_rgba(8,41,89,0.06)] backdrop-blur-sm"
+                  className="rounded-[30px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-white/88 p-5 shadow-[0_18px_44px_rgba(8,41,89,0.06)] backdrop-blur-sm"
                 >
                   {item.title ? <h3 className="text-[0.95rem] font-semibold text-[#0a2546]">{item.title}</h3> : null}
                   {item.description ? <p className="mt-2 text-sm leading-7 text-[#5b7694]">{item.description}</p> : null}
@@ -59,8 +59,8 @@ export default function DashboardShowcaseBlock({ block, locale, onNavigate }) {
         <div className="relative">
           <div className="pointer-events-none absolute inset-x-[14%] top-[7%] h-[76%] rounded-full bg-[radial-gradient(circle,rgba(94,158,255,0.2),rgba(94,158,255,0))] blur-3xl" />
 
-          <div className="relative overflow-hidden rounded-[34px] border border-[rgba(8,66,153,0.12)] bg-[linear-gradient(180deg,#fbfdff_0%,#eef5ff_100%)] p-4 shadow-[0_32px_90px_rgba(8,41,89,0.12)] sm:p-6">
-            <div className="flex items-center justify-between rounded-[22px] border border-white/70 bg-white/80 px-4 py-3 shadow-[0_10px_24px_rgba(8,41,89,0.05)] backdrop-blur-sm">
+          <div className="relative overflow-hidden rounded-[44px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-[linear-gradient(180deg,#fbfdff_0%,#eef5ff_100%)] p-4 shadow-[0_32px_90px_rgba(8,41,89,0.12)] sm:p-6">
+            <div className="flex items-center justify-between rounded-[32px] corner-squircle border border-white/70 bg-white/80 px-4 py-3 shadow-[0_10px_24px_rgba(8,41,89,0.05)] backdrop-blur-sm">
               <div>
                 <p className="text-[0.72rem] uppercase tracking-[0.2em] text-[#7b92ae]">
                   {block.chartLabel || (isArabic ? 'أداء الإيرادات' : 'Revenue performance')}
@@ -78,7 +78,7 @@ export default function DashboardShowcaseBlock({ block, locale, onNavigate }) {
               {stats.map((stat, index) => (
                 <article
                   key={`${stat.label || 'stat'}-${index}`}
-                  className="rounded-[24px] border border-[rgba(8,66,153,0.1)] bg-white/86 p-4 shadow-[0_14px_30px_rgba(8,41,89,0.06)]"
+                  className="rounded-[34px] corner-squircle border border-[rgba(8,66,153,0.1)] bg-white/86 p-4 shadow-[0_14px_30px_rgba(8,41,89,0.06)]"
                 >
                   {stat.label ? <p className="text-sm text-[#607b98]">{stat.label}</p> : null}
                   {stat.value ? <p className="mt-2 text-[1.45rem] font-semibold tracking-[-0.03em] text-[#0a2546]">{stat.value}</p> : null}
@@ -87,7 +87,7 @@ export default function DashboardShowcaseBlock({ block, locale, onNavigate }) {
               ))}
             </div>
 
-            <div className="mt-4 rounded-[28px] border border-[rgba(8,66,153,0.12)] bg-[#0d2038] p-5 text-white shadow-[0_26px_50px_rgba(10,28,52,0.3)]">
+            <div className="mt-4 rounded-[38px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-[#0d2038] p-5 text-white shadow-[0_26px_50px_rgba(10,28,52,0.3)]">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[0.72rem] uppercase tracking-[0.22em] text-white/58">
@@ -102,7 +102,7 @@ export default function DashboardShowcaseBlock({ block, locale, onNavigate }) {
                 </div>
               </div>
 
-              <div className="mt-6 flex h-[180px] items-end gap-2 rounded-[22px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] px-4 py-4">
+              <div className="mt-6 flex h-[180px] items-end gap-2 rounded-[32px] corner-squircle border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] px-4 py-4">
                 {CHART_BAR_HEIGHTS.map((height, index) => (
                   <div key={`bar-${index}`} className="flex flex-1 items-end">
                     <div

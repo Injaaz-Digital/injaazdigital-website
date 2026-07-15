@@ -29,7 +29,7 @@ export default function PackagesBlock({ block, locale, onNavigate }) {
           return (
             <article
               key={`${pkg.name}-${index}`}
-              className={`rounded-[24px] border p-[21px] shadow-[0_14px_32px_rgba(8,41,89,0.06)] ${
+              className={`rounded-[34px] corner-squircle border p-[21px] shadow-[0_14px_32px_rgba(8,41,89,0.06)] ${
                 pkg.recommended
                   ? 'border-[rgba(8,66,153,0.24)] bg-[linear-gradient(160deg,#ffffff,#f3f8ff)]'
                   : 'border-[rgba(8,66,153,0.12)] bg-white'

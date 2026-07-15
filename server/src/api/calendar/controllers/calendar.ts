@@ -22,6 +22,9 @@ const errorResponse = (ctx, status: number, code: string, message: string, detai
 };
 
 const handleCalendarError = (ctx, error: unknown) => {
+  if ((error as any)?.code && Number((error as any)?.status)) {
+    return errorResponse(ctx, Number((error as any).status), String((error as any).code), String((error as any).message), (error as any).details);
+  }
   if (error instanceof CalendarApiError) {
     return errorResponse(ctx, error.status, error.code, error.message, error.details);
   }
@@ -39,13 +42,24 @@ const handleCalendarError = (ctx, error: unknown) => {
 };
 
 export default {
+  async config(ctx) {
+    try {
+      const result = await strapi.service('api::calendar.calendar').getPublicConfig();
+      ctx.body = { data: result, error: null };
+    } catch (error) {
+      return handleCalendarError(ctx, error);
+    }
+  },
+
   async availability(ctx) {
     try {
-      if (!ctx.query?.date) {
-        return errorResponse(ctx, 400, 'INVALID_DATE', 'date query param is required in YYYY-MM-DD format');
-      }
-
-      ctx.body = await strapi.service('api::calendar.calendar').getAvailability(ctx.query || {});
+      const useV2 = String(process.env.BOOKING_ENGINE_V2 || '').toLowerCase() === 'true';
+      const limiter = useV2 ? strapi.plugin('booking').service('rate-limit') : null;
+      limiter?.consume(`availability:${ctx.ip}`, Number(process.env.BOOKING_AVAILABILITY_RATE_LIMIT || 90));
+      const result = useV2
+        ? await strapi.plugin('booking').service('engine').availability(ctx.query || {})
+        : await strapi.service('api::calendar.calendar').getAvailability(ctx.query || {});
+      ctx.body = { data: result, error: null };
     } catch (error) {
       return handleCalendarError(ctx, error);
     }
@@ -53,10 +67,33 @@ export default {
 
   async book(ctx) {
     try {
+      const useV2 = String(process.env.BOOKING_ENGINE_V2 || '').toLowerCase() === 'true';
+      const requestId = ctx.get('X-Request-Id') || ctx.state?.requestId || '';
+      const idempotencyKey = ctx.get('Idempotency-Key');
+      if (useV2) strapi.plugin('booking').service('rate-limit').consume(`book:${ctx.ip}`, Number(process.env.BOOKING_MUTATION_RATE_LIMIT || 20));
       ctx.status = 201;
-      ctx.body = await strapi.service('api::calendar.calendar').bookMeeting(ctx.request.body || {});
+      const result = useV2
+        ? await strapi.plugin('booking').service('engine').book(ctx.request.body || {}, idempotencyKey, requestId)
+        : await strapi.service('api::calendar.calendar').bookMeeting(ctx.request.body || {});
+      ctx.body = { data: result, error: null };
     } catch (error) {
       return handleCalendarError(ctx, error);
     }
+  },
+
+  async cancel(ctx) {
+    try {
+      strapi.plugin('booking').service('rate-limit').consume(`cancel:${ctx.ip}`, Number(process.env.BOOKING_MUTATION_RATE_LIMIT || 20));
+      const result = await strapi.plugin('booking').service('engine').cancel(ctx.params.id, ctx.request.body || {}, ctx.get('Idempotency-Key'), ctx.get('X-Request-Id'));
+      ctx.body = { data: result, error: null };
+    } catch (error) { return handleCalendarError(ctx, error); }
+  },
+
+  async reschedule(ctx) {
+    try {
+      strapi.plugin('booking').service('rate-limit').consume(`reschedule:${ctx.ip}`, Number(process.env.BOOKING_MUTATION_RATE_LIMIT || 20));
+      const result = await strapi.plugin('booking').service('engine').reschedule(ctx.params.id, ctx.request.body || {}, ctx.get('Idempotency-Key'), ctx.get('X-Request-Id'));
+      ctx.body = { data: result, error: null };
+    } catch (error) { return handleCalendarError(ctx, error); }
   },
 };

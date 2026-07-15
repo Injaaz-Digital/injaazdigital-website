@@ -13,6 +13,7 @@
     "seed:injaaz": "node ./scripts/seed-injaaz.js",
     "seed:injaaz:force": "node ./scripts/seed-injaaz.js --force",
     "start": "strapi start",
+    "test:booking": "node --test src/plugins/booking/server/tests/*.test.js",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry"

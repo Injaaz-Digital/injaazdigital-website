@@ -32,7 +32,7 @@ export default function FaqBlock({ block, locale }) {
           return (
             <article
               key={`${item.question}-${index}`}
-              className="overflow-hidden rounded-[20px] border border-[rgba(8,66,153,0.12)] bg-white shadow-[0_10px_24px_rgba(8,41,89,0.05)]"
+              className="overflow-hidden rounded-[30px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-white shadow-[0_10px_24px_rgba(8,41,89,0.05)]"
             >
               <button
                 type="button"

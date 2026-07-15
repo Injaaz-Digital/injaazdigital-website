@@ -10,6 +10,10 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-type-builder": { "visible": false }
+  },
   "attributes": {
     "lead": {
       "type": "relation",
@@ -22,6 +26,16 @@
       "type": "string",
       "required": true,
       "unique": true
+    },
+    "sessionTokenHash": {
+      "type": "string",
+      "unique": true
+    },
+    "expiresAt": {
+      "type": "datetime"
+    },
+    "revokedAt": {
+      "type": "datetime"
     },
     "currentStep": {
       "type": "integer",
@@ -40,6 +54,9 @@
     },
     "lastSeenAt": {
       "type": "datetime"
-    }
+    },
+    "stepperKey": { "type": "string" },
+    "stepperVersion": { "type": "integer" },
+    "stepperSnapshot": { "type": "json", "private": true }
   }
 }

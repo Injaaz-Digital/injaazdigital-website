@@ -3,78 +3,62 @@
 import Input from '@/shared/ui/Input';
 import QuestionInput from './QuestionInput';
 
-const contactLabels = {
-  en: {
-    name: 'Full name',
-    email: 'Email',
-    phone: 'Phone',
-    companyName: 'Company name',
-    websiteUrl: 'Website',
-  },
-  ar: {
-    name: 'الاسم الكامل',
-    email: 'البريد الإلكتروني',
-    phone: 'الهاتف',
-    companyName: 'اسم الشركة',
-    websiteUrl: 'الموقع الإلكتروني',
-  },
-};
-
-export default function StepRenderer({ mode, question, value, error, contact, contactErrors, onAnswerChange, onContactChange, locale = 'en' }) {
-  const labels = contactLabels[locale] || contactLabels.en;
-
+export default function StepRenderer({ mode, question, value, error, contact, contactErrors, onAnswerChange, onContactChange, copy = {}, locale = 'en', contactFields = null }) {
   if (mode === 'contact') {
+    const field = (key, fallbackVisible = true) => ({ visible: fallbackVisible, required: false, ...(contactFields?.[key] || {}) });
     return (
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         <Input
           id="contact-name"
           name="name"
-          label={labels.name}
+          label={copy.contactNameLabel || 'Full name'}
           value={contact.name || ''}
           onChange={onContactChange}
           required
           error={contactErrors.name}
-          wrapperClassName="md:col-span-2"
         />
         <Input
           id="contact-email"
           name="email"
           type="email"
-          label={labels.email}
+          label={copy.contactEmailLabel || 'Email'}
           value={contact.email || ''}
           onChange={onContactChange}
           required
           error={contactErrors.email}
         />
-        <Input
+        {field('phone').visible ? <Input
           id="contact-phone"
           name="phone"
           type="tel"
-          label={labels.phone}
+          label={copy.contactPhoneLabel || 'Phone'}
           value={contact.phone || ''}
           onChange={onContactChange}
+          required={field('phone').required}
           error={contactErrors.phone}
-        />
-        <Input
+        /> : null}
+        {field('companyName').visible ? <Input
           id="contact-company"
           name="companyName"
-          label={labels.companyName}
+          label={copy.contactCompanyLabel || 'Company name'}
           value={contact.companyName || ''}
+          required={field('companyName').required}
           onChange={onContactChange}
-        />
-        <Input
+          error={contactErrors.companyName}
+        /> : null}
+        {field('websiteUrl').visible ? <Input
           id="contact-website"
           name="websiteUrl"
           type="url"
-          label={labels.websiteUrl}
+          label={copy.contactWebsiteLabel || 'Website'}
           value={contact.websiteUrl || ''}
           onChange={onContactChange}
+          required={field('websiteUrl').required}
           error={contactErrors.websiteUrl}
-          wrapperClassName="md:col-span-2"
-        />
+        /> : null}
       </div>
     );
   }
 
-  return <QuestionInput question={question} value={value} error={error} onChange={onAnswerChange} locale={locale} />;
+  return <QuestionInput question={question} value={value} error={error} onChange={onAnswerChange} copy={copy} locale={locale} />;
 }

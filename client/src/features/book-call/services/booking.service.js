@@ -1,20 +1,11 @@
-import { fetchSingleType, fetchWithLocaleFallback } from '@/lib/strapi/queries';
-
 const EN_FALLBACK = {
   pageTitle: 'Book a Strategy Call',
-  pageSubtitle: 'Answer a few quick questions, then choose a time that works for you.',
   meetingName: 'Injaaz Digital Strategy Call',
-  meetingDescription:
-    'A focused call to understand your current digital system, clarify gaps, and identify the best next step.',
   durationLabel: '30 min',
   timezoneLabel: 'Africa/Casablanca',
-  hostName: 'Injaaz Digital',
-  hostRole: 'Digital growth partner',
   introEyebrow: 'Injaaz Digital',
   qualificationIntroTitle: 'A few details first',
-  qualificationIntroDescription: 'Your answers help us prepare and keep the call focused.',
   bookingTitle: 'Choose a time',
-  bookingDescription: 'Available times are filtered against our live calendar.',
   noSlotsTitle: 'No available times on this day',
   noSlotsDescription: 'Try another date or check again later.',
   loadingSlotsLabel: 'Loading available times',
@@ -24,7 +15,6 @@ const EN_FALLBACK = {
   confirmButtonLabel: 'Confirm meeting',
   selectedTimeLabel: 'Selected time',
   successTitle: 'Your strategy call is booked',
-  successDescription: 'We saved your meeting and sent the calendar details.',
   openMeetLabel: 'Open Google Meet',
   backHomeLabel: 'Back to website',
   fallbackTitle: 'We need a little more context before booking',
@@ -32,22 +22,56 @@ const EN_FALLBACK = {
     'Your answers were saved. This request does not meet the current booking threshold yet, but we can still review it manually.',
   fallbackCtaLabel: 'Back to website',
   fallbackCtaHref: '/',
+
+  contactStepTitle: 'Your contact details',
+  contactStepHelp: 'This stays private and is only used to confirm and prepare your booking.',
+  backLabel: 'Back',
+  continueLabel: 'Continue',
+  finishLabel: 'Check fit',
+  savingLabel: 'Saving...',
+
+  contactNameLabel: 'Full name',
+  contactEmailLabel: 'Email',
+  contactPhoneLabel: 'Phone',
+  contactCompanyLabel: 'Company name',
+  contactWebsiteLabel: 'Website',
+
+  chooseDateLabel: 'Choose date',
+  availableTimesLabel: 'Available times',
+  selectTimeLabel: 'Select a time to continue.',
+  bookingLabel: 'Booking...',
+  previousMonthLabel: 'Previous month',
+  nextMonthLabel: 'Next month',
+  slotTakenLabel: 'That time was just taken. Please choose another slot.',
+  calendarNotConfiguredLabel: 'Calendar connection is not configured yet.',
+  calendarAuthInvalidLabel: 'Calendar connection needs to be reconnected.',
+  leadNotQualifiedLabel: 'This lead is not eligible to book a call yet.',
+  bookingFailedLabel: 'Something went wrong while booking. Please try again.',
+
+  confirmationDateLabel: 'Date',
+  confirmationTimeLabel: 'Time',
+  confirmationMeetLabel: 'Google Meet',
+  confirmationPendingLabel: 'Link pending',
+  confirmationEmailLabel: 'Email',
+
+  chooseOptionLabel: 'Choose one',
+
+  validationRequired: 'This step needs an answer before you continue.',
+  validationEmail: 'Please enter a valid email address.',
+  validationPhone: 'Please enter a valid phone number.',
+  validationUrl: 'Please enter a valid website URL.',
+  validationNameRequired: 'Your name is required.',
+  validationEmailRequired: 'Your email is required.',
 };
 
 const AR_FALLBACK = {
   pageTitle: 'احجز مكالمة استراتيجية',
-  pageSubtitle: 'أجب عن بعض الأسئلة السريعة ثم اختر الوقت المناسب لك.',
   meetingName: 'مكالمة استراتيجية مع Injaaz Digital',
-  meetingDescription: 'مكالمة مركزة لفهم نظامك الرقمي الحالي، تحديد الثغرات، واقتراح الخطوة المناسبة.',
   durationLabel: '30 دقيقة',
   timezoneLabel: 'توقيت الدار البيضاء',
-  hostName: 'Injaaz Digital',
-  hostRole: 'شريك نمو رقمي',
   introEyebrow: 'Injaaz Digital',
   qualificationIntroTitle: 'بعض التفاصيل أولا',
-  qualificationIntroDescription: 'تساعدنا إجاباتك على التحضير وجعل المكالمة مركزة.',
   bookingTitle: 'اختر الوقت المناسب',
-  bookingDescription: 'الأوقات المتاحة مفلترة حسب التقويم المباشر.',
   noSlotsTitle: 'لا توجد أوقات متاحة في هذا اليوم',
   noSlotsDescription: 'جرّب تاريخا آخر أو أعد المحاولة لاحقا.',
   loadingSlotsLabel: 'جاري تحميل الأوقات المتاحة',
@@ -57,35 +81,52 @@ const AR_FALLBACK = {
   confirmButtonLabel: 'تأكيد الموعد',
   selectedTimeLabel: 'الوقت المختار',
   successTitle: 'تم حجز المكالمة بنجاح',
-  successDescription: 'تم حفظ الموعد وإرسال تفاصيل التقويم.',
   openMeetLabel: 'فتح Google Meet',
   backHomeLabel: 'العودة إلى الموقع',
   fallbackTitle: 'نحتاج بعض السياق الإضافي قبل الحجز',
   fallbackDescription: 'تم حفظ إجاباتك. الطلب لا يطابق حد الحجز الحالي، ويمكننا مراجعته يدويا.',
   fallbackCtaLabel: 'العودة إلى الموقع',
   fallbackCtaHref: '/',
+
+  contactStepTitle: 'بيانات التواصل',
+  contactStepHelp: 'تبقى هذه المعلومات خاصة وتستخدم فقط لتأكيد الحجز والتحضير للمكالمة.',
+  backLabel: 'رجوع',
+  continueLabel: 'متابعة',
+  finishLabel: 'التحقق من الملاءمة',
+  savingLabel: 'جاري الحفظ...',
+
+  contactNameLabel: 'الاسم الكامل',
+  contactEmailLabel: 'البريد الإلكتروني',
+  contactPhoneLabel: 'الهاتف',
+  contactCompanyLabel: 'اسم الشركة',
+  contactWebsiteLabel: 'الموقع الإلكتروني',
+
+  chooseDateLabel: 'اختر التاريخ',
+  availableTimesLabel: 'الأوقات المتاحة',
+  selectTimeLabel: 'اختر وقتا للمتابعة.',
+  bookingLabel: 'جاري الحجز...',
+  previousMonthLabel: 'الشهر السابق',
+  nextMonthLabel: 'الشهر التالي',
+  slotTakenLabel: 'تم حجز هذا الوقت للتو. اختر وقتا آخر.',
+  calendarNotConfiguredLabel: 'اتصال التقويم غير معد بعد.',
+  calendarAuthInvalidLabel: 'يجب إعادة ربط التقويم.',
+  leadNotQualifiedLabel: 'هذا الطلب غير مؤهل للحجز حاليا.',
+  bookingFailedLabel: 'حدث خطأ أثناء الحجز. أعد المحاولة.',
+
+  confirmationDateLabel: 'التاريخ',
+  confirmationTimeLabel: 'الوقت',
+  confirmationMeetLabel: 'Google Meet',
+  confirmationPendingLabel: 'الرابط قيد التجهيز',
+  confirmationEmailLabel: 'البريد الإلكتروني',
+
+  chooseOptionLabel: 'اختر إجابة',
+
+  validationRequired: 'هذه الخطوة تحتاج إجابة قبل المتابعة.',
+  validationEmail: 'يرجى إدخال بريد إلكتروني صالح.',
+  validationPhone: 'يرجى إدخال رقم هاتف صالح.',
+  validationUrl: 'يرجى إدخال رابط صالح.',
+  validationNameRequired: 'الاسم مطلوب.',
+  validationEmailRequired: 'البريد الإلكتروني مطلوب.',
 };
 
 export const getBookingFallbackCopy = (locale = 'en') => (locale === 'ar' ? AR_FALLBACK : EN_FALLBACK);
-
-const compactCopy = (value) =>
-  Object.entries(value || {}).reduce((accumulator, [key, item]) => {
-    if (item !== null && item !== undefined && item !== '') {
-      accumulator[key] = item;
-    }
-    return accumulator;
-  }, {});
-
-export const fetchBookingPageSetting = async (locale = 'en') => {
-  const fallback = getBookingFallbackCopy(locale);
-  const result = await fetchWithLocaleFallback(
-    (nextLocale) => fetchSingleType('booking-page-setting', nextLocale),
-    locale,
-    { acceptEmpty: true }
-  );
-
-  return {
-    ...fallback,
-    ...compactCopy(result.data),
-  };
-};

@@ -174,6 +174,7 @@ export const createMeetingEvent = async ({
   serviceInterest,
   score,
   answersJson,
+  operationId,
 }: {
   lead: Record<string, any>;
   start: string;
@@ -186,9 +187,10 @@ export const createMeetingEvent = async ({
   serviceInterest?: string;
   score?: number;
   answersJson?: Record<string, unknown>;
+  operationId?: string;
 }) => {
   const { calendar, credentials } = getCalendarClient();
-  const requestId = `injaaz-${lead.id}-${Date.now()}`;
+  const requestId = operationId || `injaaz-${lead.id}-${Date.now()}`;
   const descriptionLines = [
     `Lead ID: ${lead.id}`,
     `Service interest: ${serviceInterest || lead.serviceInterest || 'N/A'}`,
@@ -234,4 +236,56 @@ export const createMeetingEvent = async ({
   });
 
   return event.data;
+};
+
+export const deleteMeetingEvent = async ({
+  eventId,
+  calendarId,
+  notifyAttendees = true,
+}: {
+  eventId: string;
+  calendarId?: string;
+  notifyAttendees?: boolean;
+}) => {
+  const { calendar, credentials } = getCalendarClient();
+  await calendar.events.delete({
+    calendarId: calendarId || credentials.calendarId,
+    eventId,
+    sendUpdates: notifyAttendees ? 'all' : 'none',
+  });
+};
+
+export const updateMeetingEvent = async ({
+  eventId,
+  start,
+  end,
+  timezone,
+  calendarId,
+}: {
+  eventId: string;
+  start: string;
+  end: string;
+  timezone?: string;
+  calendarId?: string;
+}) => {
+  const { calendar, credentials } = getCalendarClient();
+  const response = await calendar.events.patch({
+    calendarId: calendarId || credentials.calendarId,
+    eventId,
+    sendUpdates: 'all',
+    requestBody: {
+      start: { dateTime: start, timeZone: timezone || credentials.timezone },
+      end: { dateTime: end, timeZone: timezone || credentials.timezone },
+    },
+  });
+  return response.data;
+};
+
+export const getMeetingEvent = async ({ eventId, calendarId }: { eventId: string; calendarId?: string }) => {
+  const { calendar, credentials } = getCalendarClient();
+  const response = await calendar.events.get({
+    calendarId: calendarId || credentials.calendarId,
+    eventId,
+  });
+  return response.data;
 };

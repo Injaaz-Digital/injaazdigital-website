@@ -11,6 +11,8 @@
     "draftAndPublish": false
   },
   "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-type-builder": { "visible": false },
     "i18n": {
       "localized": true
     }
@@ -76,6 +78,12 @@
     },
     "category": {
       "type": "string"
+    },
+    "stepper": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::booking.stepper",
+      "inversedBy": "questions"
     },
     "responses": {
       "type": "relation",

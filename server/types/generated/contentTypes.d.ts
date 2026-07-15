@@ -369,88 +369,6 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
-  collectionName: 'about_pages';
-  info: {
-    description: 'About page content builder';
-    displayName: 'About Page';
-    pluralName: 'about-pages';
-    singularName: 'about-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    blocks: Schema.Attribute.DynamicZone<
-      [
-        'blocks.hero',
-        'blocks.hero-minimal',
-        'blocks.dashboard-showcase',
-        'blocks.feature-mosaic',
-        'blocks.trust-row',
-        'blocks.persona-grid',
-        'blocks.process-timeline',
-        'blocks.proof',
-        'blocks.rich-text',
-        'blocks.cta-banner',
-      ]
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    footer: Schema.Attribute.Component<'layout.footer', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    header: Schema.Attribute.Component<'layout.header', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::about-page.about-page'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   collectionName: 'articles';
   info: {
@@ -685,210 +603,6 @@ export interface ApiBlogPageBlogPage extends Struct.SingleTypeSchema {
   };
 }
 
-export interface ApiBookingPageSettingBookingPageSetting
-  extends Struct.SingleTypeSchema {
-  collectionName: 'booking_page_settings';
-  info: {
-    description: 'Localized copy and labels for the strategy-call booking funnel';
-    displayName: 'Booking Page Setting';
-    pluralName: 'booking-page-settings';
-    singularName: 'booking-page-setting';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    backHomeLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    bookingDescription: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    bookingTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    confirmButtonLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    durationLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    errorDescription: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    errorTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    fallbackCtaHref: Schema.Attribute.String & Schema.Attribute.DefaultTo<'/'>;
-    fallbackCtaLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    fallbackDescription: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    fallbackTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    hostName: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    hostRole: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    introEyebrow: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    loadingSlotsLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::booking-page-setting.booking-page-setting'
-    >;
-    meetingDescription: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    meetingName: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    noSlotsDescription: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    noSlotsTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    openMeetLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    pageSubtitle: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    pageTitle: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    publishedAt: Schema.Attribute.DateTime;
-    qualificationIntroDescription: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    qualificationIntroTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    retryLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    selectedTimeLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    successDescription: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    successTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    timezoneLabel: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiCalendarSettingCalendarSetting
   extends Struct.SingleTypeSchema {
   collectionName: 'calendar_settings';
@@ -900,6 +614,14 @@ export interface ApiCalendarSettingCalendarSetting
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
   };
   attributes: {
     autoCreateGoogleMeet: Schema.Attribute.Boolean &
@@ -931,6 +653,10 @@ export interface ApiCalendarSettingCalendarSetting
       Schema.Attribute.DefaultTo<'Injaaz Digital Strategy Call'>;
     minNoticeHours: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<4>;
     publishedAt: Schema.Attribute.DateTime;
+    qualificationThreshold: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<8>;
+    questionsBeforeBookingEnabled: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>;
     slotDuration: Schema.Attribute.Integer & Schema.Attribute.Required;
     startTime: Schema.Attribute.String;
     timezone: Schema.Attribute.String &
@@ -944,182 +670,6 @@ export interface ApiCalendarSettingCalendarSetting
   };
 }
 
-export interface ApiGrowthEnginePageGrowthEnginePage
-  extends Struct.SingleTypeSchema {
-  collectionName: 'growth_engine_pages';
-  info: {
-    description: 'Core offer conversion page';
-    displayName: 'Growth Engine Page';
-    pluralName: 'growth-engine-pages';
-    singularName: 'growth-engine-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    blocks: Schema.Attribute.DynamicZone<
-      [
-        'blocks.hero',
-        'blocks.hero-minimal',
-        'blocks.dashboard-showcase',
-        'blocks.feature-mosaic',
-        'blocks.trust-row',
-        'blocks.problem',
-        'blocks.solution-system',
-        'blocks.process-timeline',
-        'blocks.proof',
-        'blocks.packages',
-        'blocks.faq',
-        'blocks.cta-banner',
-        'blocks.booking-meeting',
-        'blocks.rich-text',
-      ]
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    footer: Schema.Attribute.Component<'layout.footer', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    header: Schema.Attribute.Component<'layout.header', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::growth-engine-page.growth-engine-page'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
-  collectionName: 'home_pages';
-  info: {
-    description: 'Homepage content builder';
-    displayName: 'Home Page';
-    pluralName: 'home-pages';
-    singularName: 'home-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    blocks: Schema.Attribute.DynamicZone<
-      [
-        'blocks.hero',
-        'blocks.hero-minimal',
-        'blocks.dashboard-showcase',
-        'blocks.feature-mosaic',
-        'blocks.trust-row',
-        'blocks.persona-grid',
-        'blocks.problem',
-        'blocks.solution-system',
-        'blocks.process-timeline',
-        'blocks.proof',
-        'blocks.packages',
-        'blocks.faq',
-        'blocks.cta-banner',
-        'blocks.booking-meeting',
-        'blocks.rich-text',
-        'blocks.about-mosaic',
-        'blocks.brand-proof-grid',
-      ]
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    footer: Schema.Attribute.Component<'layout.footer', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    header: Schema.Attribute.Component<'layout.header', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::home-page.home-page'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiLeadNoteLeadNote extends Struct.CollectionTypeSchema {
   collectionName: 'lead_notes';
   info: {
@@ -1130,6 +680,14 @@ export interface ApiLeadNoteLeadNote extends Struct.CollectionTypeSchema {
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
   };
   attributes: {
     body: Schema.Attribute.Text & Schema.Attribute.Required;
@@ -1169,6 +727,12 @@ export interface ApiLeadQuestionLeadQuestion
     draftAndPublish: false;
   };
   pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
     i18n: {
       localized: true;
     };
@@ -1210,6 +774,7 @@ export interface ApiLeadQuestionLeadQuestion
       'oneToMany',
       'api::lead-response.lead-response'
     >;
+    stepper: Schema.Attribute.Relation<'manyToOne', 'plugin::booking.stepper'>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -1250,6 +815,14 @@ export interface ApiLeadResponseLeadResponse
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
   attributes: {
     answer: Schema.Attribute.JSON & Schema.Attribute.Required;
     answeredAt: Schema.Attribute.DateTime;
@@ -1289,6 +862,14 @@ export interface ApiLeadSessionLeadSession extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
   attributes: {
     completed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     completedAt: Schema.Attribute.DateTime;
@@ -1296,6 +877,7 @@ export interface ApiLeadSessionLeadSession extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     currentStep: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    expiresAt: Schema.Attribute.DateTime;
     lastSeenAt: Schema.Attribute.DateTime;
     lead: Schema.Attribute.Relation<'manyToOne', 'api::lead.lead'> &
       Schema.Attribute.Required;
@@ -1306,10 +888,15 @@ export interface ApiLeadSessionLeadSession extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    revokedAt: Schema.Attribute.DateTime;
     sessionToken: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
+    sessionTokenHash: Schema.Attribute.String & Schema.Attribute.Unique;
     startedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    stepperKey: Schema.Attribute.String;
+    stepperSnapshot: Schema.Attribute.JSON & Schema.Attribute.Private;
+    stepperVersion: Schema.Attribute.Integer;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1326,6 +913,14 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
   };
   attributes: {
     answersJson: Schema.Attribute.JSON;
@@ -1363,6 +958,10 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
     prev_investment: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     qualificationAnswers: Schema.Attribute.JSON;
+    qualificationThreshold: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<8>;
+    questionsBeforeBookingEnabled: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>;
     responses: Schema.Attribute.Relation<
       'oneToMany',
       'api::lead-response.lead-response'
@@ -1394,6 +993,8 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'in_progress'>;
+    stepperKey: Schema.Attribute.String;
+    stepperVersion: Schema.Attribute.Integer;
     submittedAt: Schema.Attribute.DateTime;
     success_metric: Schema.Attribute.Text;
     timeline: Schema.Attribute.String;
@@ -1416,6 +1017,14 @@ export interface ApiMeetingMeeting extends Struct.CollectionTypeSchema {
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
   };
   attributes: {
     cancelReason: Schema.Attribute.Text;
@@ -1449,10 +1058,115 @@ export interface ApiMeetingMeeting extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiOfferOffer extends Struct.CollectionTypeSchema {
+  collectionName: 'offers';
+  info: {
+    description: 'Public and future Injaaz Digital systems offers';
+    displayName: 'Offer';
+    pluralName: 'offers';
+    singularName: 'offer';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    capabilities: Schema.Attribute.Component<'shared.list-item', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    displayOrder: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    featuredOnHomepage: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    flowSteps: Schema.Attribute.Component<'shared.process-step', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    icon: Schema.Attribute.Media<'images'>;
+    iconKey: Schema.Attribute.Enumeration<
+      ['growth-dashboard', 'website-build', 'system']
+    > &
+      Schema.Attribute.DefaultTo<'system'>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::offer.offer'>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    outcome: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    positioningLine: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    primaryCtaHref: Schema.Attribute.String & Schema.Attribute.Required;
+    primaryCtaLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    shortDescription: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visual: Schema.Attribute.Media<'images'>;
+  };
+}
+
 export interface ApiPagePage extends Struct.CollectionTypeSchema {
   collectionName: 'pages';
   info: {
-    description: 'Reusable landing and micro pages';
+    description: 'CMS-driven marketing pages';
     displayName: 'Page';
     pluralName: 'pages';
     singularName: 'page';
@@ -1469,30 +1183,24 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
     blocks: Schema.Attribute.DynamicZone<
       [
         'blocks.hero',
-        'blocks.hero-minimal',
-        'blocks.dashboard-showcase',
-        'blocks.feature-mosaic',
-        'blocks.trust-row',
-        'blocks.persona-grid',
-        'blocks.problem',
-        'blocks.solution-system',
-        'blocks.process-timeline',
-        'blocks.proof',
-        'blocks.packages',
-        'blocks.faq',
-        'blocks.cta-banner',
-        'blocks.booking-meeting',
-        'blocks.rich-text',
-        'blocks.about-mosaic',
-        'blocks.brand-proof-grid',
+        'section.hero',
+        'section.animated-text',
+        'section.problem',
+        'section.service-overview',
+        'section.feature-list',
+        'section.process',
+        'section.outcomes',
+        'section.faq',
+        'section.final-cta',
+        'section.book-call',
+        'section.editorial-content',
+        'section.system-flow',
+        'section.diagnosis',
+        'section.timeline',
+        'section.statement-pair',
+        'section.principles',
       ]
     > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    city: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1501,26 +1209,8 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    footer: Schema.Attribute.Component<'layout.footer', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    header: Schema.Attribute.Component<'layout.header', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::page.page'>;
-    niche: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false> &
       Schema.Attribute.SetPluginOptions<{
@@ -1529,10 +1219,6 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         };
       }>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    template: Schema.Attribute.Enumeration<
-      ['generic', 'micro-landing', 'niche-city']
-    > &
-      Schema.Attribute.DefaultTo<'generic'>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -1658,89 +1344,174 @@ export interface ApiTagTag extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiWebStudioPageWebStudioPage extends Struct.SingleTypeSchema {
-  collectionName: 'web_studio_pages';
+export interface PluginBookingAudit extends Struct.CollectionTypeSchema {
+  collectionName: 'booking_audits';
   info: {
-    description: 'Web Studio offer and landing page';
-    displayName: 'Web Studio Page';
-    pluralName: 'web-studio-pages';
-    singularName: 'web-studio-page';
+    displayName: 'Booking Audit';
+    pluralName: 'audits';
+    singularName: 'audit';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   pluginOptions: {
-    i18n: {
-      localized: true;
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
     };
   };
   attributes: {
-    blocks: Schema.Attribute.DynamicZone<
-      [
-        'blocks.hero',
-        'blocks.hero-minimal',
-        'blocks.dashboard-showcase',
-        'blocks.feature-mosaic',
-        'blocks.trust-row',
-        'blocks.problem',
-        'blocks.solution-system',
-        'blocks.process-timeline',
-        'blocks.proof',
-        'blocks.packages',
-        'blocks.faq',
-        'blocks.cta-banner',
-        'blocks.booking-meeting',
-        'blocks.rich-text',
-      ]
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+    action: Schema.Attribute.String & Schema.Attribute.Required;
+    actor: Schema.Attribute.String & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    footer: Schema.Attribute.Component<'layout.footer', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    header: Schema.Attribute.Component<'layout.header', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    locale: Schema.Attribute.String;
+    leadId: Schema.Attribute.Integer & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::web-studio-page.web-studio-page'
-    >;
+      'plugin::booking.audit'
+    > &
+      Schema.Attribute.Private;
+    meetingId: Schema.Attribute.Integer;
+    metadata: Schema.Attribute.JSON;
     publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+    requestId: Schema.Attribute.String;
+    reservationId: Schema.Attribute.Integer & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface PluginBookingReservation extends Struct.CollectionTypeSchema {
+  collectionName: 'booking_reservations';
+  info: {
+    displayName: 'Booking Reservation';
+    pluralName: 'reservations';
+    singularName: 'reservation';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    activeSlotKey: Schema.Attribute.String & Schema.Attribute.Unique;
+    calendarId: Schema.Attribute.String & Schema.Attribute.Required;
+    canceledAt: Schema.Attribute.DateTime;
+    cancelReason: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    end: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    failureCode: Schema.Attribute.String;
+    failureMessage: Schema.Attribute.Text;
+    holdExpiresAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    idempotencyKey: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    lastMutationHash: Schema.Attribute.String;
+    lastMutationKey: Schema.Attribute.String;
+    leadId: Schema.Attribute.Integer & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::booking.reservation'
+    > &
+      Schema.Attribute.Private;
+    meetingId: Schema.Attribute.Integer;
+    nextRetryAt: Schema.Attribute.DateTime;
+    operationId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    providerEventId: Schema.Attribute.String;
+    providerSyncState: Schema.Attribute.Enumeration<
+      ['pending', 'synced', 'retry', 'warning', 'compensate', 'not_required']
+    > &
+      Schema.Attribute.DefaultTo<'pending'>;
+    publishedAt: Schema.Attribute.DateTime;
+    requestHash: Schema.Attribute.String & Schema.Attribute.Required;
+    responseJson: Schema.Attribute.JSON;
+    retryCount: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    slotKey: Schema.Attribute.String & Schema.Attribute.Required;
+    start: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    state: Schema.Attribute.Enumeration<
+      ['held', 'confirmed', 'failed', 'canceled', 'expired']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'held'>;
+    supersedesReservationId: Schema.Attribute.Integer;
+    timezone: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface PluginBookingStepper extends Struct.CollectionTypeSchema {
+  collectionName: 'booking_steppers';
+  info: {
+    description: 'Versioned qualification flows managed by Injaaz Cal';
+    displayName: 'Booking Stepper';
+    pluralName: 'steppers';
+    singularName: 'stepper';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    archivedAt: Schema.Attribute.DateTime;
+    contactFields: Schema.Attribute.JSON;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    key: Schema.Attribute.UID<'name'> &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::booking.stepper'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    publishedSnapshot: Schema.Attribute.JSON & Schema.Attribute.Private;
+    qualificationEnabled: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>;
+    qualificationThreshold: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<8>;
+    questions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-question.lead-question'
+    >;
+    status: Schema.Attribute.Enumeration<['draft', 'published', 'archived']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'draft'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    version: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -2253,24 +2024,23 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::about-page.about-page': ApiAboutPageAboutPage;
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::blog-page.blog-page': ApiBlogPageBlogPage;
-      'api::booking-page-setting.booking-page-setting': ApiBookingPageSettingBookingPageSetting;
       'api::calendar-setting.calendar-setting': ApiCalendarSettingCalendarSetting;
-      'api::growth-engine-page.growth-engine-page': ApiGrowthEnginePageGrowthEnginePage;
-      'api::home-page.home-page': ApiHomePageHomePage;
       'api::lead-note.lead-note': ApiLeadNoteLeadNote;
       'api::lead-question.lead-question': ApiLeadQuestionLeadQuestion;
       'api::lead-response.lead-response': ApiLeadResponseLeadResponse;
       'api::lead-session.lead-session': ApiLeadSessionLeadSession;
       'api::lead.lead': ApiLeadLead;
       'api::meeting.meeting': ApiMeetingMeeting;
+      'api::offer.offer': ApiOfferOffer;
       'api::page.page': ApiPagePage;
       'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'api::tag.tag': ApiTagTag;
-      'api::web-studio-page.web-studio-page': ApiWebStudioPageWebStudioPage;
+      'plugin::booking.audit': PluginBookingAudit;
+      'plugin::booking.reservation': PluginBookingReservation;
+      'plugin::booking.stepper': PluginBookingStepper;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

@@ -7,7 +7,7 @@ const cx = (...values) => values.filter(Boolean).join(' ');
 const GRID_CLASS = 'mt-10 grid gap-5 sm:mt-12 sm:gap-6 lg:grid-cols-2 lg:grid-rows-[236px_236px_236px_236px]';
 
 const CARD_SHELL_CLASS =
-  'min-h-[280px] overflow-hidden rounded-[28px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(241,247,255,0.92))] shadow-[0_18px_50px_rgba(8,41,89,0.08)] backdrop-blur-sm will-change-transform sm:min-h-0 sm:h-full sm:rounded-[34px]';
+  'min-h-[280px] overflow-hidden rounded-[38px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(241,247,255,0.92))] shadow-[0_18px_50px_rgba(8,41,89,0.08)] backdrop-blur-sm will-change-transform sm:min-h-0 sm:h-full sm:rounded-[44px]';
 
 const TALL_CARD_INNER_CLASS =
   'grid h-full grid-rows-[132px_auto] gap-3 px-4 py-5 text-center sm:grid-rows-[minmax(0,1fr)_auto] sm:px-7 sm:py-[1.75rem]';

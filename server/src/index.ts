@@ -127,12 +127,7 @@ export default {
       const permissionQuery = strapi.db.query('plugin::users-permissions.permission');
       const publicReadActions = [
         `${CONTENT_UID.siteSetting}.find`,
-        `${CONTENT_UID.homePage}.find`,
-        `${CONTENT_UID.growthEnginePage}.find`,
-        `${CONTENT_UID.webStudioPage}.find`,
-        `${CONTENT_UID.aboutPage}.find`,
         `${CONTENT_UID.blogPage}.find`,
-        `${CONTENT_UID.bookingPageSetting}.find`,
         `${CONTENT_UID.page}.find`,
         `${CONTENT_UID.page}.findOne`,
         `${CONTENT_UID.article}.find`,
@@ -141,8 +136,8 @@ export default {
         `${CONTENT_UID.author}.findOne`,
         `${CONTENT_UID.tag}.find`,
         `${CONTENT_UID.tag}.findOne`,
-        'api::lead-question.lead-question.find',
-        'api::lead-question.lead-question.findOne',
+        `${CONTENT_UID.offer}.find`,
+        `${CONTENT_UID.offer}.findOne`,
       ];
 
       for (const action of publicReadActions) {
@@ -170,6 +165,13 @@ export default {
             enabled: true,
           },
         });
+      }
+
+      for (const action of ['api::lead-question.lead-question.find', 'api::lead-question.lead-question.findOne']) {
+        const legacyPermission = await permissionQuery.findOne({ where: { action, role: publicRole.id } });
+        if (legacyPermission?.id && legacyPermission.enabled) {
+          await permissionQuery.update({ where: { id: legacyPermission.id }, data: { enabled: false } });
+        }
       }
     }
 

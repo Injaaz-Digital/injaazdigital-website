@@ -45,6 +45,10 @@ export default ({ env }) => {
   };
 
   return {
+    booking: {
+      enabled: true,
+      resolve: './src/plugins/booking',
+    },
     'users-permissions': {
       config: {
         jwtSecret: env('JWT_SECRET'),

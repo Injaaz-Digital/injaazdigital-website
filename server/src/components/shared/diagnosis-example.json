@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_shared_diagnosis_examples",
+  "info": { "displayName": "Diagnosis Example" },
+  "options": {},
+  "attributes": {
+    "visibleProblem": { "type": "string", "required": true, "maxLength": 180 },
+    "deeperSystem": { "type": "text", "required": true }
+  }
+}

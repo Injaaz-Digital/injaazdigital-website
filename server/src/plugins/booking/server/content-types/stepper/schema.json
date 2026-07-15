@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "booking_steppers",
+  "info": {
+    "singularName": "stepper",
+    "pluralName": "steppers",
+    "displayName": "Booking Stepper",
+    "description": "Versioned qualification flows managed by Injaaz Cal"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-type-builder": { "visible": false }
+  },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "key": { "type": "uid", "targetField": "name", "required": true, "unique": true },
+    "description": { "type": "text" },
+    "status": { "type": "enumeration", "enum": ["draft", "published", "archived"], "default": "draft", "required": true },
+    "version": { "type": "integer", "default": 0, "required": true },
+    "qualificationEnabled": { "type": "boolean", "default": true },
+    "qualificationThreshold": { "type": "integer", "default": 8 },
+    "contactFields": { "type": "json" },
+    "publishedSnapshot": { "type": "json", "private": true },
+    "publishedAt": { "type": "datetime" },
+    "archivedAt": { "type": "datetime" },
+    "questions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lead-question.lead-question",
+      "mappedBy": "stepper"
+    }
+  }
+}

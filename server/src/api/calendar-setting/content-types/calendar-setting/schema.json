@@ -10,6 +10,10 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-type-builder": { "visible": false }
+  },
   "attributes": {
     "calendarName": {
       "type": "string",
@@ -67,6 +71,14 @@
     "maxBookingsPerDay": {
       "type": "integer",
       "default": 4
+    },
+    "questionsBeforeBookingEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "qualificationThreshold": {
+      "type": "integer",
+      "default": 8
     },
     "meetingTitle": {
       "type": "string",

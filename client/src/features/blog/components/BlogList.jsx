@@ -110,7 +110,7 @@ BlogCard.propTypes = {
   locale: PropTypes.oneOf(['en', 'ar']).isRequired,
 };
 
-export default function BlogList({ articles, locale }) {
+export default function BlogList({ articles, locale, title, description }) {
   const copy = BLOG_COPY[locale] || BLOG_COPY.en;
   const isArabic = locale === 'ar';
   const [activeCategory, setActiveCategory] = useState('all');
@@ -127,18 +127,19 @@ export default function BlogList({ articles, locale }) {
 
   return (
     <section className="relative">
-      <div className="relative isolate overflow-hidden pb-7 pt-[calc(var(--header-offset)-0.35rem)] sm:pb-10 sm:pt-[var(--header-offset)]">
+      <div className="hero-page-shell hero-top-spacing hero-top-spacing--generous relative isolate flex items-center overflow-hidden pb-[var(--header-offset)] max-sm:pb-[calc(var(--header-offset)-0.9rem)]">
         <HeroAtmosphere />
-
-        <div className="layout-container relative z-10 flex min-h-[170px] items-center justify-center py-2 sm:min-h-[280px] sm:py-0 lg:min-h-[320px]">
-          <div className="mx-auto flex w-full max-w-[26rem] flex-col items-center px-2 text-center sm:max-w-[44rem] lg:max-w-[56rem]">
-            <p className="mx-auto inline-flex items-center rounded-full border border-[rgba(8,66,153,0.16)] bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(236,245,255,0.8))] px-4 py-1.5 text-center text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#6e83a0] shadow-[0_8px_18px_rgba(8,41,89,0.06)]">
-              {copy.blogTitle}
-            </p>
-            <h1 className="hero-title-plain mx-auto mt-3 max-w-[32ch] text-center sm:mt-4">
-              {copy.blogDescription}
+        <div className="layout-container--hero relative z-10 flex min-w-0 flex-col items-center">
+          {title ? (
+            <h1 className="hero-title-plain mx-auto mt-20 w-full max-w-7xl max-sm:max-w-[calc(100vw-2rem)] text-center sm:mt-24">
+              {title}
             </h1>
-          </div>
+          ) : null}
+          {description ? (
+            <p className="hero-lead mx-auto mt-3 max-w-[56ch] text-center lg:mt-6">
+              {description}
+            </p>
+          ) : null}
         </div>
       </div>
 
@@ -211,4 +212,6 @@ export default function BlogList({ articles, locale }) {
 BlogList.propTypes = {
   articles: PropTypes.arrayOf(PropTypes.object).isRequired,
   locale: PropTypes.oneOf(['en', 'ar']).isRequired,
+  title: PropTypes.string,
+  description: PropTypes.string,
 };

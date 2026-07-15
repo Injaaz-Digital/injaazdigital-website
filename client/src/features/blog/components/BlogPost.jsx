@@ -1,10 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
-import { normalizeMedia } from '@/lib/strapi';
+import { normalizeMedia, resolveMediaUrl } from '@/lib/strapi';
 import { BLOG_COPY } from '@/features/blog/lib/constants';
 import { decorateRichText } from '@/features/blog/lib/helpers';
 import HeroAtmosphere from '@/features/home/components/HeroAtmosphere';
@@ -23,14 +23,39 @@ const formatDate = (value, locale) => {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return '';
 
-  return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG' : 'en-US', {
+  return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-SA' : 'en-US', {
     month: 'short',
     day: '2-digit',
     year: 'numeric',
+    numberingSystem: 'latn',
   }).format(parsed);
 };
 
 function TocBlock({ headings, copy, className = '' }) {
+  const [activeId, setActiveId] = useState('');
+
+  useEffect(() => {
+    if (!headings.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: '-20% 0px -60% 0px' }
+    );
+
+    for (const { id } of headings) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+
+    return () => observer.disconnect();
+  }, [headings]);
+
   if (!headings.length) return null;
 
   return (
@@ -38,7 +63,15 @@ function TocBlock({ headings, copy, className = '' }) {
       <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#7d8fa8]">{copy.toc}</p>
       <nav className="mt-5 grid gap-2.5">
         {headings.map((heading) => (
-          <a key={heading.id} href={`#${heading.id}`} className="text-[0.98rem] leading-7 text-[#456587] transition hover:text-[#0b4f8c]">
+          <a
+            key={heading.id}
+            href={`#${heading.id}`}
+            className={`text-[0.98rem] leading-7 transition ${
+              activeId === heading.id
+                ? 'font-semibold text-[#0a2546]'
+                : 'text-[#456587] hover:text-[#0b4f8c]'
+            }`}
+          >
             {heading.title}
           </a>
         ))}
@@ -56,8 +89,8 @@ TocBlock.propTypes = {
 export default function BlogPost({ article, locale }) {
   const copy = BLOG_COPY[locale] || BLOG_COPY.en;
   const coverImage = normalizeMedia(article?.coverImage, { fallbackAlt: article?.title || '' });
-  const authorAvatar = normalizeMedia(article?.author?.avatar, { fallbackAlt: article?.author?.name || '' });
   const { html, headings } = useMemo(() => decorateRichText(article?.body), [article?.body]);
+  const authorAvatarUrl = resolveMediaUrl(article?.author?.avatar);
   const categoryLabel = copy.categories[article?.category] || article?.category || copy.all;
   const publishedLabel = formatDate(article?.publishedAt, locale);
   const updatedLabel = formatDate(article?.updatedAt, locale);
@@ -78,72 +111,65 @@ export default function BlogPost({ article, locale }) {
   return (
     <>
       <motion.section className="relative" {...SECTION_IN}>
-        <div className="relative isolate overflow-hidden pb-8 pt-[calc(var(--header-offset)-0.35rem)] sm:pb-10 sm:pt-[var(--header-offset)]">
+        <div className="hero-page-shell hero-top-spacing hero-top-spacing--generous relative isolate flex items-center overflow-hidden pb-[var(--header-offset)] max-sm:pb-[calc(var(--header-offset)-0.9rem)]">
           <HeroAtmosphere />
-
-          <div className="layout-container relative z-10 py-2 sm:py-0">
-            <div className="mx-auto flex min-h-[170px] w-full max-w-[26rem] flex-col items-center justify-center px-2 text-center sm:min-h-[280px] sm:max-w-[44rem] lg:min-h-[320px] lg:max-w-[56rem]">
-              <p className="mx-auto inline-flex items-center rounded-full border border-[rgba(8,66,153,0.16)] bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(236,245,255,0.8))] px-4 py-1.5 text-center text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#6e83a0] shadow-[0_8px_18px_rgba(8,41,89,0.06)]">
-                {categoryLabel}
+          <div className="layout-container--hero relative z-10 flex min-w-0 flex-col items-center">
+            <h1 className="hero-title-plain mx-auto mt-20 w-full max-w-7xl max-sm:max-w-[calc(100vw-2rem)] text-center sm:mt-24">
+              {article.title}
+            </h1>
+            {article.excerpt ? (
+              <p className="hero-lead mx-auto mt-3 max-w-[56ch] text-center lg:mt-6">
+                {article.excerpt}
               </p>
-              <h1 className="hero-title-plain mx-auto mt-3 max-w-[32ch] text-center sm:mt-4">
-                {article.title}
-              </h1>
-              {article.excerpt ? (
-                <p className="mx-auto mt-5 max-w-[54rem] text-[1.02rem] leading-8 text-[#587392] sm:text-[1.08rem]">{article.excerpt}</p>
-              ) : null}
-            </div>
-
-            {(article.author?.name || updatedLabel) ? (
-              <div className="mx-auto mt-6 flex w-full max-w-[760px] flex-wrap items-center justify-center gap-x-6 gap-y-3 px-2 text-sm text-[#5f7896]">
-                {article.author?.name ? (
-                  <div className={`inline-flex items-center gap-3 ${locale === 'ar' ? 'flex-row-reverse text-right' : 'text-left'}`}>
-                    {authorAvatar?.url ? (
-                      <CmsImage
-                        media={article.author.avatar}
-                        src={authorAvatar.url}
-                        alt={article.author.name}
-                        width={44}
-                        height={44}
-                        sizes="44px"
-                        className="h-11 w-11 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="grid h-11 w-11 place-items-center rounded-full bg-[#edf4ff] text-sm font-semibold text-[#0a2546]">
-                        {article.author.name.slice(0, 1).toUpperCase()}
-                      </div>
-                    )}
-                    <div>
-                      <p className="font-medium text-[#0a2546]">{article.author.name}</p>
-                      {publishedLabel ? (
-                        <p className={`text-xs text-[#6c819b] ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
-                          {locale === 'ar' ? `نُشر في ${publishedLabel}` : `Published ${publishedLabel}`}
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-                ) : null}
-
-                {updatedLabel && updatedLabel !== publishedLabel ? (
-                  <span>{locale === 'ar' ? `تم التحديث في ${updatedLabel}` : `Updated on ${updatedLabel}`}</span>
-                ) : null}
-              </div>
             ) : null}
 
-            {coverImage?.url ? (
-              <div className="mx-auto mt-10 max-w-[1160px] overflow-hidden rounded-[26px] bg-[#edf4ff] shadow-[0_18px_42px_rgba(8,41,89,0.08)]">
-                <CmsImage
-                  media={article.coverImage}
-                  src={coverImage.url}
-                  alt={article.title}
-                  priority
-                  sizes="(min-width: 1280px) 72vw, 100vw"
-                  className="max-h-[500px] w-full object-cover"
-                />
-              </div>
-            ) : null}
           </div>
         </div>
+
+        {(article.author?.name || updatedLabel) ? (
+          <div className="layout-container--hero mx-auto mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 px-2 text-sm text-[#5f7896]">
+            {article.author?.name ? (
+              <div className={`inline-flex items-center gap-3 ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+                {authorAvatarUrl ? (
+                  <CmsImage
+                    media={article.author.avatar}
+                    src={authorAvatarUrl}
+                    alt={article.author.name}
+                    width={44}
+                    height={44}
+                    sizes="44px"
+                    className="h-11 w-11 rounded-full corner-squircle border-2 border-white object-cover shadow-[0_4px_12px_rgba(8,41,89,0.15)]"
+                  />
+                ) : null}
+                <div>
+                  <p className="font-medium text-[#0a2546]">{article.author.name}</p>
+                  {publishedLabel ? (
+                    <p className={`text-xs text-[#6c819b] ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+                      {locale === 'ar' ? `نُشر في ${publishedLabel}` : `Published ${publishedLabel}`}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+
+            {updatedLabel && updatedLabel !== publishedLabel ? (
+              <span>{locale === 'ar' ? `تم التحديث في ${updatedLabel}` : `Updated on ${updatedLabel}`}</span>
+            ) : null}
+          </div>
+        ) : null}
+
+        {coverImage?.url ? (
+          <div className="layout-container--hero mx-auto mt-8 max-w-[1160px] overflow-hidden rounded-[26px] bg-[#edf4ff] shadow-[0_18px_42px_rgba(8,41,89,0.08)]">
+            <CmsImage
+              media={article.coverImage}
+              src={coverImage.url}
+              alt={article.title}
+              priority
+              sizes="(min-width: 1280px) 72vw, 100vw"
+              className="max-h-[500px] w-full object-cover"
+            />
+          </div>
+        ) : null}
       </motion.section>
 
       <motion.section className="section section--tight" {...SECTION_IN}>
@@ -152,7 +178,7 @@ export default function BlogPost({ article, locale }) {
             <div className="min-w-0">
               <TocBlock headings={headings} copy={copy} className="mx-auto max-w-[760px] lg:hidden" />
 
-              <article className="blog-body mx-auto mt-10 max-w-[760px] text-[1.03rem] leading-8 sm:text-[1.08rem]" dangerouslySetInnerHTML={{ __html: html }} />
+              <article className="blog-body mx-auto mt-10 max-w-[760px] text-[1.03rem] leading-8 sm:text-[1.08rem]" dir={locale === 'ar' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: html }} />
 
               <div className="mx-auto mt-12 max-w-[760px] border-t border-[rgba(8,66,153,0.08)] pt-6 lg:hidden">
                 <p className="max-w-[38ch] text-sm leading-7 text-[#587392]">{copy.endCta}</p>

@@ -16,6 +16,32 @@
     },
     "icon": {
       "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "capabilities": {
+      "type": "text"
+    },
+    "ctaLabel": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "displayOrder": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "featuredOnHomepage": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

@@ -2,69 +2,44 @@
   "blocks": {
     "hero": "blocks.hero",
     "heroMinimal": "blocks.hero-minimal",
-    "dashboardShowcase": "blocks.dashboard-showcase",
-    "featureMosaic": "blocks.feature-mosaic",
-    "trustRow": "blocks.trust-row",
-    "personaGrid": "blocks.persona-grid",
-    "problem": "blocks.problem",
-    "solutionSystem": "blocks.solution-system",
-    "processTimeline": "blocks.process-timeline",
-    "proof": "blocks.proof",
-    "packages": "blocks.packages",
-    "faq": "blocks.faq",
     "ctaBanner": "blocks.cta-banner",
-    "bookingMeeting": "blocks.booking-meeting",
     "richText": "blocks.rich-text",
-    "aboutMosaic": "blocks.about-mosaic",
-    "brandProofGrid": "blocks.brand-proof-grid"
+    "sectionHero": "section.hero",
+    "sectionAnimatedText": "section.animated-text",
+    "sectionProblem": "section.problem",
+    "sectionServiceOverview": "section.service-overview",
+    "sectionFeatureList": "section.feature-list",
+    "sectionProcess": "section.process",
+    "sectionOutcomes": "section.outcomes",
+    "sectionFaq": "section.faq",
+    "sectionFinalCta": "section.final-cta",
+    "sectionBookCall": "section.book-call"
+    ,"sectionEditorialContent": "section.editorial-content"
+    ,"sectionSystemFlow": "section.system-flow"
+    ,"sectionDiagnosis": "section.diagnosis"
+    ,"sectionTimeline": "section.timeline"
+    ,"sectionStatementPair": "section.statement-pair"
+    ,"sectionPrinciples": "section.principles"
   },
   "blockSets": {
-    "marketing": [
+    "page": [
       "blocks.hero",
-      "blocks.hero-minimal",
-      "blocks.dashboard-showcase",
-      "blocks.feature-mosaic",
-      "blocks.trust-row",
-      "blocks.persona-grid",
-      "blocks.problem",
-      "blocks.solution-system",
-      "blocks.process-timeline",
-      "blocks.proof",
-      "blocks.packages",
-      "blocks.faq",
-      "blocks.cta-banner",
-      "blocks.booking-meeting",
-      "blocks.rich-text",
-      "blocks.about-mosaic",
-      "blocks.brand-proof-grid"
-    ],
-    "service": [
-      "blocks.hero",
-      "blocks.hero-minimal",
-      "blocks.dashboard-showcase",
-      "blocks.feature-mosaic",
-      "blocks.trust-row",
-      "blocks.problem",
-      "blocks.solution-system",
-      "blocks.process-timeline",
-      "blocks.proof",
-      "blocks.packages",
-      "blocks.faq",
-      "blocks.cta-banner",
-      "blocks.booking-meeting",
-      "blocks.rich-text"
-    ],
-    "about": [
-      "blocks.hero",
-      "blocks.hero-minimal",
-      "blocks.dashboard-showcase",
-      "blocks.feature-mosaic",
-      "blocks.trust-row",
-      "blocks.persona-grid",
-      "blocks.process-timeline",
-      "blocks.proof",
-      "blocks.rich-text",
-      "blocks.cta-banner"
+      "section.hero",
+      "section.animated-text",
+      "section.problem",
+      "section.service-overview",
+      "section.feature-list",
+      "section.process",
+      "section.outcomes",
+      "section.faq",
+      "section.final-cta",
+      "section.book-call"
+      ,"section.editorial-content"
+      ,"section.system-flow"
+      ,"section.diagnosis"
+      ,"section.timeline"
+      ,"section.statement-pair"
+      ,"section.principles"
     ],
     "blog": [
       "blocks.hero-minimal",
@@ -73,11 +48,7 @@
     ]
   },
   "contentTypeBlockSet": {
-    "api::home-page.home-page": "marketing",
-    "api::growth-engine-page.growth-engine-page": "service",
-    "api::web-studio-page.web-studio-page": "service",
-    "api::about-page.about-page": "about",
-    "api::page.page": "marketing",
+    "api::page.page": "page",
     "api::blog-page.blog-page": "blog"
   }
 }

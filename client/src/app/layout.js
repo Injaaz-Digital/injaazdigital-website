@@ -1,7 +1,7 @@
 import "./globals.css";
 import localFont from "next/font/local";
 import Script from "next/script";
-import { IBM_Plex_Sans_Arabic, Manrope, Syne } from "next/font/google";
+import { Geist, IBM_Plex_Sans_Arabic, Manrope, Syne } from "next/font/google";
 import { SITE_URL } from "@/lib/config/site-config";
 import { getLocaleDirection } from "@/lib/i18n/locale";
 import { getInitialLang } from "@/lib/i18n/locale.server";
@@ -17,6 +17,13 @@ const syne = Syne({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   variable: "--font-syne",
+  display: "swap",
+});
+
+const geist = Geist({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-geist",
   display: "swap",
 });
 
@@ -87,7 +94,7 @@ export default async function RootLayout({ children }) {
     <html lang={htmlLang} dir={htmlDir} suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${manrope.className} ${arabic.className} ${manrope.variable} ${syne.variable} ${arabic.variable} ${domaine.variable}`}
+        className={`${geist.className} ${arabic.className} ${geist.variable} ${manrope.variable} ${syne.variable} ${arabic.variable} ${domaine.variable} bg-white/88`}
       >
         <Script src="https://mcp.figma.com/mcp/html-to-design/capture.js" strategy="afterInteractive" />
         {children}

@@ -1,5 +1,15 @@
 # 🚀 Getting started with Strapi
 
+## Booking engine V2
+
+The local `booking` plugin is enabled in `config/plugins.ts`. Existing calendar routes switch to the hardened engine when `BOOKING_ENGINE_V2=true`.
+
+Booking-owned models (leads, meetings, notes, questions, responses, sessions, reservations, audits, and calendar settings) are intentionally hidden from Content Manager and Content-Type Builder. Administrators manage them through the **Injaaz Cal** sidebar workspace, whose authenticated `/booking/*` admin API preserves the existing database tables and relations.
+
+Production configuration requires `BOOKING_SLOT_SECRET`, `BOOKING_SESSION_PEPPER`, and valid Google Calendar credentials. `BOOKING_LEGACY_TOKEN_UNTIL` may temporarily contain an ISO timestamp to migrate plaintext sessions; omit it after the migration window. Optional controls are `BOOKING_SLOT_TOKEN_TTL_SECONDS` (default `600`), `BOOKING_HOLD_SECONDS` (default `120`), `BOOKING_SESSION_TTL_HOURS` (default `24`), `BOOKING_AVAILABILITY_RATE_LIMIT` (default `90`/minute), and `BOOKING_MUTATION_RATE_LIMIT` (default `20`/minute).
+
+Production fails closed when Google Calendar is unavailable. `BOOKING_EMERGENCY_LOCAL_ONLY=true` is the explicit emergency override and should not be used during normal operation. Run `npm run test:booking` for the plugin security tests.
+
 Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
 
 ### `develop`

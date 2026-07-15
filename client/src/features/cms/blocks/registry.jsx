@@ -1,5 +1,7 @@
 import { CmsHero } from '@/features/home/components/Hero';
 import BrandProofGridBlock from '@/features/cms/blocks/BrandProofGridBlock';
+import AnimatedTextBlock from '@/features/cms/blocks/AnimatedTextBlock';
+import BookCallBlock from '@/features/cms/blocks/BookCallBlock';
 import BookingMeetingBlock from '@/features/cms/blocks/BookingMeetingBlock';
 import CtaBannerBlock from '@/features/cms/blocks/CtaBannerBlock';
 import DashboardShowcaseBlock from '@/features/cms/blocks/DashboardShowcaseBlock';
@@ -12,13 +14,57 @@ import ProcessBlock from '@/features/cms/blocks/ProcessBlock';
 import ProofBlock from '@/features/cms/blocks/ProofBlock';
 import RichTextBlock from '@/features/cms/blocks/RichTextBlock';
 import TrustRowBlock from '@/features/cms/blocks/TrustRowBlock';
+import {
+  FaqSection,
+  FeatureListSection,
+  FinalCtaSection,
+  OutcomesSection,
+  ProblemSection as PremiumProblemSection,
+  ProcessSection,
+  SectionHero,
+  ServiceOverviewSection,
+} from '@/features/cms/sections/PremiumSections';
+import {
+  DiagnosisSection,
+  EditorialContentSection,
+  PrinciplesSection,
+  StatementPairSection,
+  SystemFlowSection,
+  TimelineSection,
+} from '@/features/cms/sections/EditorialSections';
 
 export const CMS_BLOCK_REGISTRY = {
-  'blocks.hero': ({ block, index, locale, onNavigate }) => (
-    <CmsHero key={`blocks.hero-${index}`} block={block} locale={locale} onNavigate={onNavigate} />
+  'section.editorial-content': ({ block, index }) => <EditorialContentSection key={`section.editorial-content-${index}`} block={block} />,
+  'section.system-flow': ({ block, index }) => <SystemFlowSection key={`section.system-flow-${index}`} block={block} />,
+  'section.diagnosis': ({ block, index, locale }) => <DiagnosisSection key={`section.diagnosis-${index}`} block={block} locale={locale} />,
+  'section.timeline': ({ block, index }) => <TimelineSection key={`section.timeline-${index}`} block={block} />,
+  'section.statement-pair': ({ block, index }) => <StatementPairSection key={`section.statement-pair-${index}`} block={block} />,
+  'section.principles': ({ block, index, locale }) => <PrinciplesSection key={`section.principles-${index}`} block={block} locale={locale} />,
+  'section.animated-text': ({ block, index, locale }) => (
+    <AnimatedTextBlock key={`section.animated-text-${index}`} block={block} locale={locale} />
   ),
-  'blocks.hero-minimal': ({ block, index, locale, onNavigate }) => (
-    <CmsHero key={`blocks.hero-minimal-${index}`} block={block} locale={locale} onNavigate={onNavigate} />
+  'section.hero': ({ block, index, onNavigate }) => (
+    <SectionHero key={`section.hero-${index}`} block={block} onNavigate={onNavigate} />
+  ),
+  'section.problem': ({ block, index }) => <PremiumProblemSection key={`section.problem-${index}`} block={block} />,
+  'section.service-overview': ({ block, index, locale, onNavigate }) => (
+    <ServiceOverviewSection key={`section.service-overview-${index}`} block={block} locale={locale} onNavigate={onNavigate} />
+  ),
+  'section.feature-list': ({ block, index }) => <FeatureListSection key={`section.feature-list-${index}`} block={block} />,
+  'section.process': ({ block, index, locale }) => <ProcessSection key={`section.process-${index}`} block={block} locale={locale} />,
+  'section.outcomes': ({ block, index }) => <OutcomesSection key={`section.outcomes-${index}`} block={block} />,
+  'section.faq': ({ block, index }) => <FaqSection key={`section.faq-${index}`} block={block} />,
+  'section.final-cta': ({ block, index, onNavigate }) => (
+    <FinalCtaSection key={`section.final-cta-${index}`} block={block} onNavigate={onNavigate} />
+  ),
+  'section.book-call': ({ block, index, locale, route }) => (
+    <BookCallBlock key={`section.book-call-${index}`} block={block} locale={locale} route={route} />
+  ),
+  'blocks.hero': ({ block, index, locale, route, onNavigate }) => (
+    <CmsHero key={`blocks.hero-${index}`} block={block} locale={locale} route={route} onNavigate={onNavigate} />
+  ),
+  'blocks.hero-minimal': ({ block, index, locale, route, onNavigate }) => (
+    <CmsHero key={`blocks.hero-minimal-${index}`} block={block} locale={locale} route={route} onNavigate={onNavigate} />
   ),
   'blocks.dashboard-showcase': ({ block, index, locale, onNavigate }) => (
     <DashboardShowcaseBlock key={`blocks.dashboard-showcase-${index}`} block={block} locale={locale} onNavigate={onNavigate} />

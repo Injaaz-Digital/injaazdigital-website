@@ -4,6 +4,7 @@ export {
   fetchCollection,
   fetchContentIndex,
   fetchFirstBySlug,
+  getPageBySlug,
   fetchLeadQuestions,
   fetchSingleType,
   fetchWithLocaleFallback,

@@ -46,9 +46,8 @@ export default {
 
     const tokens = await exchangeGoogleCalendarCode(code);
     ctx.type = 'html';
-    ctx.body = html(`<h1>Google Calendar connected</h1>
-      <p>Copy this value into <code>server/.env</code> as <strong>GOOGLE_CALENDAR_REFRESH_TOKEN</strong>, then restart Strapi.</p>
-      <pre>GOOGLE_CALENDAR_REFRESH_TOKEN=${tokens.refresh_token || ''}</pre>
-      <p>If the token is empty, revoke app access in your Google account and retry; Google only returns a refresh token on consent.</p>`);
+    ctx.body = html(tokens.refresh_token
+      ? `<h1>Google Calendar authorization succeeded</h1><p>A refresh credential was issued, but it is intentionally never rendered in the browser. Complete setup through the deployment secret-management workflow.</p>`
+      : `<h1>Google Calendar authorization incomplete</h1><p>No refresh credential was issued. Revoke the application's access and repeat the secret-management setup workflow.</p>`);
   },
 };

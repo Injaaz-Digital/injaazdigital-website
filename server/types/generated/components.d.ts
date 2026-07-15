@@ -1,190 +1,5 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
-export interface BlocksAboutMosaic extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_about_mosaics';
-  info: {
-    description: 'About-style editorial mosaic with proof, industries, and testimonial';
-    displayName: 'About Mosaic';
-  };
-  attributes: {
-    caseStudyImage: Schema.Attribute.Component<'shared.media', false>;
-    caseStudyLink: Schema.Attribute.Component<'shared.link', false>;
-    caseStudyResult: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
-      }>;
-    caseStudyTitle: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    csatDescription: Schema.Attribute.Text;
-    csatEmojis: Schema.Attribute.Component<'shared.media', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 5;
-        },
-        number
-      >;
-    csatRatingLabel: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
-    csatTitle: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
-    discussBackground: Schema.Attribute.Component<'shared.media', false>;
-    discussCta: Schema.Attribute.Component<'shared.link', false>;
-    discussNote: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    discussTitle: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    industries: Schema.Attribute.Component<'shared.list-item', true>;
-    industriesTitle: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    performanceDescription: Schema.Attribute.Text;
-    performanceTitle: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    seoMetrics: Schema.Attribute.Component<'shared.metric', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 3;
-        },
-        number
-      >;
-    strategyBadge: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 80;
-      }>;
-    strategyDescription: Schema.Attribute.Text;
-    strategyImage: Schema.Attribute.Component<'shared.media', false>;
-    strategySlides: Schema.Attribute.Component<
-      'shared.feature-mosaic-card',
-      true
-    > &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 6;
-        },
-        number
-      >;
-    strategyTitle: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    teamMembers: Schema.Attribute.Component<
-      'shared.about-mosaic-member',
-      true
-    > &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 4;
-        },
-        number
-      >;
-    testimonialName: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
-      }>;
-    testimonialPoster: Schema.Attribute.Component<'shared.media', false>;
-    testimonialRole: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 140;
-      }>;
-    testimonialVideo: Schema.Attribute.Component<'shared.media', false>;
-  };
-}
-
-export interface BlocksBookingMeeting extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_booking_meetings';
-  info: {
-    description: 'Booking section for Google Meet or calendar scheduling';
-    displayName: 'Booking Meeting';
-  };
-  attributes: {
-    benefits: Schema.Attribute.Component<'shared.list-item', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 3;
-        },
-        number
-      >;
-    bookingLink: Schema.Attribute.Component<'shared.link', false> &
-      Schema.Attribute.Required;
-    cardDescription: Schema.Attribute.Text;
-    cardHeading: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 140;
-      }>;
-    cardTitle: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 80;
-      }>;
-    description: Schema.Attribute.Text;
-    eyebrow: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
-      }>;
-    heading: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-  };
-}
-
-export interface BlocksBrandProofGrid extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_brand_proof_grids';
-  info: {
-    description: 'Structured proof and storytelling grid for brand-led pages';
-    displayName: 'Brand Proof Grid';
-  };
-  attributes: {
-    caseStudyPanel: Schema.Attribute.Component<
-      'shared.brand-proof-case-study-panel',
-      false
-    >;
-    consultationPanel: Schema.Attribute.Component<
-      'shared.brand-proof-consultation-panel',
-      false
-    >;
-    industriesPanel: Schema.Attribute.Component<
-      'shared.brand-proof-industries-panel',
-      false
-    >;
-    performancePanel: Schema.Attribute.Component<
-      'shared.brand-proof-performance-panel',
-      false
-    >;
-    satisfactionPanel: Schema.Attribute.Component<
-      'shared.brand-proof-satisfaction-panel',
-      false
-    >;
-    strategyPanel: Schema.Attribute.Component<
-      'shared.brand-proof-strategy-panel',
-      true
-    > &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 6;
-        },
-        number
-      >;
-    testimonialPanel: Schema.Attribute.Component<
-      'shared.brand-proof-testimonial-panel',
-      false
-    >;
-  };
-}
-
 export interface BlocksCtaBanner extends Struct.ComponentSchema {
   collectionName: 'components_blocks_cta_banners';
   info: {
@@ -196,96 +11,6 @@ export interface BlocksCtaBanner extends Struct.ComponentSchema {
     heading: Schema.Attribute.String & Schema.Attribute.Required;
     primaryCta: Schema.Attribute.Component<'shared.link', false>;
     secondaryCta: Schema.Attribute.Component<'shared.link', false>;
-  };
-}
-
-export interface BlocksDashboardShowcase extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_dashboard_showcases';
-  info: {
-    description: 'Editorial dashboard or analytics showcase section';
-    displayName: 'Dashboard Showcase';
-  };
-  attributes: {
-    badge: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
-      }>;
-    chartDelta: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 80;
-      }>;
-    chartLabel: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
-      }>;
-    chartValue: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 80;
-      }>;
-    description: Schema.Attribute.Text;
-    heading: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    insights: Schema.Attribute.Component<'shared.list-item', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 4;
-        },
-        number
-      >;
-    primaryCta: Schema.Attribute.Component<'shared.link', false>;
-    secondaryCta: Schema.Attribute.Component<'shared.link', false>;
-    stats: Schema.Attribute.Component<'shared.metric', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 4;
-        },
-        number
-      >;
-  };
-}
-
-export interface BlocksFaq extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_faq_sections';
-  info: {
-    description: 'FAQ accordion section';
-    displayName: 'FAQ';
-  };
-  attributes: {
-    heading: Schema.Attribute.String;
-    items: Schema.Attribute.Component<'shared.faq-item', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
-  };
-}
-
-export interface BlocksFeatureMosaic extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_feature_mosaics';
-  info: {
-    description: 'Asymmetrical editorial feature grid from Figma';
-    displayName: 'Feature Mosaic';
-  };
-  attributes: {
-    cards: Schema.Attribute.Component<'shared.feature-mosaic-card', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 6;
-          min: 1;
-        },
-        number
-      >;
-    heading: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    subheading: Schema.Attribute.Text;
   };
 }
 
@@ -350,99 +75,6 @@ export interface BlocksHeroMinimal extends Struct.ComponentSchema {
   };
 }
 
-export interface BlocksPackages extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_package_sections';
-  info: {
-    description: 'Package and pricing section';
-    displayName: 'Packages';
-  };
-  attributes: {
-    heading: Schema.Attribute.String;
-    packages: Schema.Attribute.Component<'shared.package-item', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
-  };
-}
-
-export interface BlocksPersonaGrid extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_persona_grids';
-  info: {
-    description: 'Audience persona section';
-    displayName: 'Persona Grid';
-  };
-  attributes: {
-    heading: Schema.Attribute.String;
-    personas: Schema.Attribute.Component<'shared.persona-card', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
-  };
-}
-
-export interface BlocksProblem extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_problems';
-  info: {
-    description: 'Pain and bottleneck section';
-    displayName: 'Problem';
-  };
-  attributes: {
-    bullets: Schema.Attribute.Component<'shared.list-item', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
-    description: Schema.Attribute.Text;
-    heading: Schema.Attribute.String;
-    insight: Schema.Attribute.String;
-  };
-}
-
-export interface BlocksProcessTimeline extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_process_timelines';
-  info: {
-    description: 'Step-by-step process';
-    displayName: 'Process Timeline';
-  };
-  attributes: {
-    description: Schema.Attribute.Text;
-    eyebrow: Schema.Attribute.String;
-    heading: Schema.Attribute.String;
-    primaryCta: Schema.Attribute.Component<'shared.link', false>;
-    steps: Schema.Attribute.Component<'shared.process-step', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
-  };
-}
-
-export interface BlocksProof extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_proof_sections';
-  info: {
-    description: 'Process proof section';
-    displayName: 'Proof';
-  };
-  attributes: {
-    afterLabel: Schema.Attribute.String;
-    artifact: Schema.Attribute.Component<'shared.media', false>;
-    beforeLabel: Schema.Attribute.String;
-    evidenceText: Schema.Attribute.Text;
-    heading: Schema.Attribute.String;
-    trackedMetrics: Schema.Attribute.Component<'shared.metric', true>;
-  };
-}
-
 export interface BlocksRichText extends Struct.ComponentSchema {
   collectionName: 'components_blocks_rich_text_sections';
   info: {
@@ -453,44 +85,6 @@ export interface BlocksRichText extends Struct.ComponentSchema {
     body: Schema.Attribute.RichText & Schema.Attribute.Required;
     heading: Schema.Attribute.String;
     primaryCta: Schema.Attribute.Component<'shared.link', false>;
-  };
-}
-
-export interface BlocksSolutionSystem extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_solution_systems';
-  info: {
-    description: 'System overview section';
-    displayName: 'Solution System';
-  };
-  attributes: {
-    description: Schema.Attribute.Text;
-    eyebrow: Schema.Attribute.String;
-    heading: Schema.Attribute.String;
-    primaryCta: Schema.Attribute.Component<'shared.link', false>;
-    steps: Schema.Attribute.Component<'shared.process-step', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
-  };
-}
-
-export interface BlocksTrustRow extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_trust_rows';
-  info: {
-    description: 'Trust cue row';
-    displayName: 'Trust Row';
-  };
-  attributes: {
-    items: Schema.Attribute.Component<'shared.list-item', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 2;
-        },
-        number
-      >;
   };
 }
 
@@ -549,66 +143,378 @@ export interface LayoutHeader extends Struct.ComponentSchema {
         number
       >;
     primaryCta: Schema.Attribute.Component<'shared.link', false>;
+    serviceLinks: Schema.Attribute.Component<'shared.link', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 8;
+        },
+        number
+      >;
+    servicesLabel: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 40;
+      }> &
+      Schema.Attribute.DefaultTo<'Services'>;
     showLanguageSwitcher: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<true>;
   };
 }
 
-export interface SharedAboutMosaicMember extends Struct.ComponentSchema {
-  collectionName: 'components_shared_about_mosaic_members';
+export interface SectionAnimatedText extends Struct.ComponentSchema {
+  collectionName: 'components_section_animated_texts';
   info: {
-    description: 'Profile card item used in the About Mosaic block';
-    displayName: 'About Mosaic Member';
+    description: 'A focused statement revealed progressively as the visitor scrolls';
+    displayName: 'Animated Text';
   };
   attributes: {
-    avatar: Schema.Attribute.Component<'shared.media', false>;
-    name: Schema.Attribute.String &
+    alignment: Schema.Attribute.Enumeration<['left', 'center']> &
+      Schema.Attribute.DefaultTo<'left'>;
+    animationStyle: Schema.Attribute.Enumeration<
+      ['word-reveal', 'line-reveal', 'progressive-opacity']
+    > &
+      Schema.Attribute.DefaultTo<'progressive-opacity'>;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    highlightedText: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    size: Schema.Attribute.Enumeration<['medium', 'large', 'display']> &
+      Schema.Attribute.DefaultTo<'large'>;
+    sticky: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    text: Schema.Attribute.Text & Schema.Attribute.Required;
+    theme: Schema.Attribute.Enumeration<['default', 'muted', 'contrast']> &
+      Schema.Attribute.DefaultTo<'default'>;
+  };
+}
+
+export interface SectionBookCall extends Struct.ComponentSchema {
+  collectionName: 'components_section_book_calls';
+  info: {
+    description: 'Editorial copy for the booking funnel. Duration, timezone, location, qualification and scheduling rules are managed in Injaaz Cal.';
+    displayName: 'Book Call';
+  };
+  attributes: {
+    bookingTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Choose a time'>;
+    contactStepHelp: Schema.Attribute.Text;
+    contactStepTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Your contact details'>;
+    fallbackDescription: Schema.Attribute.Text;
+    fallbackTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'We need more context before booking'>;
+    introEyebrow: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Injaaz Digital'>;
+    pageTitle: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Book a Strategy Call'>;
+    qualificationIntroTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Fit questions'>;
+    stepper: Schema.Attribute.Relation<'manyToOne', 'plugin::booking.stepper'> &
+      Schema.Attribute.Required;
+    successTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Your strategy call is booked'>;
+  };
+}
+
+export interface SectionDiagnosis extends Struct.ComponentSchema {
+  collectionName: 'components_section_diagnoses';
+  info: {
+    description: 'Visible symptoms contrasted with deeper system causes';
+    displayName: 'Diagnosis';
+  };
+  attributes: {
+    closingStatement: Schema.Attribute.Text;
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
+        maxLength: 180;
       }>;
+    items: Schema.Attribute.Component<'shared.diagnosis-example', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 6;
+          min: 1;
+        },
+        number
+      >;
   };
 }
 
-export interface SharedBrandProofCaseStudyPanel extends Struct.ComponentSchema {
-  collectionName: 'components_shared_brand_proof_case_study_panels';
+export interface SectionEditorialContent extends Struct.ComponentSchema {
+  collectionName: 'components_section_editorial_contents';
   info: {
-    description: 'Case study highlight panel content';
-    displayName: 'Brand Proof Case Study Panel';
+    description: 'Long-form institutional copy with controlled statements';
+    displayName: 'Editorial Content';
   };
   attributes: {
-    coverMedia: Schema.Attribute.Component<'shared.media', false>;
-    cta: Schema.Attribute.Component<'shared.link', false>;
-    headline: Schema.Attribute.String &
+    body: Schema.Attribute.Text & Schema.Attribute.Required;
+    closingStatement: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 180;
       }>;
-    resultLabel: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
-      }>;
+    statements: Schema.Attribute.Component<'shared.list-item', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 10;
+        },
+        number
+      >;
+    variant: Schema.Attribute.Enumeration<['default', 'manifesto', 'vision']> &
+      Schema.Attribute.DefaultTo<'default'>;
   };
 }
 
-export interface SharedBrandProofConsultationPanel
-  extends Struct.ComponentSchema {
-  collectionName: 'components_shared_brand_proof_consultation_panels';
+export interface SectionFaq extends Struct.ComponentSchema {
+  collectionName: 'components_section_faqs';
   info: {
-    description: 'Consultation invitation panel content';
-    displayName: 'Brand Proof Consultation Panel';
+    description: 'Frequently asked questions';
+    displayName: 'FAQ';
   };
   attributes: {
-    backgroundMedia: Schema.Attribute.Component<'shared.media', false>;
-    cta: Schema.Attribute.Component<'shared.link', false>;
-    headline: Schema.Attribute.String &
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 180;
       }>;
-    supportingNote: Schema.Attribute.String &
+    items: Schema.Attribute.Component<'shared.faq-item', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
+export interface SectionFeatureList extends Struct.ComponentSchema {
+  collectionName: 'components_section_feature_lists';
+  info: {
+    description: 'Dense feature grid';
+    displayName: 'Feature List';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 180;
       }>;
-    teamMembers: Schema.Attribute.Component<'shared.team-member', true> &
+    items: Schema.Attribute.Component<'shared.list-item', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 8;
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
+export interface SectionFinalCta extends Struct.ComponentSchema {
+  collectionName: 'components_section_final_ctas';
+  info: {
+    description: 'Final conversion section';
+    displayName: 'Final CTA';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    primaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
+  };
+}
+
+export interface SectionHero extends Struct.ComponentSchema {
+  collectionName: 'components_section_heroes';
+  info: {
+    description: 'Premium landing page hero';
+    displayName: 'Hero';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    imageKeyword: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'premium-digital-studio'>;
+    primaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    variant: Schema.Attribute.Enumeration<['visual', 'editorial']> &
+      Schema.Attribute.DefaultTo<'visual'>;
+  };
+}
+
+export interface SectionOutcomes extends Struct.ComponentSchema {
+  collectionName: 'components_section_outcomes';
+  info: {
+    description: 'Business outcomes and proof points';
+    displayName: 'Outcomes';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    items: Schema.Attribute.Component<'shared.metric', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
+export interface SectionPrinciples extends Struct.ComponentSchema {
+  collectionName: 'components_section_principles';
+  info: {
+    description: 'Editorial principles with an optional direction statement';
+    displayName: 'Principles';
+  };
+  attributes: {
+    closingStatement: Schema.Attribute.Text;
+    description: Schema.Attribute.Text;
+    directionBody: Schema.Attribute.Text;
+    directionHeading: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 120;
+      }>;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    items: Schema.Attribute.Component<'shared.list-item', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 6;
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
+export interface SectionProblem extends Struct.ComponentSchema {
+  collectionName: 'components_section_problems';
+  info: {
+    description: 'Problem framing section';
+    displayName: 'Problem';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    items: Schema.Attribute.Component<'shared.list-item', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
+export interface SectionProcess extends Struct.ComponentSchema {
+  collectionName: 'components_section_processes';
+  info: {
+    description: 'Step-by-step delivery process';
+    displayName: 'Process';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    steps: Schema.Attribute.Component<'shared.process-step', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    variant: Schema.Attribute.Enumeration<['interactive', 'editorial']> &
+      Schema.Attribute.DefaultTo<'interactive'>;
+  };
+}
+
+export interface SectionServiceOverview extends Struct.ComponentSchema {
+  collectionName: 'components_section_service_overviews';
+  info: {
+    description: 'High-level service cards';
+    displayName: 'Service Overview';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    placement: Schema.Attribute.Enumeration<['homepage', 'related']> &
+      Schema.Attribute.DefaultTo<'homepage'>;
+    services: Schema.Attribute.Component<'shared.list-item', true> &
       Schema.Attribute.SetMinMax<
         {
           max: 4;
@@ -618,113 +524,123 @@ export interface SharedBrandProofConsultationPanel
   };
 }
 
-export interface SharedBrandProofIndustriesPanel
-  extends Struct.ComponentSchema {
-  collectionName: 'components_shared_brand_proof_industries_panels';
+export interface SectionStatementPair extends Struct.ComponentSchema {
+  collectionName: 'components_section_statement_pairs';
   info: {
-    description: 'Industries panel content';
-    displayName: 'Brand Proof Industries Panel';
+    description: 'Two spacious institutional statements such as mission and vision';
+    displayName: 'Statement Pair';
   };
   attributes: {
-    headline: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    items: Schema.Attribute.Component<'shared.industry-item', true>;
-  };
-}
-
-export interface SharedBrandProofPerformancePanel
-  extends Struct.ComponentSchema {
-  collectionName: 'components_shared_brand_proof_performance_panels';
-  info: {
-    description: 'Performance and metrics panel content';
-    displayName: 'Brand Proof Performance Panel';
-  };
-  attributes: {
-    headline: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    metrics: Schema.Attribute.Component<'shared.metric', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 3;
-        },
-        number
-      >;
-    summary: Schema.Attribute.Text;
-  };
-}
-
-export interface SharedBrandProofSatisfactionPanel
-  extends Struct.ComponentSchema {
-  collectionName: 'components_shared_brand_proof_satisfaction_panels';
-  info: {
-    description: 'Customer satisfaction panel content';
-    displayName: 'Brand Proof Satisfaction Panel';
-  };
-  attributes: {
-    description: Schema.Attribute.Text;
-    ratingLabel: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
-    reactionIcons: Schema.Attribute.Component<'shared.media', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 5;
-        },
-        number
-      >;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
-  };
-}
-
-export interface SharedBrandProofStrategyPanel extends Struct.ComponentSchema {
-  collectionName: 'components_shared_brand_proof_strategy_panels';
-  info: {
-    description: 'Strategy card used in the brand proof slider';
-    displayName: 'Brand Proof Strategy Card';
-  };
-  attributes: {
-    badge: Schema.Attribute.String &
+    eyebrow: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 80;
       }>;
-    coverMedia: Schema.Attribute.Component<'shared.media', false>;
-    headline: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 180;
-      }>;
-    icon: Schema.Attribute.Component<'shared.media', false>;
-    summary: Schema.Attribute.Text;
+    first: Schema.Attribute.Component<'shared.statement', false> &
+      Schema.Attribute.Required;
+    second: Schema.Attribute.Component<'shared.statement', false> &
+      Schema.Attribute.Required;
   };
 }
 
-export interface SharedBrandProofTestimonialPanel
-  extends Struct.ComponentSchema {
-  collectionName: 'components_shared_brand_proof_testimonial_panels';
+export interface SectionSystemFlow extends Struct.ComponentSchema {
+  collectionName: 'components_section_system_flows';
   info: {
-    description: 'Video testimonial panel content';
-    displayName: 'Brand Proof Testimonial Panel';
+    description: 'A clear responsive sequence with contextual signals';
+    displayName: 'System Flow';
   };
   attributes: {
-    clientName: Schema.Attribute.String &
+    closingStatement: Schema.Attribute.Text;
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
+        maxLength: 80;
       }>;
-    clientRole: Schema.Attribute.String &
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 140;
+        maxLength: 180;
       }>;
-    poster: Schema.Attribute.Component<'shared.media', false>;
-    quote: Schema.Attribute.Text;
-    video: Schema.Attribute.Component<'shared.media', false>;
+    signals: Schema.Attribute.Component<'shared.list-item', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 10;
+        },
+        number
+      >;
+    steps: Schema.Attribute.Component<'shared.list-item', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 9;
+          min: 2;
+        },
+        number
+      >;
+    variant: Schema.Attribute.Enumeration<['system', 'measurement']> &
+      Schema.Attribute.DefaultTo<'system'>;
+  };
+}
+
+export interface SectionTimeline extends Struct.ComponentSchema {
+  collectionName: 'components_section_timelines';
+  info: {
+    description: 'An undated conceptual or institutional timeline';
+    displayName: 'Timeline';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
+    stages: Schema.Attribute.Component<'shared.process-step', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 8;
+          min: 2;
+        },
+        number
+      >;
+  };
+}
+
+export interface SharedCta extends Struct.ComponentSchema {
+  collectionName: 'components_shared_ctas';
+  info: {
+    description: 'Reusable call-to-action link';
+    displayName: 'CTA';
+  };
+  attributes: {
+    isExternal: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    label: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    style: Schema.Attribute.Enumeration<['primary', 'secondary', 'tertiary']> &
+      Schema.Attribute.DefaultTo<'primary'>;
+    url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedDiagnosisExample extends Struct.ComponentSchema {
+  collectionName: 'components_shared_diagnosis_examples';
+  info: {
+    displayName: 'Diagnosis Example';
+  };
+  attributes: {
+    deeperSystem: Schema.Attribute.Text & Schema.Attribute.Required;
+    visibleProblem: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
   };
 }
 
@@ -740,38 +656,6 @@ export interface SharedFaqItem extends Struct.ComponentSchema {
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 200;
-      }>;
-  };
-}
-
-export interface SharedFeatureMosaicCard extends Struct.ComponentSchema {
-  collectionName: 'components_shared_feature_mosaic_cards';
-  info: {
-    description: 'Card item for the editorial feature mosaic block';
-    displayName: 'Feature Mosaic Card';
-  };
-  attributes: {
-    artwork: Schema.Attribute.Component<'shared.media', false>;
-    description: Schema.Attribute.Text & Schema.Attribute.Required;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 140;
-      }>;
-  };
-}
-
-export interface SharedIndustryItem extends Struct.ComponentSchema {
-  collectionName: 'components_shared_industry_items';
-  info: {
-    description: 'Industry label item';
-    displayName: 'Industry Item';
-  };
-  attributes: {
-    name: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
       }>;
   };
 }
@@ -802,13 +686,27 @@ export interface SharedListItem extends Struct.ComponentSchema {
     displayName: 'List Item';
   };
   attributes: {
+    capabilities: Schema.Attribute.Text;
+    ctaLabel: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
     description: Schema.Attribute.Text;
+    displayOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    featuredOnHomepage: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>;
     icon: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    outcome: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 180;
+      }>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 140;
       }>;
+    url: Schema.Attribute.String;
   };
 }
 
@@ -855,50 +753,6 @@ export interface SharedMetric extends Struct.ComponentSchema {
   };
 }
 
-export interface SharedPackageItem extends Struct.ComponentSchema {
-  collectionName: 'components_shared_package_items';
-  info: {
-    description: 'Atomic package/pricing item';
-    displayName: 'Package Item';
-  };
-  attributes: {
-    cta: Schema.Attribute.Component<'shared.link', false>;
-    name: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
-      }>;
-    outcome: Schema.Attribute.Text;
-    priceLabel: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 80;
-      }>;
-    recommended: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    summary: Schema.Attribute.Text & Schema.Attribute.Required;
-    timeline: Schema.Attribute.String;
-  };
-}
-
-export interface SharedPersonaCard extends Struct.ComponentSchema {
-  collectionName: 'components_shared_persona_cards';
-  info: {
-    description: 'Atomic persona summary card';
-    displayName: 'Persona Card';
-  };
-  attributes: {
-    cta: Schema.Attribute.Component<'shared.link', false>;
-    desire: Schema.Attribute.Text & Schema.Attribute.Required;
-    pain: Schema.Attribute.Text & Schema.Attribute.Required;
-    persona: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 80;
-      }>;
-    result: Schema.Attribute.Text & Schema.Attribute.Required;
-  };
-}
-
 export interface SharedProcessStep extends Struct.ComponentSchema {
   collectionName: 'components_shared_process_steps';
   info: {
@@ -914,6 +768,7 @@ export interface SharedProcessStep extends Struct.ComponentSchema {
       }>;
     successCriteria: Schema.Attribute.Text;
     timeframe: Schema.Attribute.String;
+    visual: Schema.Attribute.Media<'images'>;
   };
 }
 
@@ -940,69 +795,58 @@ export interface SharedSeo extends Struct.ComponentSchema {
   };
 }
 
-export interface SharedTeamMember extends Struct.ComponentSchema {
-  collectionName: 'components_shared_team_members';
+export interface SharedStatement extends Struct.ComponentSchema {
+  collectionName: 'components_shared_statements';
   info: {
-    description: 'Team member card item for consultation panels';
-    displayName: 'Team Member';
+    displayName: 'Statement';
   };
   attributes: {
-    avatar: Schema.Attribute.Component<'shared.media', false>;
-    fullName: Schema.Attribute.String &
+    explanation: Schema.Attribute.Text;
+    label: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
+        maxLength: 80;
       }>;
-    role: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 140;
-      }>;
+    statement: Schema.Attribute.Text & Schema.Attribute.Required;
   };
 }
 
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
-      'blocks.about-mosaic': BlocksAboutMosaic;
-      'blocks.booking-meeting': BlocksBookingMeeting;
-      'blocks.brand-proof-grid': BlocksBrandProofGrid;
       'blocks.cta-banner': BlocksCtaBanner;
-      'blocks.dashboard-showcase': BlocksDashboardShowcase;
-      'blocks.faq': BlocksFaq;
-      'blocks.feature-mosaic': BlocksFeatureMosaic;
       'blocks.hero': BlocksHero;
       'blocks.hero-minimal': BlocksHeroMinimal;
-      'blocks.packages': BlocksPackages;
-      'blocks.persona-grid': BlocksPersonaGrid;
-      'blocks.problem': BlocksProblem;
-      'blocks.process-timeline': BlocksProcessTimeline;
-      'blocks.proof': BlocksProof;
       'blocks.rich-text': BlocksRichText;
-      'blocks.solution-system': BlocksSolutionSystem;
-      'blocks.trust-row': BlocksTrustRow;
       'layout.footer': LayoutFooter;
       'layout.footer-column': LayoutFooterColumn;
       'layout.header': LayoutHeader;
-      'shared.about-mosaic-member': SharedAboutMosaicMember;
-      'shared.brand-proof-case-study-panel': SharedBrandProofCaseStudyPanel;
-      'shared.brand-proof-consultation-panel': SharedBrandProofConsultationPanel;
-      'shared.brand-proof-industries-panel': SharedBrandProofIndustriesPanel;
-      'shared.brand-proof-performance-panel': SharedBrandProofPerformancePanel;
-      'shared.brand-proof-satisfaction-panel': SharedBrandProofSatisfactionPanel;
-      'shared.brand-proof-strategy-panel': SharedBrandProofStrategyPanel;
-      'shared.brand-proof-testimonial-panel': SharedBrandProofTestimonialPanel;
+      'section.animated-text': SectionAnimatedText;
+      'section.book-call': SectionBookCall;
+      'section.diagnosis': SectionDiagnosis;
+      'section.editorial-content': SectionEditorialContent;
+      'section.faq': SectionFaq;
+      'section.feature-list': SectionFeatureList;
+      'section.final-cta': SectionFinalCta;
+      'section.hero': SectionHero;
+      'section.outcomes': SectionOutcomes;
+      'section.principles': SectionPrinciples;
+      'section.problem': SectionProblem;
+      'section.process': SectionProcess;
+      'section.service-overview': SectionServiceOverview;
+      'section.statement-pair': SectionStatementPair;
+      'section.system-flow': SectionSystemFlow;
+      'section.timeline': SectionTimeline;
+      'shared.cta': SharedCta;
+      'shared.diagnosis-example': SharedDiagnosisExample;
       'shared.faq-item': SharedFaqItem;
-      'shared.feature-mosaic-card': SharedFeatureMosaicCard;
-      'shared.industry-item': SharedIndustryItem;
       'shared.link': SharedLink;
       'shared.list-item': SharedListItem;
       'shared.media': SharedMedia;
       'shared.metric': SharedMetric;
-      'shared.package-item': SharedPackageItem;
-      'shared.persona-card': SharedPersonaCard;
       'shared.process-step': SharedProcessStep;
       'shared.seo': SharedSeo;
-      'shared.team-member': SharedTeamMember;
+      'shared.statement': SharedStatement;
     }
   }
 }

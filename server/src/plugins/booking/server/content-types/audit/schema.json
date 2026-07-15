@@ -1,0 +1,16 @@
+{
+  "kind": "collectionType",
+  "collectionName": "booking_audits",
+  "info": { "singularName": "audit", "pluralName": "audits", "displayName": "Booking Audit" },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": { "content-manager": { "visible": false }, "content-type-builder": { "visible": false } },
+  "attributes": {
+    "reservationId": { "type": "integer", "required": true },
+    "meetingId": { "type": "integer" },
+    "leadId": { "type": "integer", "required": true },
+    "action": { "type": "string", "required": true },
+    "actor": { "type": "string", "required": true },
+    "requestId": { "type": "string" },
+    "metadata": { "type": "json" }
+  }
+}

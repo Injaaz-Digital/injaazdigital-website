@@ -10,6 +10,10 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-type-builder": { "visible": false }
+  },
   "attributes": {
     "name": { "type": "string" },
     "fullName": { "type": "string" },
@@ -56,6 +60,10 @@
     "sourcePage": { "type": "string" },
     "ctaSource": { "type": "string" },
     "serviceInterest": { "type": "string" },
+    "questionsBeforeBookingEnabled": { "type": "boolean", "default": true },
+    "qualificationThreshold": { "type": "integer", "default": 8 },
+    "stepperKey": { "type": "string" },
+    "stepperVersion": { "type": "integer" },
     "meetingDate": { "type": "datetime" },
     "meetingLink": { "type": "string" },
     "notes": { "type": "text" },

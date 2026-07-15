@@ -16,6 +16,17 @@
       "repeatable": true,
       "min": 1
     },
+    "servicesLabel": {
+      "type": "string",
+      "default": "Services",
+      "maxLength": 40
+    },
+    "serviceLinks": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": true,
+      "max": 8
+    },
     "primaryCta": {
       "type": "component",
       "component": "shared.link",

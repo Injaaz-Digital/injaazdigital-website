@@ -47,7 +47,7 @@ export function CmsHero({ block = {}, locale = 'en', onNavigate }) {
   };
 
   return (
-    <section className="relative isolate overflow-hidden pb-14 pt-[var(--header-offset)] max-sm:pb-6 max-sm:pt-[calc(var(--header-offset)-0.9rem)] sm:pb-16 lg:pb-20">
+    <section className="relative isolate overflow-hidden min-h-screen flex flex-col justify-center pb-14 pt-[var(--header-offset)] max-sm:pb-6 max-sm:pt-[calc(var(--header-offset)-0.9rem)] sm:pb-16 lg:pb-20">
       <HeroAtmosphere />
 
       <div className="layout-container--hero relative">

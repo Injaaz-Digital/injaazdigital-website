@@ -5,18 +5,10 @@ const BARE_DOMAIN_URL_REGEX =
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'http://127.0.0.1:3000';
 
-export const CMS_SINGLE_TYPE_BY_PATH = Object.freeze({
-  '/': 'home-page',
-  '/growth-engine': 'growth-engine-page',
-  '/web-studio': 'web-studio-page',
-  '/about': 'about-page',
-  '/blog': 'blog-page',
-});
+export const CMS_SINGLE_TYPE_BY_PATH = Object.freeze({});
 
 export const STATIC_SITE_PATHS = Object.freeze([
   '/',
-  '/growth-engine',
-  '/web-studio',
   '/about',
   '/blog',
   '/book-call',

@@ -148,7 +148,7 @@ export default function ProcessBlock({ block, locale, onNavigate }) {
             <CmsLinkButton
               link={block.primaryCta}
               onNavigate={onNavigate}
-              className="process-scroll-stage__cta h-12 rounded-[18px] px-8 text-sm bg-brand-gradient border-transparent text-white shadow-[0_22px_42px_rgba(16,88,203,0.22)] font-semibold"
+              className="process-scroll-stage__cta h-12 rounded-[28px] px-8 text-sm bg-brand-gradient border-transparent text-white shadow-[0_22px_42px_rgba(16,88,203,0.22)] font-semibold"
             />
           ) : null}
 

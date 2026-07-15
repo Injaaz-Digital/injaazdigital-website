@@ -2,23 +2,18 @@
 
 const UIDS = {
   siteSetting: 'api::site-setting.site-setting',
-  homePage: 'api::home-page.home-page',
-  growthEnginePage: 'api::growth-engine-page.growth-engine-page',
-  webStudioPage: 'api::web-studio-page.web-studio-page',
-  aboutPage: 'api::about-page.about-page',
   blogPage: 'api::blog-page.blog-page',
+  calendarSetting: 'api::calendar-setting.calendar-setting',
+  leadQuestion: 'api::lead-question.lead-question',
   page: 'api::page.page',
   article: 'api::article.article',
   author: 'api::author.author',
   tag: 'api::tag.tag',
+  offer: 'api::offer.offer',
 };
 
 const SINGLE_TYPE_UIDS = [
   UIDS.siteSetting,
-  UIDS.homePage,
-  UIDS.growthEnginePage,
-  UIDS.webStudioPage,
-  UIDS.aboutPage,
   UIDS.blogPage,
 ];
 

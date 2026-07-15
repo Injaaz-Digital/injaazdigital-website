@@ -79,6 +79,9 @@ export const fetchFirstBySlug = async (contentType, locale, slug, params = {}) =
   return entries[0] || null;
 };
 
+export const getPageBySlug = async (slug, locale, params = {}) =>
+  fetchFirstBySlug('pages', locale, slug, params);
+
 const hasMeaningfulData = (value) => {
   if (Array.isArray(value)) return value.length > 0;
   return Boolean(value);
