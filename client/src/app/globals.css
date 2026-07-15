@@ -739,12 +739,12 @@
   }
 
   .animated-text-statement {
-    font-family: var(--font-editorial) !important;
+    font-family: var(--font-geist), var(--font-manrope), sans-serif !important;
     font-weight: 500;
-    line-height: 1.09;
-    letter-spacing: -0.026em;
-    word-spacing: 0.035em;
-    text-wrap: balance;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    word-spacing: 0.02em;
+    text-wrap: pretty;
     text-rendering: optimizeLegibility;
     font-feature-settings: "liga" 1, "kern" 1, "clig" 1, "dlig" 1;
     font-kerning: normal;
@@ -752,8 +752,8 @@
 
   [dir="rtl"] .animated-text-statement {
     font-family: var(--font-rtl) !important;
-    font-weight: 600;
-    line-height: 1.2;
+    font-weight: 500;
+    line-height: 1.18;
     letter-spacing: 0;
     word-spacing: 0.06em;
   }

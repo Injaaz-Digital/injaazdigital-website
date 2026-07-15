@@ -4,11 +4,10 @@ import { Fragment, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import cx from '@/lib/utils/cx';
 
-const SIZE_CLASS = {
-  medium: 'text-[clamp(1.8rem,4vw,3.6rem)]',
-  large: 'text-[clamp(2.25rem,5.4vw,5.4rem)]',
-  display: 'text-[clamp(2.7rem,6.4vw,6.5rem)]',
-};
+const TEXT_CLASS =
+  '![font-family:var(--font-domaine),Iowan_Old_Style,Times_New_Roman,serif] font-medium leading-[1.08] tracking-[-0.016em] text-[clamp(1.65rem,4.2vw,3rem)] text-black';
+const TEXT_CLASS_RTL =
+  '![font-family:var(--font-ibm-arabic),sans-serif] font-semibold leading-[1.14] tracking-normal text-[clamp(1.65rem,4.2vw,3rem)] text-black';
 
 const normalizeText = (value) => (typeof value === 'string' ? value.trim().replace(/\s+/g, ' ') : '');
 
@@ -56,25 +55,26 @@ export default function AnimatedTextBlock({ block, locale = 'en' }) {
         media.add('(prefers-reduced-motion: no-preference)', () => {
           const style = block?.animationStyle || 'progressive-opacity';
           const from = style === 'word-reveal'
-            ? { opacity: 0.12, yPercent: 45 }
+            ? { opacity: 0.1, filter: 'blur(5px)', yPercent: 18 }
             : style === 'line-reveal'
-              ? { opacity: 0.16, yPercent: 24 }
-              : { opacity: 0.14 };
+              ? { opacity: 0.1, filter: 'blur(4px)', yPercent: 10 }
+              : { opacity: 0.1, filter: 'blur(4px)' };
 
           gsap.fromTo(nodes, from, {
             opacity: 1,
+            filter: 'blur(0px)',
             yPercent: 0,
-            duration: 0.26,
+            duration: 0.2,
             stagger: {
-              each: 0.12,
+              each: 0.1,
               from: 'start',
             },
             ease: 'none',
             scrollTrigger: {
               trigger: section,
-              start: 'top 82%',
-              end: block?.sticky ? 'bottom 38%' : 'bottom 56%',
-              scrub: 0.55,
+              start: block?.sticky ? 'top 75%' : 'top 75%',
+              end: block?.sticky ? 'bottom bottom' : 'bottom 25%',
+              scrub: 0.45,
               invalidateOnRefresh: true,
             },
           });
@@ -92,29 +92,31 @@ export default function AnimatedTextBlock({ block, locale = 'en' }) {
 
   if (!text) return null;
 
-  const contrast = block?.theme === 'contrast';
   return (
     <section
       ref={sectionRef}
       dir={isArabic ? 'rtl' : 'ltr'}
       className={cx(
-        'relative isolate px-4 py-28 sm:px-6 sm:py-36 lg:py-44',
-        block?.sticky && 'min-h-[125vh]',
-        block?.theme === 'muted' && 'bg-[#f2f6f9]',
-        contrast && 'bg-[#07182c] text-white'
+        'pt-16 sm:pt-24 pb-4 sm:pb-8',
+        block?.sticky && 'min-h-[80svh] py-0'
       )}
     >
-      <div className={cx('mx-auto max-w-[1120px]', block?.sticky && 'lg:sticky lg:top-[24vh]')}>
+      <div
+        className={cx(
+          'mx-auto max-w-[1120px]',
+          block?.sticky && 'sticky top-0 flex min-h-[50svh] flex-col justify-center py-6 sm:py-10'
+        )}
+      >
         {block?.eyebrow ? (
-          <p className={cx('mb-8 text-xs font-semibold uppercase tracking-[0.18em] sm:mb-10', contrast ? 'text-[#9eb9d5]' : 'text-[#35628f]')}>
+          <p className="mb-6 text-xs font-semibold uppercase tracking-[0.18em] text-[#35628f]">
             {block.eyebrow}
           </p>
         ) : null}
         <p
           aria-label={text}
           className={cx(
-            'animated-text-statement max-w-[22ch]',
-            SIZE_CLASS[block?.size] || SIZE_CLASS.large,
+            'max-w-[40ch] sm:max-w-[50ch]',
+            isArabic ? TEXT_CLASS_RTL : TEXT_CLASS,
             block?.alignment === 'center' && 'mx-auto text-center'
           )}
         >
@@ -123,7 +125,10 @@ export default function AnimatedTextBlock({ block, locale = 'en' }) {
               <Fragment key={`${word}-${index}`}>
                 <span
                   data-animated-word
-                  className={cx('inline-block will-change-transform', highlighted && (contrast ? 'text-[#7fc5ff]' : 'text-[#084299]'))}
+                  className={cx(
+                    'inline-block will-change-[filter,opacity,transform] [transition:filter_0.2s_ease-out,opacity_0.2s_ease-out]',
+                    highlighted && 'text-[#084299]'
+                  )}
                 >
                   {word}
                 </span>
@@ -143,10 +148,8 @@ AnimatedTextBlock.propTypes = {
     text: PropTypes.string.isRequired,
     highlightedText: PropTypes.string,
     alignment: PropTypes.oneOf(['left', 'center']),
-    size: PropTypes.oneOf(['medium', 'large', 'display']),
     animationStyle: PropTypes.oneOf(['word-reveal', 'line-reveal', 'progressive-opacity']),
     sticky: PropTypes.bool,
-    theme: PropTypes.oneOf(['default', 'muted', 'contrast']),
   }).isRequired,
   locale: PropTypes.oneOf(['en', 'ar']),
 };

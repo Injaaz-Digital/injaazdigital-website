@@ -891,10 +891,10 @@ const homepageEn = {
       text: 'Injaaz is not activity. It is not movement without direction. It is the moment intention takes form and effort becomes progress. Digital is the structure through which that progress can be designed, measured, repeated, and improved.',
       highlightedText: 'effort becomes progress',
       alignment: 'left',
-      size: 'large',
-      animationStyle: 'word-reveal',
-      sticky: false,
-      theme: 'default',
+      size: 'medium',
+      animationStyle: 'progressive-opacity',
+      sticky: true,
+      theme: 'contrast',
     },
     {
       __component: 'section.problem',
@@ -1109,7 +1109,7 @@ const homepageAr = {
   },
   blocks: [
     { __component: 'blocks.hero', eyebrow: 'أنظمة رقمية لتقدم ذي معنى', title: 'نصمم الأنظمة التي تتحول عبرها النية إلى إنجاز.', subtitle: 'تجمع إنجاز ديجيتال الاستراتيجية والتقنية والتصميم والبيانات والتنفيذ في بنية واحدة، ليتحول النشاط المتفرق إلى تقدم واضح وقابل للقياس.', primaryCta: cta('ابدأ من النظام', '/book-call'), secondaryCta: cta('استكشف عملنا', '#services', 'secondary'), align: 'left' },
-    { __component: 'section.animated-text', eyebrow: 'معنى إنجاز', text: 'إنجاز ليس مجرد نشاط. وليس حركة بلا اتجاه. إنه اللحظة التي تتخذ فيها النية شكلا ويتحول الجهد إلى تقدم. والرقمي هو البنية التي تسمح بتصميم هذا التقدم وقياسه وتكراره وتحسينه.', highlightedText: 'يتحول الجهد إلى تقدم', alignment: 'left', size: 'large', animationStyle: 'word-reveal', sticky: false, theme: 'default' },
+    { __component: 'section.animated-text', eyebrow: 'معنى إنجاز', text: 'إنجاز ليس مجرد نشاط. وليس حركة بلا اتجاه. إنه اللحظة التي تتخذ فيها النية شكلا ويتحول الجهد إلى تقدم. والرقمي هو البنية التي تسمح بتصميم هذا التقدم وقياسه وتكراره وتحسينه.', highlightedText: 'يتحول الجهد إلى تقدم', alignment: 'left', size: 'medium', animationStyle: 'progressive-opacity', sticky: true, theme: 'contrast' },
     { __component: 'section.problem', eyebrow: 'التوتر المركزي', heading: 'المزيد من النشاط لا يصنع دائما المزيد من التقدم.', description: 'قبل أن نضيف المزيد، يجب أن نفهم التدفق.', items: [item('مزيد من الإعلان', 'لا يصلح عرضا ضعيفا.'), item('مزيد من الزيارات', 'لا يصلح تموضعا غير واضح.'), item('مزيد من الأدوات', 'لا يصلح عملية مكسورة.'), item('مزيد من البيانات', 'لا يصنع قرارا أفضل وحده.'), item('مزيد من التقنية', 'قد يزيد التعقيد عند غياب نظام واضح.')] },
     { __component: 'section.system-flow', eyebrow: 'كل شركة هي نظام', heading: 'كل شركة هي نظام.', description: 'الشركة ليست أقساما وحملات وصفحات وأدوات منفصلة، بل نظام حي من الناس والقرارات والعمليات والتقنية والتغذية الراجعة.', steps: ['المدخلات', 'القرارات', 'الأفعال', 'النتائج', 'التغذية الراجعة', 'التحسين'].map((title) => item(title, '')), signals: ['السوق', 'العرض', 'التواصل', 'تجربة العميل', 'التقنية', 'العمليات', 'القياس', 'القرارات'].map((title) => item(title, '')), closingStatement: 'عندما يتغير جزء، يستجيب النظام كله.', variant: 'system' },
     servicesAr(),

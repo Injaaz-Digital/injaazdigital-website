@@ -5,7 +5,7 @@ const { UIDS, SINGLE_TYPE_UIDS } = require('./seed-injaaz/registry');
 const { getJourneyPages, getOffers } = require('./seed-injaaz/journey-content');
 
 const SEED_NAMESPACE = 'injaaz-bootstrap';
-const SEED_VERSION = process.env.SEED_INJAAZ_BOOTSTRAP_VERSION || 'v10';
+const SEED_VERSION = process.env.SEED_INJAAZ_BOOTSTRAP_VERSION || 'v11';
 const FORCE_SEED = process.argv.includes('--force') || process.env.SEED_INJAAZ_FORCE === 'true';
 const ACTIVE_LOCALES = ['en', 'ar'];
 const DEFAULT_LOCALE = 'en';
