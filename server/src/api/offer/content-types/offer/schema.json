@@ -33,7 +33,7 @@
     "primaryCtaLabel": { "type": "string", "required": true, "maxLength": 80, "pluginOptions": { "i18n": { "localized": true } } },
     "primaryCtaHref": { "type": "string", "required": true },
     "displayOrder": { "type": "integer", "default": 0, "min": 0 },
-    "isActive": { "type": "boolean", "default": false },
+    "isActive": { "type": "boolean", "default": true },
     "featuredOnHomepage": { "type": "boolean", "default": false },
     "seo": { "type": "component", "component": "shared.seo", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } }
   }

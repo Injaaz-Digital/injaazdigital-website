@@ -2,7 +2,7 @@
   "collectionName": "components_section_service_overviews",
   "info": {
     "displayName": "Service Overview",
-    "description": "High-level service cards"
+    "description": "Select Offer entries to render as service cards"
   },
   "options": {},
   "attributes": {
@@ -24,10 +24,9 @@
       "default": "homepage"
     },
     "services": {
-      "type": "component",
-      "component": "shared.list-item",
-      "repeatable": true,
-      "max": 4
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::offer.offer"
     }
   }
 }

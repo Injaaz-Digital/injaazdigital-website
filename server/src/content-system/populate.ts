@@ -91,7 +91,15 @@ const BLOCK_POPULATE: Record<string, QueryShape> = {
   },
   [BLOCK_UID.sectionServiceOverview]: {
     populate: {
-      services: true,
+      services: {
+        populate: {
+          capabilities: true,
+          flowSteps: true,
+          icon: mediaPopulate,
+          visual: mediaPopulate,
+          seo: seoPopulate,
+        },
+      },
     },
   },
   [BLOCK_UID.sectionFeatureList]: {

@@ -43,7 +43,7 @@ The CMS flow is centralized in `src/features/cms`:
 - Block renderer: `src/features/cms/renderer/CmsBlocksRenderer.jsx`
 - Block registry: `src/features/cms/blocks/registry.jsx`
 
-Block components are split by UID in `src/features/cms/blocks/*` and keyed by `__component` values like `blocks.hero`, `blocks.faq`, etc.
+Every frontend CMS renderer lives in `src/features/cms/blocks/*` and is keyed by its Strapi `__component` value in the registry. The backend UID prefix (`section.*` or `blocks.*`) is a stable CMS identifier and does not create a separate frontend folder or component category.
 
 ## 5) Data fetching + normalization
 

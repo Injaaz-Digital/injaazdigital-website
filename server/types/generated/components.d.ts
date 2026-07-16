@@ -498,7 +498,7 @@ export interface SectionProcess extends Struct.ComponentSchema {
 export interface SectionServiceOverview extends Struct.ComponentSchema {
   collectionName: 'components_section_service_overviews';
   info: {
-    description: 'High-level service cards';
+    description: 'Select Offer entries to render as service cards';
     displayName: 'Service Overview';
   };
   attributes: {
@@ -514,13 +514,7 @@ export interface SectionServiceOverview extends Struct.ComponentSchema {
       }>;
     placement: Schema.Attribute.Enumeration<['homepage', 'related']> &
       Schema.Attribute.DefaultTo<'homepage'>;
-    services: Schema.Attribute.Component<'shared.list-item', true> &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 4;
-        },
-        number
-      >;
+    services: Schema.Attribute.Relation<'manyToMany', 'api::offer.offer'>;
   };
 }
 

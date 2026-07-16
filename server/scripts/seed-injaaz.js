@@ -5,7 +5,7 @@ const { UIDS, SINGLE_TYPE_UIDS } = require('./seed-injaaz/registry');
 const { getJourneyPages, getOffers } = require('./seed-injaaz/journey-content');
 
 const SEED_NAMESPACE = 'injaaz-bootstrap';
-const SEED_VERSION = process.env.SEED_INJAAZ_BOOTSTRAP_VERSION || 'v11';
+const SEED_VERSION = process.env.SEED_INJAAZ_BOOTSTRAP_VERSION || 'v13';
 const FORCE_SEED = process.argv.includes('--force') || process.env.SEED_INJAAZ_FORCE === 'true';
 const ACTIVE_LOCALES = ['en', 'ar'];
 const DEFAULT_LOCALE = 'en';
@@ -1472,6 +1472,25 @@ async function deleteObsoletePages(strapi) {
   }
 }
 
+async function getHomepageOfferRelationsByLocale(strapi) {
+  const rows = await strapi.db.query(UIDS.offer).findMany({
+    select: ['documentId', 'locale', 'displayOrder'],
+    where: {
+      isActive: true,
+      featuredOnHomepage: true,
+      publishedAt: { $notNull: true },
+    },
+    orderBy: [{ displayOrder: 'asc' }, { id: 'asc' }],
+  });
+
+  return Object.fromEntries(ACTIVE_LOCALES.map((locale) => [
+    locale,
+    (rows || [])
+      .filter((offerEntry) => offerEntry.locale === locale && offerEntry.documentId)
+      .map((offerEntry) => ({ documentId: offerEntry.documentId, locale })),
+  ]));
+}
+
 async function ensureCmsContent(strapi) {
   await upsertSingleTypeLocales(strapi, UIDS.siteSetting, siteSettingsByLocale);
   await upsertSingleType(strapi, UIDS.calendarSetting, calendarSettingData);
@@ -1479,6 +1498,8 @@ async function ensureCmsContent(strapi) {
   for (const entry of offersByLocale[DEFAULT_LOCALE]) {
     await upsertLocalizedEntry(strapi, UIDS.offer, entry, offersByLocale, 'slug');
   }
+
+  const homepageOfferRelationsByLocale = await getHomepageOfferRelationsByLocale(strapi);
 
   let defaultStepper = await strapi.db.query('plugin::booking.stepper').findOne({
     where: { key: 'default-website-qualification' },
@@ -1500,7 +1521,23 @@ async function ensureCmsContent(strapi) {
 
   const stepperPagesByLocale = Object.fromEntries(Object.entries(pagesByLocale).map(([locale, localePages]) => [
     locale,
-    localePages.map((page) => ({ ...page, blocks: page.blocks.map((block) => block.__component === 'section.book-call' ? { ...block, stepper: defaultStepper.id } : block) })),
+    localePages.map((page) => ({
+      ...page,
+      blocks: page.blocks.map((block) => {
+        if (block.__component === 'section.book-call') {
+          return { ...block, stepper: defaultStepper.id };
+        }
+
+        if (block.__component === 'section.service-overview') {
+          return {
+            ...block,
+            services: { connect: homepageOfferRelationsByLocale[locale] || [] },
+          };
+        }
+
+        return block;
+      }),
+    })),
   ]));
 
   for (const page of stepperPagesByLocale[DEFAULT_LOCALE]) {

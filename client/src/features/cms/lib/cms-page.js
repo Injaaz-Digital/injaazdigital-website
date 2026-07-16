@@ -1,7 +1,6 @@
 import { cache } from 'react';
 import {
   fetchContentIndex,
-  fetchCollection,
   fetchFirstBySlug,
   fetchSingleType,
   fetchWithLocaleFallback,
@@ -87,6 +86,20 @@ PAGE_BLOCKS_ON_POPULATE['section.process'] = {
     steps: {
       populate: {
         visual: true,
+      },
+    },
+  },
+};
+
+PAGE_BLOCKS_ON_POPULATE['section.service-overview'] = {
+  populate: {
+    services: {
+      populate: {
+        capabilities: true,
+        flowSteps: true,
+        icon: true,
+        visual: true,
+        seo: { populate: '*' },
       },
     },
   },
@@ -441,17 +454,19 @@ const normalizeOffer = (offer) => {
   };
 };
 
-const hydrateOfferBlocks = (pageData, offers) => {
+const normalizeOfferBlocks = (pageData) => {
   if (!pageData || !Array.isArray(pageData.blocks)) return pageData;
-  const activeOffers = asCollection(offers)
-    .map(normalizeOffer)
-    .filter(Boolean)
-    .sort((left, right) => left.displayOrder - right.displayOrder);
 
   return {
     ...pageData,
     blocks: pageData.blocks.map((block) => block?.__component === 'section.service-overview'
-      ? { ...block, services: activeOffers }
+      ? {
+          ...block,
+          services: asCollection(block.services)
+            .map(normalizeOffer)
+            .filter(Boolean)
+            .sort((left, right) => left.displayOrder - right.displayOrder),
+        }
       : block),
   };
 };
@@ -919,34 +934,15 @@ async function loadGenericSlugPage(pathname, locale, siteSettingPromise) {
     return buildLayoutOnlyData(siteSetting);
   }
 
-  const [result, offersResult, siteSetting] = await Promise.all([
+  const [result, siteSetting] = await Promise.all([
     fetchWithLocaleFallback(
       (activeLocale) => getPageBySlug(slug, activeLocale, { populate: PAGE_COLLECTION_POPULATE }),
       locale
     ),
-    fetchWithLocaleFallback(
-      (activeLocale) => fetchCollection('offers', activeLocale, {
-        filters: {
-          isActive: { $eq: true },
-          featuredOnHomepage: { $eq: true },
-        },
-        sort: ['displayOrder:asc'],
-        pagination: { pageSize: 20 },
-        populate: {
-          capabilities: true,
-          flowSteps: true,
-          icon: true,
-          visual: true,
-          seo: { populate: '*' },
-        },
-      }),
-      locale,
-      { acceptEmpty: true }
-    ),
     siteSettingPromise,
   ]);
 
-  const pageData = hydrateOfferBlocks(mergePageWithSiteLayout(result.data, siteSetting.data), offersResult.data);
+  const pageData = normalizeOfferBlocks(mergePageWithSiteLayout(result.data, siteSetting.data));
 
   return {
     data: await hydrateBookCallBlocks(pageData, locale, pathname),

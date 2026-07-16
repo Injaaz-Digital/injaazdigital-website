@@ -1105,7 +1105,7 @@ export interface ApiOfferOffer extends Struct.CollectionTypeSchema {
       ['growth-dashboard', 'website-build', 'system']
     > &
       Schema.Attribute.DefaultTo<'system'>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::offer.offer'>;
     name: Schema.Attribute.String &
