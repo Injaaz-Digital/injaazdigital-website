@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import cx from '@/lib/utils/cx';
+import { cn as cx } from '@/lib/utils';
 import { asArray, CONTAINER, EYEBROW, TITLE } from './editorialShared';
 
 export default function TimelineBlock({ block }) {
@@ -26,4 +26,3 @@ export default function TimelineBlock({ block }) {
 }
 
 TimelineBlock.propTypes = { block: PropTypes.object };
-

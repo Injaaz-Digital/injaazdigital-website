@@ -1,14 +1,13 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
-import Button from '@/shared/ui/Button';
+import { BUTTON_SIZES, BUTTON_VARIANTS } from '@/shared/ui/Button';
+import { cn as cx } from '@/lib/utils';
 import { normalizeMedia } from '@/lib/strapi';
 
 export const BLOCK_SECTION_IDS = {
   'blocks.persona-grid': 'who-it-is-for',
   'blocks.problem': 'problem',
-  'blocks.solution-system': 'solution-system',
-  'blocks.process-timeline': 'how-it-works',
-  'blocks.packages': 'packages',
   'blocks.faq': 'faq',
 };
 
@@ -201,35 +200,14 @@ ProcessVisual.propTypes = {
   locale: PropTypes.oneOf(['en', 'ar']).isRequired,
 };
 
-export function CmsLinkButton({ link, onNavigate, className, size = 'md' }) {
+export function CmsLinkButton({ link, className, size = 'md' }) {
   if (!link?.label || !link?.url) {
     return null;
   }
 
-  const handleClick = () => {
-    if (link.isExternal) {
-      window.open(link.url, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    if (onNavigate) {
-      onNavigate(link.url);
-      return;
-    }
-
-    window.location.href = link.url;
-  };
-
-  return (
-    <Button
-      variant={linkStyleToVariant(link.style)}
-      size={size}
-      onClick={handleClick}
-      className={className}
-    >
-      {link.label}
-    </Button>
-  );
+  const classes = cx('inline-flex items-center justify-center rounded-full corner-squircle font-normal tracking-[0.01em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/45', BUTTON_VARIANTS[linkStyleToVariant(link.style)], BUTTON_SIZES[size], className);
+  if (link.isExternal) return <a href={link.url} target="_blank" rel="noopener noreferrer" className={classes}>{link.label}</a>;
+  return <Link href={link.url} className={classes}>{link.label}</Link>;
 }
 
 CmsLinkButton.propTypes = {
@@ -239,7 +217,6 @@ CmsLinkButton.propTypes = {
     style: PropTypes.string,
     isExternal: PropTypes.bool,
   }),
-  onNavigate: PropTypes.func,
   className: PropTypes.string,
   size: PropTypes.oneOf(['sm', 'md', 'lg']),
 };

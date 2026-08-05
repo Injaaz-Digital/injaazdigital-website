@@ -21,7 +21,8 @@ const loadStoredSession = () => {
     }
 
     const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== 'object') {
+    if (!parsed || typeof parsed !== 'object' || Number(parsed.expiresAt || 0) <= Date.now()) {
+      window.localStorage.removeItem(BOOK_CALL_SESSION_STORAGE_KEY);
       return null;
     }
 
@@ -41,7 +42,15 @@ const persistSession = (value) => {
     return;
   }
 
-  window.localStorage.setItem(BOOK_CALL_SESSION_STORAGE_KEY, JSON.stringify(value));
+  const opaqueResumeState = {
+    leadId: value.leadId,
+    sessionToken: value.sessionToken,
+    currentStep: Number(value.currentStep || 0),
+    stepperKey: value.stepperKey,
+    stepperVersion: Number(value.stepperVersion || 0),
+    expiresAt: Number(value.expiresAt || (Date.now() + 24 * 60 * 60 * 1000)),
+  };
+  window.localStorage.setItem(BOOK_CALL_SESSION_STORAGE_KEY, JSON.stringify(opaqueResumeState));
 };
 
 export function useLeadSession({ sourcePage, locale = 'en', stepperKey = '', stepperVersion = 0 }) {
@@ -83,6 +92,7 @@ export function useLeadSession({ sourcePage, locale = 'en', stepperKey = '', ste
       currentStep: 0,
       stepperKey: created?.stepperKey,
       stepperVersion: created?.stepperVersion,
+      expiresAt: Number(created?.expiresAt) || (Date.now() + 24 * 60 * 60 * 1000),
     };
 
     setSession(nextSession);

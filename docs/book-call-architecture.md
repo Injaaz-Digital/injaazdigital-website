@@ -476,4 +476,11 @@ Structured error codes used by the frontend:
 - Google OAuth client secret and refresh token must stay in `server/.env`.
 - The frontend must never receive Google credentials.
 - Free/busy calls return busy windows only; the UI must not show private calendar event details.
-- Admin routes are MVP-only and gated by `ENABLE_INTERNAL_ADMIN`; add real authentication and authorization before production.
+- Leads and meetings are administered through Strapi's own admin panel; the Next.js frontend does not expose an administrative dashboard.
+# Booking service ownership
+
+Booking runtime data is owned by `/Users/ayman/ae-elhamiani/content-analyzer`, not by the Strapi Injaaz Cal plugin. Strapi remains responsible for editorial book-call copy and for selecting a stable flow key on the CMS block.
+
+The browser calls the same-origin Next.js `/api/booking/*` route. That route forwards only an allowlisted public-booking surface to `CONTENT_ANALYZER_API_URL` and adds the server-only `CONTENT_ANALYZER_BOOKING_KEY`. Flow drafts, scoring rules, and operational APIs are never proxied to the public browser.
+
+The old plugin is retained temporarily as a rollback and export source. Use `server/scripts/export-booking-legacy.js` with the content-analyzer importer before disabling it.

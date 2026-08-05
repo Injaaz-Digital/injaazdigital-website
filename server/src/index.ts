@@ -128,6 +128,8 @@ export default {
       const publicReadActions = [
         `${CONTENT_UID.siteSetting}.find`,
         `${CONTENT_UID.blogPage}.find`,
+        `${CONTENT_UID.homePage}.find`,
+        `${CONTENT_UID.aboutPage}.find`,
         `${CONTENT_UID.page}.find`,
         `${CONTENT_UID.page}.findOne`,
         `${CONTENT_UID.article}.find`,
@@ -136,6 +138,8 @@ export default {
         `${CONTENT_UID.author}.findOne`,
         `${CONTENT_UID.tag}.find`,
         `${CONTENT_UID.tag}.findOne`,
+        `${CONTENT_UID.category}.find`,
+        `${CONTENT_UID.category}.findOne`,
         `${CONTENT_UID.offer}.find`,
         `${CONTENT_UID.offer}.findOne`,
       ];

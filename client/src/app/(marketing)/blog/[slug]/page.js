@@ -1,4 +1,4 @@
-import CmsSiteClient from '@/features/cms/renderer/CmsSiteClient';
+import CmsSiteServer from '@/features/cms/renderer/CmsSiteServer';
 import { loadCmsRoute, loadCmsRouteMetadata } from '@/features/cms/lib/cms-route';
 
 export async function generateMetadata({ params }) {
@@ -15,6 +15,6 @@ export default async function Page({ params }) {
   const { initialLang, cms } = await loadCmsRoute(pathname);
 
   return (
-    <CmsSiteClient route={pathname} initialLang={initialLang} cmsData={cms.data} cmsFallback={cms.fallback} />
+    <CmsSiteServer route={pathname} initialLang={initialLang} cmsData={cms.data} cmsFallback={cms.fallback} />
   );
 }

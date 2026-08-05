@@ -1,26 +1,12 @@
 import PropTypes from 'prop-types';
 import { CmsLinkButton } from './shared';
 
-const DEFAULT_STATS = [
-  { value: '$48.2K', label: 'Pipeline', hint: '+12% vs last month' },
-  { value: '3.84%', label: 'CVR', hint: 'Landing to booked call' },
-  { value: '126', label: 'Qualified leads', hint: 'Last 30 days' },
-  { value: '19', label: 'Closed deals', hint: 'Tracked in CRM' },
-];
-
-const DEFAULT_INSIGHTS = [
-  { title: 'Top segment', description: 'Service brands with structured offers are converting the fastest.' },
-  { title: 'Best channel', description: 'Founder-led organic traffic produces the strongest close rate.' },
-  { title: 'Next move', description: 'Tighten proof near CTA moments and shorten the booking path.' },
-];
-
 const CHART_BAR_HEIGHTS = [42, 58, 76, 62, 94, 72, 116, 88, 134, 104, 148, 118];
 
 export default function DashboardShowcaseBlock({ block, locale, onNavigate }) {
   const isArabic = locale === 'ar';
-  const stats = Array.isArray(block.stats) && block.stats.length > 0 ? block.stats.filter(Boolean).slice(0, 4) : DEFAULT_STATS;
-  const insights =
-    Array.isArray(block.insights) && block.insights.length > 0 ? block.insights.filter(Boolean).slice(0, 4) : DEFAULT_INSIGHTS;
+  const stats = Array.isArray(block.stats) ? block.stats.filter(Boolean).slice(0, 4) : [];
+  const insights = Array.isArray(block.insights) ? block.insights.filter(Boolean).slice(0, 4) : [];
 
   return (
     <section className="section">
@@ -63,14 +49,14 @@ export default function DashboardShowcaseBlock({ block, locale, onNavigate }) {
             <div className="flex items-center justify-between rounded-[32px] corner-squircle border border-white/70 bg-white/80 px-4 py-3 shadow-[0_10px_24px_rgba(8,41,89,0.05)] backdrop-blur-sm">
               <div>
                 <p className="text-[0.72rem] uppercase tracking-[0.2em] text-[#7b92ae]">
-                  {block.chartLabel || (isArabic ? 'أداء الإيرادات' : 'Revenue performance')}
+                  {block.chartLabel || (isArabic ? 'نظرة عامة على الأداء' : 'Performance overview')}
                 </p>
                 <p className="mt-2 text-[1.7rem] font-semibold tracking-[-0.04em] text-[#0a2546]">
-                  {block.chartValue || (isArabic ? '١٢٨ ألف دولار' : '$128K')}
+                  {block.chartValue || '—'}
                 </p>
               </div>
               <div className="rounded-full bg-[#e8f4ff] px-3 py-2 text-sm font-semibold text-[#0b5da8]">
-                {block.chartDelta || (isArabic ? '+١٨٪ هذا الشهر' : '+18% this month')}
+                {block.chartDelta || '—'}
               </div>
             </div>
 

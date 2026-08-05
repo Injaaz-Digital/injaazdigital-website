@@ -44,10 +44,18 @@
     "blocks": {
       "type": "dynamiczone",
       "components": [
-        "blocks.hero-minimal",
-        "blocks.rich-text",
-        "blocks.cta-banner"
+        "blocks.hero-minimal"
       ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "finalCta": {
+      "type": "component",
+      "component": "blocks.final-cta",
+      "repeatable": false,
       "pluginOptions": {
         "i18n": {
           "localized": true

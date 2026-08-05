@@ -1,57 +1,37 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { BLOCK_SECTION_IDS } from './shared';
+import { Plus } from 'lucide-react';
+import { asArray, SECTION_CONTAINER, SectionHeader, SectionShell } from './premiumShared';
 
 export default function FaqBlock({ block, locale }) {
-  const items = Array.isArray(block.items) ? block.items.filter((item) => item?.question) : [];
-  const [activeIndex, setActiveIndex] = useState(0);
+  const items = asArray(block?.items).filter((item) => item?.question && item?.answer);
   const isArabic = locale === 'ar';
 
-  if (items.length === 0) {
-    return null;
-  }
+  if (items.length === 0) return null;
 
   return (
-    <section className="section" id={BLOCK_SECTION_IDS['blocks.faq']}>
-      <div className="layout-content-narrow">
-        <div className="section-head" dir={isArabic ? 'rtl' : 'ltr'} lang={isArabic ? 'ar' : 'en'}>
-          {block.eyebrow ? <p className="section-head-kicker">{block.eyebrow}</p> : null}
-          {block.heading ? (
-            <h2 className="section-title">
-              {block.heading}
-            </h2>
-          ) : null}
-          {block.description ? <p className="section-head-lead">{block.description}</p> : null}
+    <SectionShell tone="soft" id="faq">
+      <div className={SECTION_CONTAINER} dir={isArabic ? 'rtl' : 'ltr'} lang={isArabic ? 'ar' : 'en'}>
+        <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+          <SectionHeader eyebrow={block?.eyebrow} heading={block?.heading} description={block?.description} />
+
+          <div className="border-t border-[#cfd9e2]">
+            {items.map((item, index) => (
+              <details key={`${item.question}-${index}`} className="group border-b border-[#dce3e9] py-5 sm:py-6">
+                <summary className="premium-geist flex cursor-pointer list-none items-center justify-between gap-6 text-base font-semibold tracking-[-0.012em] text-[#111820] [&::-webkit-details-marker]:hidden sm:text-lg">
+                  <span>{item.question}</span>
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[#d5dee7] text-[#084299]">
+                    <Plus className="h-4 w-4 transition-transform duration-300 group-open:rotate-45" aria-hidden="true" />
+                  </span>
+                </summary>
+                <p className="mt-3 max-w-[64ch] whitespace-pre-line pb-1 text-sm leading-7 text-[#5b6c7c] sm:text-[0.94rem]">
+                  {item.answer}
+                </p>
+              </details>
+            ))}
+          </div>
         </div>
       </div>
-
-      <div className="layout-content-narrow mt-[34px] space-y-[13px]">
-        {items.map((item, index) => {
-          const isOpen = activeIndex === index;
-
-          return (
-            <article
-              key={`${item.question}-${index}`}
-              className="overflow-hidden rounded-[30px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-white shadow-[0_10px_24px_rgba(8,41,89,0.05)]"
-            >
-              <button
-                type="button"
-                className="flex w-full items-center justify-between gap-[13px] px-[21px] py-[13px] text-left"
-                onClick={() => setActiveIndex((current) => (current === index ? -1 : index))}
-                aria-expanded={isOpen}
-              >
-                <span className="text-[1rem] font-medium text-[#0a2546]">{item.question}</span>
-                <span className="text-xl leading-none text-[#0b4f8c]">{isOpen ? '−' : '+'}</span>
-              </button>
-
-              {isOpen ? (
-                <div className="border-t border-[rgba(8,66,153,0.08)] px-[21px] py-[13px] text-sm leading-7 text-[#4f6a89]" dangerouslySetInnerHTML={{ __html: item.answer || '' }} />
-              ) : null}
-            </article>
-          );
-        })}
-      </div>
-    </section>
+    </SectionShell>
   );
 }
 
@@ -62,5 +42,5 @@ FaqBlock.propTypes = {
     description: PropTypes.string,
     items: PropTypes.array,
   }).isRequired,
-  locale: PropTypes.oneOf(['en', 'ar']),
+  locale: PropTypes.oneOf(['en', 'ar']).isRequired,
 };

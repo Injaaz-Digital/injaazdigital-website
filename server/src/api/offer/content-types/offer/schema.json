@@ -35,6 +35,13 @@
     "displayOrder": { "type": "integer", "default": 0, "min": 0 },
     "isActive": { "type": "boolean", "default": true },
     "featuredOnHomepage": { "type": "boolean", "default": false },
+    "whoItIsFor": { "type": "component", "component": "shared.list-item", "repeatable": true, "max": 12, "pluginOptions": { "i18n": { "localized": true } } },
+    "whoItIsNotFor": { "type": "component", "component": "shared.list-item", "repeatable": true, "max": 12, "pluginOptions": { "i18n": { "localized": true } } },
+    "problems": { "type": "component", "component": "shared.list-item", "repeatable": true, "max": 12, "pluginOptions": { "i18n": { "localized": true } } },
+    "deliverables": { "type": "component", "component": "shared.list-item", "repeatable": true, "max": 20, "pluginOptions": { "i18n": { "localized": true } } },
+    "successMetrics": { "type": "component", "component": "shared.metric", "repeatable": true, "max": 8 },
+    "faqs": { "type": "component", "component": "shared.faq-item", "repeatable": true, "max": 12, "pluginOptions": { "i18n": { "localized": true } } },
+    "cta": { "type": "component", "component": "shared.link", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
     "seo": { "type": "component", "component": "shared.seo", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } }
   }
 }

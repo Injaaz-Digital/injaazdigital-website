@@ -1,0 +1,11 @@
+{
+  "collectionName": "components_shared_brand_proof_case_studies",
+  "info": { "displayName": "Brand Proof Case Study" },
+  "options": {},
+  "attributes": {
+    "headline": { "type": "string", "maxLength": 180 },
+    "resultLabel": { "type": "string", "maxLength": 180 },
+    "cta": { "type": "component", "component": "shared.link", "repeatable": false },
+    "coverMedia": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
+  }
+}

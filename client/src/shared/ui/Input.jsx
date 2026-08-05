@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import cx from '@/lib/utils/cx';
+import { cn as cx } from '@/lib/utils';
 
 const Input = forwardRef(function Input(
   {

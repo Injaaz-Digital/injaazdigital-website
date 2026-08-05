@@ -30,6 +30,7 @@ export const normalizeQuestions = (questions = []) =>
       helpText: typeof question.helpText === 'string' ? question.helpText : '',
       placeholder: typeof question.placeholder === 'string' ? question.placeholder : '',
       category: typeof question.category === 'string' ? question.category : '',
+      stepKey: typeof question.stepKey === 'string' ? question.stepKey : '',
       options: Array.isArray(question.options) ? question.options.map(normalizeOption).filter(Boolean) : [],
     }))
     .filter((question) => question.title && question.key)

@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_blocks_booking_meetings",
+  "info": {
+    "displayName": "Booking Meeting",
+    "description": "Meeting invitation with benefits and booking link"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "eyebrow": { "type": "string", "maxLength": 80 },
+    "heading": { "type": "string", "required": true, "maxLength": 180 },
+    "description": { "type": "text" },
+    "cardTitle": { "type": "string", "maxLength": 100 },
+    "cardHeading": { "type": "string", "maxLength": 180 },
+    "cardDescription": { "type": "text" },
+    "bookingLink": { "type": "component", "component": "shared.link", "repeatable": false },
+    "benefits": {
+      "type": "component",
+      "component": "shared.list-item",
+      "repeatable": true,
+      "max": 6
+    }
+  }
+}

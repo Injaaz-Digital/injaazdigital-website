@@ -6,6 +6,7 @@
   },
   "options": {},
   "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
     "eyebrow": {
       "type": "string"
     },

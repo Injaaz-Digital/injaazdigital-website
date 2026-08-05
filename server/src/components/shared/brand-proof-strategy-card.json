@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_shared_brand_proof_strategy_cards",
+  "info": { "displayName": "Brand Proof Strategy Card" },
+  "options": {},
+  "attributes": {
+    "badge": { "type": "string", "maxLength": 100 },
+    "headline": { "type": "string", "required": true, "maxLength": 180 },
+    "summary": { "type": "text" },
+    "icon": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "coverMedia": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
+  }
+}

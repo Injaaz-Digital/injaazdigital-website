@@ -9,6 +9,9 @@ import Textarea from '@/shared/ui/Textarea';
 import RadioGroup from '@/shared/ui/RadioGroup';
 import { getLocaleDirection, normalizeLocale } from '@/lib/i18n/locale';
 import { createLeadSubmission } from '@/lib/strapi';
+import { INITIAL_HOMEWORK_DATA } from './HomeworkForm/homework.types';
+import { focusHomeworkField, getErrorsForStep } from './HomeworkForm/homework.schema';
+import { mapBackendErrors, toSubmitPayload } from './HomeworkForm/homework.mapper';
 
 const STEPS = ['التواصل', 'النشاط', 'التحديات', 'الأهداف', 'المشروع', 'الميزانية'];
 
@@ -20,107 +23,10 @@ const BUDGET_OPTIONS = [
   { value: 'غير محدد بعد', label: 'للمناقشة' },
 ];
 
-const INITIAL_FORM_DATA = {
-  fullName: '',
-  email: '',
-  phone: '',
-  companyName: '',
-  website: '',
-  service: '',
-  audience: '',
-  experience: '',
-  current_dislikes: '',
-  challenge: '',
-  prev_investment: '',
-  goal: '',
-  success_metric: '',
-  vision: '',
-  platform_type: '',
-  features: '',
-  examples: '',
-  budget: '',
-  timeline: '',
-  decision_maker: '',
-};
-
-const EMAIL_REGEX = /\S+@\S+\.\S+/;
-
-const getErrorsForStep = (step, data) => {
-  const nextErrors = {};
-
-  if (step === 0) {
-    if (!data.fullName) nextErrors.fullName = 'الاسم الكامل مطلوب';
-    if (!data.email) nextErrors.email = 'البريد الإلكتروني مطلوب';
-    else if (!EMAIL_REGEX.test(data.email)) nextErrors.email = 'صيغة البريد الإلكتروني غير صحيحة';
-    if (!data.phone) nextErrors.phone = 'رقم الهاتف مطلوب';
-  }
-
-  if (step === 1) {
-    if (!data.service) nextErrors.service = 'وصف الخدمة مطلوب';
-    if (!data.audience) nextErrors.audience = 'تحديد الجمهور المستهدف مطلوب';
-    if (!data.experience) nextErrors.experience = 'اختيار مدة الخبرة مطلوب';
-  }
-
-  if (step === 2) {
-    if (!data.challenge) nextErrors.challenge = 'وصف التحدي مطلوب';
-    if (!data.prev_investment) nextErrors.prev_investment = 'الاختيار مطلوب';
-  }
-
-  if (step === 3) {
-    if (!data.goal) nextErrors.goal = 'تحديد الهدف مطلوب';
-    if (!data.success_metric) nextErrors.success_metric = 'تحديد مقياس النجاح مطلوب';
-    if (!data.vision) nextErrors.vision = 'وصف الرؤية مطلوب';
-  }
-
-  if (step === 4) {
-    if (!data.platform_type) nextErrors.platform_type = 'اختيار نوع المنصة مطلوب';
-  }
-
-  if (step === 5) {
-    if (!data.budget) nextErrors.budget = 'اختيار نطاق الميزانية مطلوب';
-    if (!data.timeline) nextErrors.timeline = 'اختيار درجة الاستعجال مطلوبة';
-    if (!data.decision_maker) nextErrors.decision_maker = 'الاختيار مطلوب';
-  }
-
-  return nextErrors;
-};
-
-const focusField = (fieldName) => {
-  const target = document.getElementById(fieldName) || document.querySelector(`[name="${fieldName}"]`);
-
-  if (!target) {
-    return;
-  }
-
-  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  setTimeout(() => {
-    if (typeof target.focus === 'function') {
-      target.focus({ preventScroll: true });
-    }
-  }, 240);
-};
-
-const toSubmitPayload = (formData, locale) => ({
-  ...formData,
-  sourcePath: window.location.pathname,
-  locale,
-});
-
-const mapBackendErrors = (error) => {
-  const details = error?.payload?.error?.details;
-  const fieldErrors = details?.fieldErrors && typeof details.fieldErrors === 'object' ? details.fieldErrors : {};
-  const globalErrors = Array.isArray(details?.globalErrors) ? details.globalErrors : [];
-
-  return {
-    fieldErrors,
-    submitMessage: globalErrors[0] || 'حدث خطأ أثناء إرسال المعلومات. المرجو المحاولة مرة أخرى.',
-  };
-};
-
 function HomeworkForm({ locale = 'en', onSubmitSuccess }) {
   const normalizedLocale = normalizeLocale(locale);
   const [activeStep, setActiveStep] = useState(0);
-  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [formData, setFormData] = useState(INITIAL_HOMEWORK_DATA);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -148,7 +54,7 @@ function HomeworkForm({ locale = 'en', onSubmitSuccess }) {
 
     const [firstError] = Object.keys(stepErrors);
     if (firstError) {
-      requestAnimationFrame(() => focusField(firstError));
+      requestAnimationFrame(() => focusHomeworkField(firstError));
       return false;
     }
 
@@ -170,7 +76,7 @@ function HomeworkForm({ locale = 'en', onSubmitSuccess }) {
   };
 
   const handleReset = () => {
-    setFormData(INITIAL_FORM_DATA);
+    setFormData(INITIAL_HOMEWORK_DATA);
     setErrors({});
     setActiveStep(0);
   };
@@ -195,7 +101,7 @@ function HomeworkForm({ locale = 'en', onSubmitSuccess }) {
       const [firstFieldError] = Object.keys(fieldErrors);
 
       if (firstFieldError) {
-        requestAnimationFrame(() => focusField(firstFieldError));
+        requestAnimationFrame(() => focusHomeworkField(firstFieldError));
       }
 
       setErrors({

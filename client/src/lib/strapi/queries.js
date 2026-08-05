@@ -1,5 +1,28 @@
 import { request, requestJson, StrapiRequestError } from './client';
 import { normalizeValue } from './normalizers';
+import { cmsCacheTags } from '@/features/cms/server/cms-cache';
+
+const requestOptionsFor = (contentType, locale, params = {}) => {
+  const activeLocale = locale === 'ar' ? 'ar' : 'en';
+  const tags = [];
+  if (contentType === 'site-setting') tags.push(cmsCacheTags.siteSettings(), cmsCacheTags.navigation(activeLocale), cmsCacheTags.footer(activeLocale));
+  if (contentType === 'blog-page') tags.push(cmsCacheTags.blogIndex(activeLocale));
+  if (contentType === 'home-page') tags.push(cmsCacheTags.page('/', activeLocale));
+  if (contentType === 'about-page') tags.push(cmsCacheTags.page('/about', activeLocale));
+  if (contentType === 'articles') {
+    tags.push(cmsCacheTags.blogIndex(activeLocale));
+    const slug = params?.filters?.slug?.$eq;
+    if (slug) tags.push(cmsCacheTags.blogPost(String(slug), activeLocale));
+  }
+  if (contentType === 'pages') {
+    const slug = params?.filters?.slug?.$eq;
+    if (slug) tags.push(cmsCacheTags.page(`/${slug}`, activeLocale));
+  }
+  if (params?._sitemap === true) tags.push(cmsCacheTags.sitemap());
+  return tags.length ? { next: { revalidate: 300, tags } } : undefined;
+};
+
+const withoutInternalParams = (params) => Object.fromEntries(Object.entries(params).filter(([key]) => !key.startsWith('_')));
 
 const isSoftContentError = (error) => {
   const status = Number(error?.status);
@@ -8,12 +31,13 @@ const isSoftContentError = (error) => {
 
 export const fetchSingleType = async (contentType, locale, params = {}) => {
   try {
-    const response = await request(`/api/${contentType}`, {
+    const query = {
       locale,
       status: 'published',
       populate: '*',
       ...params,
-    });
+    };
+    const response = await request(`/api/${contentType}`, withoutInternalParams(query), requestOptionsFor(contentType, locale, params));
 
     return normalizeValue(response?.data);
   } catch (error) {
@@ -26,12 +50,13 @@ export const fetchSingleType = async (contentType, locale, params = {}) => {
 
 export const fetchCollection = async (contentType, locale, params = {}) => {
   try {
-    const response = await request(`/api/${contentType}`, {
+    const query = {
       locale,
       status: 'published',
       populate: '*',
       ...params,
-    });
+    };
+    const response = await request(`/api/${contentType}`, withoutInternalParams(query), requestOptionsFor(contentType, locale, params));
 
     const entries = Array.isArray(response?.data) ? response.data : [];
     return entries.map((entry) => normalizeValue(entry));
@@ -45,11 +70,12 @@ export const fetchCollection = async (contentType, locale, params = {}) => {
 
 export const fetchContentIndex = async (contentType, locale, params = {}) => {
   try {
-    const response = await request(`/api/${contentType}`, {
+    const query = {
       locale,
       status: 'published',
       ...params,
-    });
+    };
+    const response = await request(`/api/${contentType}`, withoutInternalParams(query), requestOptionsFor(contentType, locale, params));
 
     const entries = Array.isArray(response?.data) ? response.data : [];
     return entries.map((entry) => normalizeValue(entry));
@@ -57,6 +83,22 @@ export const fetchContentIndex = async (contentType, locale, params = {}) => {
     if (isSoftContentError(error)) {
       return [];
     }
+    throw error;
+  }
+};
+
+export const fetchDocument = async (contentType, documentId, locale, params = {}) => {
+  if (!documentId) return null;
+  try {
+    const query = {
+      locale,
+      status: 'published',
+      ...params,
+    };
+    const response = await request(`/api/${contentType}/${encodeURIComponent(documentId)}`, withoutInternalParams(query), requestOptionsFor(contentType, locale, params));
+    return normalizeValue(response?.data);
+  } catch (error) {
+    if (isSoftContentError(error)) return null;
     throw error;
   }
 };

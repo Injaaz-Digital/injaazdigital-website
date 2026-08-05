@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Clock3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BLOG_COPY } from '@/features/blog/lib/constants';
-import HeroAtmosphere from '@/features/home/components/HeroAtmosphere';
+import HeroAtmosphere from '@/features/cms/components/HeroAtmosphere';
 import { normalizeMedia } from '@/lib/strapi';
 import { CmsImage } from './shared';
 
@@ -112,7 +112,6 @@ BlogCard.propTypes = {
 
 export default function BlogList({ articles, locale, title, description }) {
   const copy = BLOG_COPY[locale] || BLOG_COPY.en;
-  const isArabic = locale === 'ar';
   const [activeCategory, setActiveCategory] = useState('all');
 
   const categories = useMemo(
@@ -187,21 +186,6 @@ export default function BlogList({ articles, locale, title, description }) {
               ))}
             </div>
 
-            <div className="mt-10 rounded-[28px] border border-[rgba(8,66,153,0.12)] bg-[linear-gradient(140deg,#ffffff,#f1f7ff)] px-5 py-6 shadow-[0_16px_36px_rgba(8,41,89,0.07)] sm:mt-12 sm:px-8 sm:py-8">
-              <div
-                className={`mx-auto flex max-w-[920px] flex-col gap-4 sm:items-center sm:justify-between ${
-                  isArabic ? 'text-right sm:flex-row-reverse sm:text-right' : 'text-left sm:flex-row sm:text-left'
-                }`}
-              >
-                <p className="max-w-[58ch] text-[0.98rem] leading-7 text-[#4f6a89]">{copy.endCta}</p>
-                <Link
-                  href="/book-call"
-                  className="inline-flex w-fit rounded-full bg-[#0a2546] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#10315a]"
-                >
-                  {copy.bookCall}
-                </Link>
-              </div>
-            </div>
           </div>
         )}
       </div>

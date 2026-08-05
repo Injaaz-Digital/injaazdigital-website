@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { CornerDownRight } from 'lucide-react';
-import cx from '@/lib/utils/cx';
+import { cn as cx } from '@/lib/utils';
 import { asArray, CONTAINER, EYEBROW, TITLE } from './editorialShared';
 
 export default function DiagnosisBlock({ block, locale = 'en' }) {
@@ -28,4 +28,3 @@ export default function DiagnosisBlock({ block, locale = 'en' }) {
 }
 
 DiagnosisBlock.propTypes = { block: PropTypes.object, locale: PropTypes.oneOf(['en', 'ar']) };
-

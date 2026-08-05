@@ -1,104 +1,116 @@
 import PropTypes from 'prop-types';
-import { Gauge, Network, Orbit, PanelsTopLeft, RefreshCcw, Waypoints } from 'lucide-react';
-import cx from '@/lib/utils/cx';
-import { asArray, Copy, CONTAINER, EYEBROW, TITLE } from './editorialShared';
+import { Copy } from './editorialShared';
+import { asArray, SECTION_CONTAINER, SectionHeader, SectionShell } from './premiumShared';
+import { CmsImage } from './shared';
+import { resolveMediaUrl } from '@/lib/strapi';
 
-const PRINCIPLE_VISUALS = [
-  { name: 'systems', Icon: Network },
-  { name: 'strategy', Icon: Waypoints },
-  { name: 'technology', Icon: PanelsTopLeft },
-  { name: 'measurement', Icon: Gauge },
-  { name: 'operate', Icon: Orbit },
-  { name: 'feedback', Icon: RefreshCcw },
+const CARD_SPANS = [
+  'lg:col-span-5',
+  'lg:col-span-7',
+  'lg:col-span-7',
+  'lg:col-span-5',
+  'lg:col-span-5',
+  'lg:col-span-7',
 ];
-
-function PrincipleVisual({ index }) {
-  const visual = PRINCIPLE_VISUALS[index % PRINCIPLE_VISUALS.length];
-  const Icon = visual.Icon;
-
-  return (
-    <div className={`principle-visual principle-visual--${visual.name}`} aria-hidden="true">
-      <div className="principle-visual__track" />
-      <div className="principle-visual__glow principle-visual__glow--one" />
-      <div className="principle-visual__glow principle-visual__glow--two" />
-      <div className="principle-visual__glow principle-visual__glow--three" />
-      <div className="principle-visual__bars">
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="principle-visual__icon-shell">
-        <div className="principle-visual__icon">
-          <Icon strokeWidth={1.45} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-PrincipleVisual.propTypes = { index: PropTypes.number.isRequired };
 
 export default function PrinciplesBlock({ block, locale = 'en' }) {
   const items = asArray(block?.items);
-  const isHomePrinciples = ['Why Injaaz Digital', 'لماذا إنجاز ديجيتال'].includes(block?.eyebrow);
-
-  if (isHomePrinciples) {
-    return (
-      <section className="principles-mosaic" aria-labelledby="principles-heading">
-        <div className={CONTAINER}>
-          <header className="principles-mosaic__header">
-            <div>
-              {block?.eyebrow ? <p className="principles-mosaic__eyebrow">{block.eyebrow}</p> : null}
-              <h2 id="principles-heading" className="principles-mosaic__heading">{block?.heading}</h2>
-            </div>
-            {block?.description ? <p className="principles-mosaic__description">{block.description}</p> : null}
-          </header>
-
-          <ol className="principles-mosaic__grid">
-            {items.map((entry, index) => (
-              <li key={`${entry.title}-${index}`} className="principles-card">
-                <PrincipleVisual index={index} />
-                <div className="principles-card__copy">
-                  <span className="principles-card__number">{String(index + 1).padStart(2, '0')}</span>
-                  <div>
-                    <h3>{entry.title}</h3>
-                    <p>{entry.description}</p>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-    );
-  }
+  const directionLabel = locale === 'ar' ? 'الاتجاه' : 'Direction';
 
   return (
-    <section className="relative overflow-hidden py-20 sm:py-28 lg:py-36">
-      <div className={CONTAINER}>
-        <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
-          <div>{block?.eyebrow ? <p className={EYEBROW}>{block.eyebrow}</p> : null}<h2 className={cx(TITLE, 'mt-5 !text-[clamp(2rem,3.4vw,3.6rem)]')}>{block?.heading}</h2>{block?.description ? <p className="mt-5 text-base leading-7 text-[#53677c]">{block.description}</p> : null}</div>
-          <ol className="border-t border-[#cbd7df]">
-            {items.map((entry, index) => (
-              <li key={`${entry.title}-${index}`} className="grid gap-3 border-b border-[#d5dfe6] py-5 sm:grid-cols-[2.5rem_0.8fr_1.2fr] sm:gap-6 sm:py-6">
-                <span className="text-xs font-semibold text-[#1685a1]">{String(index + 1).padStart(2, '0')}</span>
-                <h3 className="premium-geist text-lg font-semibold tracking-[-0.018em] text-[#13263d]">{entry.title}</h3>
-                <p className="text-sm leading-6 text-[#596b7c]">{entry.description}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
+    <SectionShell id="principles" tone="soft">
+      <div className={SECTION_CONTAINER} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+        <SectionHeader
+          align="center"
+          eyebrow={block?.eyebrow}
+          heading={block?.heading}
+          description={block?.description}
+        />
+
+        <ol className="mt-9 grid list-none gap-4 sm:mt-11 lg:grid-cols-12">
+          {items.map((entry, index) => (
+            <li
+              key={`${entry.title}-${index}`}
+              className={`flex min-w-0 flex-col overflow-hidden rounded-[40px] corner-squircle border-2 border-blue-500/[0.11] bg-white shadow-[0_12px_35px_rgba(16,36,52,0.06)] ${CARD_SPANS[index % CARD_SPANS.length]}`}
+            >
+              <div className="p-[60px_24px_0]">
+                {entry?.image ? (
+                  <img
+                    src={resolveMediaUrl(entry.image)}
+                    alt={entry.title || ''}
+                    className="w-full object-contain max-h-56"
+                  />
+                ) : null}
+              </div>
+
+              <div className="flex flex-1 flex-col justify-end px-6 pb-6 pt-8">
+                <div className="mb-1 flex items-center gap-2">
+                  {entry?.icon ? (
+                    <CmsImage
+                      media={entry.icon}
+                      alt=""
+                      width={20}
+                      height={20}
+                      className="h-5 w-5 shrink-0 object-contain"
+                    />
+                  ) : null}
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[#39738b]">
+                    {entry.label}
+                  </p>
+                </div>
+                <h3 className={`${locale !== 'ar' ? 'premium-geist' : ''} text-[1.3rem] font-semibold leading-tight tracking-[-0.025em] text-[#12263a] sm:text-[1.45rem]`}>
+                  {entry.title}
+                </h3>
+                {entry?.description ? (
+                  <p className="mt-3 max-w-[50ch] text-[0.92rem] leading-6 text-[#5a6d7e]">
+                    {entry.description}
+                  </p>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ol>
+
         {block?.directionHeading ? (
-          <div className="mt-20 grid gap-8 rounded-[28px] border border-[#cfdae2] bg-[#f2f7f9] p-7 sm:p-10 lg:grid-cols-[0.72fr_1.28fr] lg:p-12">
-            <div><p className={EYEBROW}>{locale === 'ar' ? 'الاتجاه' : 'Direction'}</p><h3 className="premium-geist mt-4 text-3xl font-medium tracking-[-0.035em] text-[#0b1728] sm:text-4xl">{block.directionHeading}</h3></div>
-            <div><div className="space-y-5 text-base leading-8 text-[#4f6277]"><Copy value={block.directionBody} /></div>{block?.closingStatement ? <p className="mt-8 border-s-2 border-[#084299] ps-5 premium-geist text-xl font-medium leading-8 text-[#123b67]">{block.closingStatement}</p> : null}</div>
+          <div className="mt-12 grid gap-7 rounded-2xl border border-[#cfdae2] bg-white p-6 shadow-[0_12px_35px_rgba(16,36,52,0.05)] sm:p-8 lg:grid-cols-[0.72fr_1.28fr] lg:p-10">
+            <div>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#35628f]">{directionLabel}</p>
+              <h3 className="premium-geist mt-3 text-2xl font-medium tracking-[-0.03em] text-[#12263a] sm:text-3xl">
+                {block.directionHeading}
+              </h3>
+            </div>
+            <div>
+              <div className="space-y-4 text-[0.95rem] leading-7 text-[#53677c]">
+                <Copy value={block.directionBody} />
+              </div>
+              {block?.closingStatement ? (
+                <p className="mt-6 border-s-2 border-[#084299] ps-5 premium-geist text-lg font-medium leading-7 text-[#123b67]">
+                  {block.closingStatement}
+                </p>
+              ) : null}
+            </div>
           </div>
         ) : null}
       </div>
-    </section>
+    </SectionShell>
   );
 }
 
-PrinciplesBlock.propTypes = { block: PropTypes.object, locale: PropTypes.oneOf(['en', 'ar']) };
-
+PrinciplesBlock.propTypes = {
+  block: PropTypes.shape({
+    eyebrow: PropTypes.string,
+    heading: PropTypes.string,
+    description: PropTypes.string,
+    items: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string,
+      title: PropTypes.string,
+      description: PropTypes.string,
+      image: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+      icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    })),
+    directionHeading: PropTypes.string,
+    directionBody: PropTypes.string,
+    closingStatement: PropTypes.string,
+  }),
+  locale: PropTypes.oneOf(['en', 'ar']),
+};

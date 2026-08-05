@@ -1,4 +1,4 @@
-import { getSitemapEntries } from '@/features/cms/lib/cms-page';
+import { getSitemapEntries } from '@/features/cms/content/sitemap/sitemap.repository';
 
 export default async function sitemap() {
   return getSitemapEntries();

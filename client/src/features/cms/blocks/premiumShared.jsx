@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import Button from '@/shared/ui/Button';
-import cx from '@/lib/utils/cx';
+import Link from 'next/link';
+import { BUTTON_SIZES, BUTTON_VARIANTS } from '@/shared/ui/Button';
+import { cn as cx } from '@/lib/utils';
 
 export const asArray = (value) => (Array.isArray(value) ? value.filter(Boolean) : []);
 export const asText = (value) => (typeof value === 'string' ? value.trim() : '');
@@ -32,31 +33,15 @@ SectionShell.propTypes = {
   id: PropTypes.string,
 };
 
-export function CtaLink({ cta, onNavigate }) {
+export function CtaLink({ cta }) {
   const href = asText(cta?.url);
   const label = asText(cta?.label);
 
   if (!href || !label) return null;
 
-  const handleClick = () => {
-    if (cta?.isExternal) {
-      window.open(href, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    if (onNavigate) {
-      onNavigate(href);
-      return;
-    }
-
-    window.location.assign(href);
-  };
-
-  return (
-    <Button variant={cta?.style === 'secondary' ? 'outline' : 'primary'} size="lg" onClick={handleClick}>
-      {label}
-    </Button>
-  );
+  const className = cx('inline-flex items-center justify-center rounded-full corner-squircle font-normal tracking-[0.01em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/45', BUTTON_VARIANTS[cta?.style === 'secondary' ? 'outline' : 'primary'], BUTTON_SIZES.lg);
+  if (cta?.isExternal) return <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{label}</a>;
+  return <Link href={href} className={className}>{label}</Link>;
 }
 
 CtaLink.propTypes = {
@@ -66,7 +51,6 @@ CtaLink.propTypes = {
     style: PropTypes.string,
     isExternal: PropTypes.bool,
   }),
-  onNavigate: PropTypes.func,
 };
 
 export function SectionHeader({ heading, description, align = 'left', inverse = false, eyebrow }) {
@@ -137,4 +121,3 @@ HeroTitle.propTypes = {
   title: PropTypes.string,
   imageKeyword: PropTypes.string,
 };
-

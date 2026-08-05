@@ -1,0 +1,11 @@
+{
+  "collectionName": "components_shared_brand_proof_satisfactions",
+  "info": { "displayName": "Brand Proof Satisfaction" },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "maxLength": 160 },
+    "description": { "type": "text" },
+    "ratingLabel": { "type": "string", "maxLength": 120 },
+    "reactionIcons": { "type": "media", "multiple": true, "allowedTypes": ["images"] }
+  }
+}

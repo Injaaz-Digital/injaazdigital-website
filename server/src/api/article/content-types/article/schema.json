@@ -28,7 +28,12 @@
     "slug": {
       "type": "uid",
       "targetField": "title",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "excerpt": {
       "type": "text",
@@ -51,6 +56,12 @@
       "type": "enumeration",
       "enum": ["creator", "coach", "consultant", "service"],
       "default": "service"
+    },
+    "primaryCategory": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "articles"
     },
     "featured": {
       "type": "boolean",
@@ -97,6 +108,12 @@
         }
       }
     },
+    "articleCta": {
+      "type": "component",
+      "component": "shared.article-cta",
+      "repeatable": false,
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
     "author": {
       "type": "relation",
       "relation": "manyToOne",
@@ -109,6 +126,9 @@
       "target": "api::tag.tag",
       "inversedBy": "articles"
     },
+    "relatedPosts": { "type": "relation", "relation": "manyToMany", "target": "api::article.article" },
+    "relatedService": { "type": "relation", "relation": "manyToOne", "target": "api::offer.offer" },
+    "internalLinkSuggestions": { "type": "json" },
     "seo": {
       "type": "component",
       "component": "shared.seo",

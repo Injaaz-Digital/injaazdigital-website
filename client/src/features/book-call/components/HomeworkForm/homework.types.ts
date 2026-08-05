@@ -1,0 +1,4 @@
+export type HomeworkFormData = { fullName: string; email: string; phone: string; companyName: string; website: string; service: string; audience: string; experience: string; current_dislikes: string; challenge: string; prev_investment: string; goal: string; success_metric: string; vision: string; platform_type: string; features: string; examples: string; budget: string; timeline: string; decision_maker: string };
+export type HomeworkField = keyof HomeworkFormData;
+export type HomeworkErrors = Partial<Record<HomeworkField | 'submit', string>>;
+export const INITIAL_HOMEWORK_DATA: HomeworkFormData = { fullName: '', email: '', phone: '', companyName: '', website: '', service: '', audience: '', experience: '', current_dislikes: '', challenge: '', prev_investment: '', goal: '', success_metric: '', vision: '', platform_type: '', features: '', examples: '', budget: '', timeline: '', decision_maker: '' };

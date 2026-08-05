@@ -122,7 +122,7 @@ GlassIcon.propTypes = {
   className: PropTypes.string,
 };
 
-const FooterLink = ({ item, onNavigate, className = '' }) => {
+const FooterLink = ({ item, className = '' }) => {
   const href = normalizeCmsUrl(item?.url);
   const label = item?.label;
 
@@ -144,15 +144,7 @@ const FooterLink = ({ item, onNavigate, className = '' }) => {
   }
 
   return (
-    <Link
-      href={href}
-      className={className}
-      onClick={(event) => {
-        if (!onNavigate) return;
-        event.preventDefault();
-        onNavigate(href);
-      }}
-    >
+    <Link href={href} className={className}>
       {label}
     </Link>
   );
@@ -164,11 +156,10 @@ FooterLink.propTypes = {
     url: PropTypes.string,
     isExternal: PropTypes.bool,
   }),
-  onNavigate: PropTypes.func,
   className: PropTypes.string,
 };
 
-const SocialLink = ({ item, onNavigate }) => {
+const SocialLink = ({ item }) => {
   const href = normalizeCmsUrl(item?.url);
   const label = item?.label;
   const iconKey = getSocialIconKey(item);
@@ -205,16 +196,7 @@ const SocialLink = ({ item, onNavigate }) => {
   }
 
   return (
-    <Link
-      href={href}
-      aria-label={label}
-      className={className}
-      onClick={(event) => {
-        if (!onNavigate) return;
-        event.preventDefault();
-        onNavigate(href);
-      }}
-    >
+    <Link href={href} aria-label={label} className={className}>
       {accent}
     </Link>
   );
@@ -226,10 +208,9 @@ SocialLink.propTypes = {
     url: PropTypes.string,
     isExternal: PropTypes.bool,
   }),
-  onNavigate: PropTypes.func,
 };
 
-function Footer({ locale = 'en', navItems = [], footerData = null, onNavigate }) {
+function Footer({ locale = 'en', navItems = [], footerData = null }) {
   const normalizedLocale = normalizeLocale(locale);
   const isArabic = normalizedLocale === 'ar';
   const logoSrc = isArabic ? (LogoAr?.src || LogoAr) : (LogoEn?.src || LogoEn);
@@ -260,15 +241,7 @@ function Footer({ locale = 'en', navItems = [], footerData = null, onNavigate })
     <footer dir={getLocaleDirection(normalizedLocale)} className="relative border-t border-[rgba(8,66,153,0.08)] bg-white/88">
       <div className="layout-container relative grid gap-10 py-10 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:py-14">
         <div className="max-w-[34rem]">
-          <Link
-            href="/"
-            onClick={(event) => {
-              if (!onNavigate) return;
-              event.preventDefault();
-              onNavigate('/');
-            }}
-            className="inline-flex rounded-2xl transition-opacity hover:opacity-90"
-          >
+          <Link href="/" className="inline-flex rounded-2xl transition-opacity hover:opacity-90">
             <img src={logoSrc} alt="Injaaz Digital" className="h-[54px] w-[138px] object-contain" />
           </Link>
 
@@ -294,7 +267,6 @@ function Footer({ locale = 'en', navItems = [], footerData = null, onNavigate })
                 <SocialLink
                   key={`social-${item.url}`}
                   item={item}
-                  onNavigate={onNavigate}
                 />
               ))}
             </div>
@@ -317,7 +289,6 @@ function Footer({ locale = 'en', navItems = [], footerData = null, onNavigate })
                   <FooterLink
                     key={`${column.title}-${item.url}`}
                     item={item}
-                    onNavigate={onNavigate}
                     className="text-sm text-[#24466f] transition-colors hover:text-[#0b4f8c]"
                   />
                 ))}
@@ -336,7 +307,6 @@ function Footer({ locale = 'en', navItems = [], footerData = null, onNavigate })
               <FooterLink
                 key={`legal-${item.url}`}
                 item={item}
-                onNavigate={onNavigate}
                 className="transition-colors hover:text-[#0b4f8c]"
               />
             ))}
@@ -363,7 +333,6 @@ Footer.propTypes = {
     legalLinks: PropTypes.array,
     copyright: PropTypes.string,
   }),
-  onNavigate: PropTypes.func,
 };
 
 export default Footer;

@@ -1,14 +1,17 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import { normalizeMedia, resolveMediaUrl } from '@/lib/strapi';
 import { BLOG_COPY } from '@/features/blog/lib/constants';
-import { decorateRichText } from '@/features/blog/lib/helpers';
-import HeroAtmosphere from '@/features/home/components/HeroAtmosphere';
+import HeroAtmosphere from '@/features/cms/components/HeroAtmosphere';
 import { CmsImage } from './shared';
+import ArticleTaxonomy from './article/ArticleTaxonomy';
+import RelatedContent from './article/RelatedContent';
+import ShareButtons from './article/ShareButtons';
+import ArticleNavigation from './article/ArticleNavigation';
 
 const SECTION_IN = {
   initial: { opacity: 0, y: 24 },
@@ -89,7 +92,8 @@ TocBlock.propTypes = {
 export default function BlogPost({ article, locale }) {
   const copy = BLOG_COPY[locale] || BLOG_COPY.en;
   const coverImage = normalizeMedia(article?.coverImage, { fallbackAlt: article?.title || '' });
-  const { html, headings } = useMemo(() => decorateRichText(article?.body), [article?.body]);
+  const html = article?.body || '';
+  const headings = Array.isArray(article?.headings) ? article.headings : [];
   const authorAvatarUrl = resolveMediaUrl(article?.author?.avatar);
   const categoryLabel = copy.categories[article?.category] || article?.category || copy.all;
   const publishedLabel = formatDate(article?.publishedAt, locale);
@@ -142,7 +146,7 @@ export default function BlogPost({ article, locale }) {
                   />
                 ) : null}
                 <div>
-                  <p className="font-medium text-[#0a2546]">{article.author.name}</p>
+                  {article.author.slug ? <Link href={`/${locale}/blog/author/${article.author.slug}`} className="font-medium text-[#0a2546] hover:underline">{article.author.name}</Link> : <p className="font-medium text-[#0a2546]">{article.author.name}</p>}
                   {publishedLabel ? (
                     <p className={`text-xs text-[#6c819b] ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                       {locale === 'ar' ? `نُشر في ${publishedLabel}` : `Published ${publishedLabel}`}
@@ -157,6 +161,8 @@ export default function BlogPost({ article, locale }) {
             ) : null}
           </div>
         ) : null}
+
+        <ArticleTaxonomy category={article.primaryCategory} tags={article.tags || []} locale={locale} />
 
         {coverImage?.url ? (
           <div className="layout-container--hero mx-auto mt-8 max-w-[1160px] overflow-hidden rounded-[26px] bg-[#edf4ff] shadow-[0_18px_42px_rgba(8,41,89,0.08)]">
@@ -181,7 +187,8 @@ export default function BlogPost({ article, locale }) {
               <article className="blog-body mx-auto mt-10 max-w-[760px] text-[1.03rem] leading-8 sm:text-[1.08rem]" dir={locale === 'ar' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: html }} />
 
               <div className="mx-auto mt-12 max-w-[760px] border-t border-[rgba(8,66,153,0.08)] pt-6 lg:hidden">
-                <p className="max-w-[38ch] text-sm leading-7 text-[#587392]">{copy.endCta}</p>
+                {article?.articleCta?.headline ? <h2 className="text-xl font-semibold text-[#0a2546]">{article.articleCta.headline}</h2> : null}
+                <p className="mt-2 max-w-[38ch] text-sm leading-7 text-[#587392]">{article?.articleCta?.body || copy.endCta}</p>
                 <Link
                   href={article?.cta?.url || '/book-call'}
                   className="mt-4 inline-flex rounded-full bg-[#0a2546] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#10315a]"
@@ -191,16 +198,16 @@ export default function BlogPost({ article, locale }) {
               </div>
 
               <div className="mx-auto mt-8 max-w-[760px] border-t border-[rgba(8,66,153,0.08)] pt-6">
-                <Link href="/blog" className="inline-flex items-center text-sm font-medium text-[#0b4f8c] transition hover:underline">
-                  {copy.backToBlog}
-                </Link>
+                <div className="flex flex-wrap items-center justify-between gap-3"><Link href={`/${locale}/blog`} className="inline-flex items-center text-sm font-medium text-[#0b4f8c] transition hover:underline">{copy.backToBlog}</Link><ShareButtons title={article.title} slug={article.slug} locale={locale} /></div>
               </div>
+              <ArticleNavigation previous={article.previousArticle} next={article.nextArticle} locale={locale} />
             </div>
 
             <aside className="hidden lg:block lg:sticky lg:top-[calc(var(--header-height)+1.75rem)]">
               <TocBlock headings={headings} copy={copy} />
               <div className="mt-6 rounded-[20px] border border-[rgba(8,66,153,0.08)] bg-white px-5 py-5 shadow-[0_12px_28px_rgba(8,41,89,0.06)]">
-                <p className="text-sm leading-7 text-[#587392]">{copy.endCta}</p>
+                {article?.articleCta?.headline ? <h2 className="text-lg font-semibold text-[#0a2546]">{article.articleCta.headline}</h2> : null}
+                <p className="mt-2 text-sm leading-7 text-[#587392]">{article?.articleCta?.body || copy.endCta}</p>
                 <Link
                   href={article?.cta?.url || '/book-call'}
                   className="mt-4 inline-flex rounded-full bg-[#0a2546] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#10315a]"
@@ -212,6 +219,7 @@ export default function BlogPost({ article, locale }) {
           </div>
         </div>
       </motion.section>
+      <RelatedContent articles={article.relatedPosts || []} service={article.relatedService} locale={locale} />
     </>
   );
 }

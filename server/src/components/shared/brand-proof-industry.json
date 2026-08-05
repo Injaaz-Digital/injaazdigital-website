@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_shared_brand_proof_industries",
+  "info": { "displayName": "Brand Proof Industry" },
+  "options": {},
+  "attributes": {
+    "name": { "type": "string", "required": true, "maxLength": 120 }
+  }
+}

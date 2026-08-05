@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_blocks_principles",
+  "info": {
+    "displayName": "Principles",
+    "description": "Editorial principles with an optional direction statement"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "eyebrow": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "text"
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.principle-item",
+      "repeatable": true,
+      "required": true,
+      "min": 1,
+      "max": 6
+    },
+    "directionHeading": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "directionBody": {
+      "type": "text"
+    },
+    "closingStatement": {
+      "type": "text"
+    }
+  }
+}

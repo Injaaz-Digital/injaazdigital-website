@@ -64,32 +64,21 @@ const BLOCK_POPULATE: Record<string, QueryShape> = {
       gallery: mediaComponentPopulate,
     },
   },
-  [BLOCK_UID.ctaBanner]: {
-    populate: {
-      primaryCta: linkPopulate,
-      secondaryCta: linkPopulate,
-    },
-  },
-  [BLOCK_UID.richText]: {
-    populate: {
-      primaryCta: linkPopulate,
-    },
-  },
-  [BLOCK_UID.sectionHero]: {
+  [BLOCK_UID.pageHero]: {
     populate: {
       primaryCta: true,
       secondaryCta: true,
     },
   },
-  [BLOCK_UID.sectionAnimatedText]: {
+  [BLOCK_UID.animatedText]: {
     fields: ['eyebrow', 'text', 'highlightedText', 'alignment', 'size', 'animationStyle', 'sticky', 'theme'],
   },
-  [BLOCK_UID.sectionProblem]: {
+  [BLOCK_UID.problem]: {
     populate: {
       items: true,
     },
   },
-  [BLOCK_UID.sectionServiceOverview]: {
+  [BLOCK_UID.serviceOverview]: {
     populate: {
       services: {
         populate: {
@@ -102,12 +91,17 @@ const BLOCK_POPULATE: Record<string, QueryShape> = {
       },
     },
   },
-  [BLOCK_UID.sectionFeatureList]: {
+  [BLOCK_UID.featureList]: {
     populate: {
       items: true,
     },
   },
-  [BLOCK_UID.sectionProcess]: {
+  [BLOCK_UID.faq]: {
+    populate: {
+      items: true,
+    },
+  },
+  [BLOCK_UID.process]: {
     populate: {
       steps: {
         populate: {
@@ -116,44 +110,76 @@ const BLOCK_POPULATE: Record<string, QueryShape> = {
       },
     },
   },
-  [BLOCK_UID.sectionOutcomes]: {
-    populate: {
-      items: true,
-    },
-  },
-  [BLOCK_UID.sectionFaq]: {
-    populate: {
-      items: true,
-    },
-  },
-  [BLOCK_UID.sectionFinalCta]: {
+  [BLOCK_UID.finalCta]: {
     populate: {
       primaryCta: true,
       secondaryCta: true,
     },
   },
-  [BLOCK_UID.sectionBookCall]: {
+  [BLOCK_UID.bookCall]: {
     populate: '*',
   },
-  [BLOCK_UID.sectionEditorialContent]: {
-    populate: { statements: true },
-  },
-  [BLOCK_UID.sectionSystemFlow]: {
+  [BLOCK_UID.systemFlow]: {
     populate: { steps: true, signals: true },
   },
-  [BLOCK_UID.sectionDiagnosis]: {
+  [BLOCK_UID.diagnosis]: {
     populate: { items: true },
   },
-  [BLOCK_UID.sectionTimeline]: {
+  [BLOCK_UID.timeline]: {
     populate: { stages: true },
   },
-  [BLOCK_UID.sectionStatementPair]: {
+  [BLOCK_UID.statementPair]: {
     populate: { first: true, second: true },
   },
-  [BLOCK_UID.sectionPrinciples]: {
-    populate: { items: true },
+  [BLOCK_UID.principles]: {
+    populate: {
+      items: {
+        populate: {
+          image: mediaPopulate,
+        },
+      },
+    },
+  },
+  [BLOCK_UID.dashboardShowcase]: {
+    populate: {
+      stats: true,
+      insights: true,
+      primaryCta: true,
+      secondaryCta: true,
+    },
+  },
+  [BLOCK_UID.bookingMeeting]: {
+    populate: {
+      bookingLink: true,
+      benefits: true,
+    },
+  },
+  [BLOCK_UID.brandProofGrid]: {
+    populate: {
+      satisfactionPanel: { populate: { reactionIcons: mediaPopulate } },
+      strategyPanel: { populate: { icon: mediaPopulate, coverMedia: mediaPopulate } },
+      consultationPanel: {
+        populate: {
+          cta: true,
+          backgroundMedia: mediaPopulate,
+          teamMembers: { populate: { avatar: mediaPopulate } },
+        },
+      },
+      performancePanel: { populate: { metrics: true } },
+      caseStudyPanel: { populate: { cta: true, coverMedia: mediaPopulate } },
+      industriesPanel: { populate: { items: true } },
+      testimonialPanel: { populate: { video: mediaPopulate, poster: mediaPopulate } },
+    },
   },
 };
+
+const blockSettingsPopulate = { populate: { backgroundMedia: mediaPopulate } };
+Object.values(BLOCK_POPULATE).forEach((strategy) => {
+  const populate = strategy.populate;
+  if (populate && populate !== '*' && typeof populate === 'object') {
+    (populate as QueryShape).settings = blockSettingsPopulate;
+  }
+});
 
 export const offerPopulate = {
   capabilities: true,
@@ -182,6 +208,7 @@ export const blogPagePopulate = {
   ...layoutPopulate,
   seo: seoPopulate,
   blocks: createBlockDynamicZonePopulate(BLOG_PAGE_BLOCKS),
+  finalCta: BLOCK_POPULATE[BLOCK_UID.finalCta],
 };
 
 export const siteSettingPopulate = {
@@ -192,8 +219,13 @@ export const siteSettingPopulate = {
 export const articlePopulate = {
   coverImage: mediaPopulate,
   cta: true,
+  articleCta: true,
+  primaryCategory: {
+    fields: ['name', 'slug', 'description'],
+    populate: { seo: seoPopulate },
+  },
   author: {
-    fields: ['name', 'slug', 'role'],
+    fields: ['name', 'slug', 'role', 'bio'],
     populate: {
       avatar: mediaPopulate,
       socialLinks: true,
@@ -201,6 +233,13 @@ export const articlePopulate = {
   },
   tags: {
     fields: ['name', 'slug'],
+  },
+  relatedPosts: {
+    fields: ['title', 'slug', 'excerpt', 'publishedAt', 'updatedAt', 'readTime', 'category'],
+    populate: { coverImage: mediaPopulate, primaryCategory: { fields: ['name', 'slug'] }, tags: { fields: ['name', 'slug'] } },
+  },
+  relatedService: {
+    populate: offerPopulate,
   },
   seo: seoPopulate,
 };
@@ -212,6 +251,10 @@ export const authorPopulate = {
 };
 
 export const tagPopulate = {
+  seo: seoPopulate,
+};
+
+export const categoryPopulate = {
   seo: seoPopulate,
 };
 

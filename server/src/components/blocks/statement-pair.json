@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_blocks_statement_pairs",
+  "info": {
+    "displayName": "Statement Pair",
+    "description": "Two spacious institutional statements such as mission and vision"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "eyebrow": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "first": {
+      "type": "component",
+      "component": "shared.statement",
+      "repeatable": false,
+      "required": true
+    },
+    "second": {
+      "type": "component",
+      "component": "shared.statement",
+      "repeatable": false,
+      "required": true
+    }
+  }
+}

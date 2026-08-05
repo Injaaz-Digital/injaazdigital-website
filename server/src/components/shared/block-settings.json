@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_block_settings",
+  "info": { "displayName": "Block Settings", "description": "Controlled presentation, visibility and analytics settings shared by CMS blocks" },
+  "attributes": {
+    "anchorId": { "type": "string", "maxLength": 80, "regex": "^[a-zA-Z][a-zA-Z0-9_-]*$" },
+    "internalName": { "type": "string", "maxLength": 120 },
+    "theme": { "type": "enumeration", "enum": ["light", "dark", "accent", "editorial"], "default": "light" },
+    "spacingTop": { "type": "enumeration", "enum": ["compact", "normal", "spacious"], "default": "normal" },
+    "spacingBottom": { "type": "enumeration", "enum": ["compact", "normal", "spacious"], "default": "normal" },
+    "visibility": { "type": "enumeration", "enum": ["all", "desktop", "mobile", "hidden"], "default": "all" },
+    "trackingId": { "type": "string", "maxLength": 120, "regex": "^[a-zA-Z0-9][a-zA-Z0-9._:-]*$" },
+    "backgroundMedia": { "type": "media", "multiple": false, "allowedTypes": ["images", "videos"] },
+    "version": { "type": "integer", "default": 1, "min": 1 }
+  }
+}

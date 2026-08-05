@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_shared_brand_proof_testimonials",
+  "info": { "displayName": "Brand Proof Testimonial" },
+  "options": {},
+  "attributes": {
+    "clientName": { "type": "string", "maxLength": 120 },
+    "clientRole": { "type": "string", "maxLength": 160 },
+    "quote": { "type": "text" },
+    "video": { "type": "media", "multiple": false, "allowedTypes": ["videos"] },
+    "poster": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
+  }
+}

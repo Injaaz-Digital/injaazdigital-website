@@ -28,28 +28,34 @@
     "slug": {
       "type": "uid",
       "targetField": "title",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "blocks": {
       "type": "dynamiczone",
       "components": [
         "blocks.hero",
-        "section.hero",
-        "section.animated-text",
-        "section.problem",
-        "section.service-overview",
-        "section.feature-list",
-        "section.process",
-        "section.outcomes",
-        "section.faq",
-        "section.final-cta",
-        "section.book-call"
-        ,"section.editorial-content"
-        ,"section.system-flow"
-        ,"section.diagnosis"
-        ,"section.timeline"
-        ,"section.statement-pair"
-        ,"section.principles"
+        "blocks.page-hero",
+        "blocks.animated-text",
+        "blocks.problem",
+        "blocks.service-overview",
+        "blocks.feature-list",
+        "blocks.faq",
+        "blocks.process",
+        "blocks.final-cta",
+        "blocks.book-call",
+        "blocks.system-flow",
+        "blocks.diagnosis",
+        "blocks.timeline",
+        "blocks.statement-pair",
+        "blocks.principles",
+        "blocks.dashboard-showcase",
+        "blocks.booking-meeting",
+        "blocks.brand-proof-grid"
       ],
       "pluginOptions": {
         "i18n": {

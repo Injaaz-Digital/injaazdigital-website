@@ -1,0 +1,1 @@
+export default function BookingCalendarSkeleton({ label }: { label: string }) { return <div className="space-y-3" aria-label={label} aria-busy="true">{Array.from({ length: 4 }, (_, index) => <div key={index} className="h-[3.75rem] animate-pulse rounded-xl bg-[#edf3f8]" />)}</div>; }

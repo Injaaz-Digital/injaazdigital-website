@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import BlinkingSquares from '@/shared/ui/BlinkingSquares';
-import cx from '@/lib/utils/cx';
+import { cn as cx } from '@/lib/utils';
 import { CtaLink, SECTION_CONTAINER, SectionShell } from './premiumShared';
 
 const CTA_PIXEL_CELLS = Array.from({ length: 9 }, (_, index) => index);
@@ -71,4 +71,3 @@ FinalCtaBlock.propTypes = {
   block: PropTypes.object,
   onNavigate: PropTypes.func,
 };
-

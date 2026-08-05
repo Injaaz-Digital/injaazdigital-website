@@ -12,6 +12,11 @@
     "sync:block-zones": "node ./scripts/sync-block-zones.js",
     "seed:injaaz": "node ./scripts/seed-injaaz.js",
     "seed:injaaz:force": "node ./scripts/seed-injaaz.js --force",
+    "migrate:single-pages": "node ./scripts/migrate-single-pages.js",
+    "migrate:single-pages:dry": "node ./scripts/migrate-single-pages.js --dry-run",
+    "booking:export-legacy": "node ./scripts/export-booking-legacy.js",
+    "content:links": "node ./scripts/generate-internal-links.js",
+    "content:links:dry": "node ./scripts/generate-internal-links.js --dry-run",
     "start": "strapi start",
     "test:booking": "node --test src/plugins/booking/server/tests/*.test.js",
     "strapi": "strapi",
@@ -19,9 +24,9 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
-    "@strapi/plugin-cloud": "5.11.3",
-    "@strapi/plugin-users-permissions": "5.11.3",
-    "@strapi/strapi": "5.11.3",
+    "@strapi/plugin-cloud": "5.51.1",
+    "@strapi/plugin-users-permissions": "5.51.1",
+    "@strapi/strapi": "5.51.1",
     "better-sqlite3": "^12.8.0",
     "googleapis": "^148.0.0",
     "luxon": "^3.7.2",
@@ -38,7 +43,7 @@
     "typescript": "^5"
   },
   "engines": {
-    "node": ">=18.0.0 <=22.x.x",
+    "node": ">=20.0.0 <=26.x.x",
     "npm": ">=6.0.0"
   },
   "strapi": {

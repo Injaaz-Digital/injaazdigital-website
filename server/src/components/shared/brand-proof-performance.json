@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_shared_brand_proof_performances",
+  "info": { "displayName": "Brand Proof Performance" },
+  "options": {},
+  "attributes": {
+    "headline": { "type": "string", "maxLength": 180 },
+    "summary": { "type": "text" },
+    "metrics": { "type": "component", "component": "shared.metric", "repeatable": true, "max": 3 }
+  }
+}

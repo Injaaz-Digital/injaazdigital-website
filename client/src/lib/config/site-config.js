@@ -5,7 +5,10 @@ const BARE_DOMAIN_URL_REGEX =
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'http://127.0.0.1:3000';
 
-export const CMS_SINGLE_TYPE_BY_PATH = Object.freeze({});
+export const CMS_SINGLE_TYPE_BY_PATH = Object.freeze({
+  '/': 'home-page',
+  '/about': 'about-page',
+});
 
 export const STATIC_SITE_PATHS = Object.freeze([
   '/',
@@ -59,8 +62,10 @@ export const matchPathname = (href, pathname) => {
   const normalizedHref = normalizeCmsUrl(href).split('?')[0];
   const normalizedPathname = normalizeCmsUrl(pathname).split('?')[0];
 
-  if (normalizedHref === '/') {
-    return normalizedPathname === '/';
+  const isHomeHref = normalizedHref === '/' || /^\/(?:en|ar)$/.test(normalizedHref);
+
+  if (isHomeHref) {
+    return normalizedPathname === normalizedHref;
   }
 
   return normalizedPathname === normalizedHref || normalizedPathname.startsWith(`${normalizedHref}/`);

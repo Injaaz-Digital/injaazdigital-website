@@ -35,33 +35,13 @@ const domaine = localFont({
       style: "normal",
     },
     {
-      path: "../fonts/domaine/DomaineDispNar-RegularItalic.otf",
-      weight: "400",
-      style: "italic",
-    },
-    {
       path: "../fonts/domaine/DomaineDispNar-Medium.otf",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../fonts/domaine/DomaineDispNar-MediumItalic.otf",
-      weight: "500",
-      style: "italic",
-    },
-    {
       path: "../fonts/domaine/DomaineDispNar-Semibold.otf",
       weight: "600",
-      style: "normal",
-    },
-    {
-      path: "../fonts/domaine/DomaineDispNar-SemiboldItalic.otf",
-      weight: "600",
-      style: "italic",
-    },
-    {
-      path: "../fonts/domaine/DomaineDispNar-Bold.otf",
-      weight: "700",
       style: "normal",
     },
   ],
@@ -96,7 +76,7 @@ export default async function RootLayout({ children }) {
         suppressHydrationWarning
         className={`${geist.className} ${arabic.className} ${geist.variable} ${manrope.variable} ${syne.variable} ${arabic.variable} ${domaine.variable} bg-white/88`}
       >
-        <Script src="https://mcp.figma.com/mcp/html-to-design/capture.js" strategy="afterInteractive" />
+        {process.env.NODE_ENV === 'development' ? <Script src="https://mcp.figma.com/mcp/html-to-design/capture.js" strategy="afterInteractive" /> : null}
         {children}
       </body>
     </html>

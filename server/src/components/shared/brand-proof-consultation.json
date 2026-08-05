@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_shared_brand_proof_consultations",
+  "info": { "displayName": "Brand Proof Consultation" },
+  "options": {},
+  "attributes": {
+    "headline": { "type": "string", "maxLength": 180 },
+    "supportingNote": { "type": "text" },
+    "cta": { "type": "component", "component": "shared.link", "repeatable": false },
+    "backgroundMedia": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "teamMembers": { "type": "component", "component": "shared.brand-proof-team-member", "repeatable": true, "max": 6 }
+  }
+}

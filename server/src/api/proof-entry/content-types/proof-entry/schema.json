@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "proof_entries",
+  "info": { "singularName": "proof-entry", "pluralName": "proof-entries", "displayName": "Proof Entry", "description": "Reusable verified testimonial, metric or media proof" },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "type": { "type": "enumeration", "enum": ["testimonial", "metric", "media", "logo"], "required": true },
+    "quote": { "type": "text", "pluginOptions": { "i18n": { "localized": true } } },
+    "person": { "type": "string", "maxLength": 100 },
+    "company": { "type": "string", "maxLength": 120 },
+    "role": { "type": "string", "maxLength": 120, "pluginOptions": { "i18n": { "localized": true } } },
+    "media": { "type": "media", "multiple": false, "allowedTypes": ["images", "videos"] },
+    "metrics": { "type": "component", "component": "shared.metric", "repeatable": true, "max": 6 },
+    "relatedService": { "type": "relation", "relation": "manyToOne", "target": "api::offer.offer" },
+    "verified": { "type": "boolean", "default": false, "required": true },
+    "displayOrder": { "type": "integer", "default": 0, "min": 0 }
+  }
+}

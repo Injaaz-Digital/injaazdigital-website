@@ -1,59 +1,38 @@
 import PropTypes from 'prop-types';
-import { BLOCK_SECTION_IDS } from './shared';
+import { asArray, SECTION_CONTAINER, SectionHeader, SectionShell } from './premiumShared';
 
-export default function ProblemBlock({ block, locale }) {
-  const bullets = Array.isArray(block.bullets) ? block.bullets.filter((item) => item?.title) : [];
-  const isArabic = locale === 'ar';
-
-  if (!block.heading && bullets.length === 0 && !block.insight) {
-    return null;
-  }
+export default function ProblemBlock({ block }) {
+  const items = asArray(block?.items);
 
   return (
-    <section className="section" id={BLOCK_SECTION_IDS['blocks.problem']}>
-      <div className="layout-content-narrow">
-        <div className="section-head" dir={isArabic ? 'rtl' : 'ltr'} lang={isArabic ? 'ar' : 'en'}>
-          {block.eyebrow ? <p className="section-head-kicker">{block.eyebrow}</p> : null}
-          {block.heading ? (
-            <h2 className="section-title text-center">
-              {block.heading}
-            </h2>
-          ) : null}
-          {block.description ? <p className="section-head-lead">{block.description}</p> : null}
+    <SectionShell tone="soft">
+      <div className={SECTION_CONTAINER}>
+        <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
+          <SectionHeader eyebrow={block?.eyebrow || 'Where momentum gets lost'} heading={block?.heading} description={block?.description} />
+          <div className="space-y-4">
+            {items.map((item, index) => (
+              <article
+                key={`${item.title}-${index}`}
+                className="rounded-[24px] corner-squircle border border-[#dce3e9] p-5 transition-all duration-200 hover:border-[#c0cbd8] hover:shadow-[0_4px_20px_rgba(8,52,106,0.06)] sm:p-6"
+              >
+                <div className="flex items-start gap-4 sm:gap-5">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#edf4f8] text-[0.8rem] font-semibold text-[#084299] sm:h-9 sm:w-9 sm:text-[0.85rem]">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="premium-geist text-base font-semibold tracking-[-0.012em] text-[#111820] sm:text-lg">{item.title}</h3>
+                    {item.description ? (
+                      <p className="mt-2 text-sm leading-6 text-[#596a7a] sm:text-[0.94rem]">{item.description}</p>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
-
-      {bullets.length > 0 ? (
-        <div className="mt-[34px] grid gap-[21px] md:grid-cols-2 lg:grid-cols-3">
-          {bullets.map((bullet, index) => (
-            <article
-              key={`${bullet.title}-${index}`}
-              className="rounded-[32px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-white p-[21px] shadow-[0_12px_26px_rgba(8,41,89,0.05)]"
-            >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6d85a1]">{String(index + 1).padStart(2, '0')}</p>
-              <h3 className="mt-[13px] text-lg tracking-[-0.02em] text-[#0a2546]">{bullet.title}</h3>
-              {bullet.description ? <p className="mt-[13px] text-sm leading-7 text-[#4f6a89]">{bullet.description}</p> : null}
-            </article>
-          ))}
-        </div>
-      ) : null}
-
-      {block.insight ? (
-        <div className="layout-content-narrow mt-[34px] rounded-[32px] corner-squircle border border-[rgba(8,66,153,0.12)] bg-[#f5f9ff] px-[21px] py-[13px] text-sm leading-7 text-[#24466f]">
-          {block.insight}
-        </div>
-      ) : null}
-    </section>
+    </SectionShell>
   );
 }
 
-ProblemBlock.propTypes = {
-  block: PropTypes.shape({
-    eyebrow: PropTypes.string,
-    heading: PropTypes.string,
-    description: PropTypes.string,
-    insight: PropTypes.string,
-    bullets: PropTypes.array,
-  }).isRequired,
-  locale: PropTypes.oneOf(['en', 'ar']),
-};
+ProblemBlock.propTypes = { block: PropTypes.object };

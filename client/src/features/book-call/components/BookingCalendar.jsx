@@ -1,102 +1,17 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, RotateCw } from 'lucide-react';
 import Button from '@/shared/ui/Button';
 import { bookMeetingRequest, fetchAvailabilityRange, rescheduleMeeting } from '../services/calendar.service';
 import { useBookingAvailability } from '../hooks/useBookingAvailability';
 import { BOOK_CALL_TIMEZONE } from '../constants/bookCall.constants';
-
-const formatLocalDateValue = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
-const parseLocalDate = (value) => {
-  const [year, month, day] = String(value || '').split('-').map(Number);
-  return new Date(year, (month || 1) - 1, day || 1);
-};
-
-const addMonths = (date, count) => new Date(date.getFullYear(), date.getMonth() + count, 1);
-
-const sameMonth = (left, right) =>
-  left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth();
-
-const buildMonthDays = (monthDate) => {
-  const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
-  const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
-  const leadingDays = (monthStart.getDay() + 6) % 7;
-  const gridStart = new Date(monthStart);
-  gridStart.setDate(monthStart.getDate() - leadingDays);
-
-  return Array.from({ length: 42 }, (_, index) => {
-    const date = new Date(gridStart);
-    date.setDate(gridStart.getDate() + index);
-    return {
-      value: formatLocalDateValue(date),
-      day: date.getDate(),
-      inMonth: date >= monthStart && date <= monthEnd,
-      date,
-    };
-  });
-};
-
-const formatMonthLabel = (date, locale = 'en') =>
-  new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : 'en', {
-    month: 'long',
-    year: 'numeric',
-  }).format(date);
-
-const buildWeekdayLabels = (locale = 'en') => {
-  const formatter = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : 'en', { weekday: 'short', timeZone: 'UTC' });
-  return Array.from({ length: 7 }, (_, index) => formatter.format(new Date(Date.UTC(2024, 0, 1 + index))).replace('.', ''));
-};
-
-const formatDateLabel = (value, weekday = 'short', locale = 'en') =>
-  new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : 'en', {
-    weekday,
-    month: 'short',
-    day: 'numeric',
-    timeZone: BOOK_CALL_TIMEZONE,
-  }).format(new Date(`${value}T12:00:00`));
-
-const formatSlotLabel = (value, timezone = BOOK_CALL_TIMEZONE, locale = 'en') =>
-  new Intl.DateTimeFormat(locale === 'ar' ? 'ar-MA' : 'en', {
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZone: timezone,
-  }).format(new Date(value));
-
-const getBookingError = (error, copy) => {
-  const code = error?.payload?.error?.code || error?.code;
-  if (code === 'SLOT_UNAVAILABLE' || error?.status === 409) {
-    return copy.slotTakenLabel || 'That time was just taken. Please choose another slot.';
-  }
-  if (code === 'GOOGLE_CALENDAR_NOT_CONFIGURED') {
-    return copy.calendarNotConfiguredLabel || 'Calendar connection is not configured yet.';
-  }
-  if (code === 'GOOGLE_CALENDAR_AUTH_INVALID') {
-    return copy.calendarAuthInvalidLabel || 'Calendar connection needs to be reconnected.';
-  }
-  if (code === 'LEAD_NOT_QUALIFIED') {
-    return copy.leadNotQualifiedLabel || 'This lead is not eligible to book a call yet.';
-  }
-  return copy.bookingFailedLabel || 'Something went wrong while booking. Please try again.';
-};
-
-function LoadingSkeleton({ label }) {
-  return (
-    <div className="space-y-3" aria-label={label}>
-      {Array.from({ length: 4 }, (_, index) => (
-        <div key={index} className="h-[3.75rem] animate-pulse rounded-xl bg-[#edf3f8]" />
-      ))}
-    </div>
-  );
-}
+import { addMonths, buildMonthDays, buildWeekdayLabels, formatDateLabel, formatLocalDateValue, formatMonthLabel, formatSlotLabel, parseLocalDate, sameMonth } from './BookingCalendar/calendar-date';
+import { getBookingError } from './BookingCalendar/booking-errors';
+import BookingCalendarSkeleton from './BookingCalendar/BookingCalendarSkeleton';
 
 export default function BookingCalendar({ leadId, sessionToken, copy = {}, locale = 'en', onBooked, rescheduleMeetingId = null }) {
+  const bookingAttemptRef = useRef(null);
   const todayValue = useMemo(() => formatLocalDateValue(new Date()), []);
   const [visibleMonth, setVisibleMonth] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState(todayValue);
@@ -104,6 +19,7 @@ export default function BookingCalendar({ leadId, sessionToken, copy = {}, local
   const [isBooking, setIsBooking] = useState(false);
   const [error, setError] = useState('');
   const [monthAvailability, setMonthAvailability] = useState({});
+  const [monthAvailabilityStatus, setMonthAvailabilityStatus] = useState('loading');
 
   const monthDays = useMemo(() => buildMonthDays(visibleMonth), [visibleMonth]);
   const weekdayLabels = useMemo(() => buildWeekdayLabels(locale), [locale]);
@@ -126,14 +42,26 @@ export default function BookingCalendar({ leadId, sessionToken, copy = {}, local
       try {
         const result = await fetchAvailabilityRange({ from: inMonthDays[0].value, to: inMonthDays[inMonthDays.length - 1].value });
         const entries = (result.days || []).map((day) => [day.date, (day.slots || []).length > 0]);
-        if (!cancelled) setMonthAvailability(Object.fromEntries(entries));
+        if (!cancelled) {
+          const nextAvailability = Object.fromEntries(entries);
+          const firstAvailableDate = entries.find(([, hasSlots]) => hasSlots)?.[0];
+          setMonthAvailability(nextAvailability);
+          setMonthAvailabilityStatus('ready');
+          setSelectedDate((current) => nextAvailability[current] === false && firstAvailableDate ? firstAvailableDate : current);
+        }
       } catch {
-        if (!cancelled) setMonthAvailability(Object.fromEntries(inMonthDays.map((day) => [day.value, false])));
+        if (!cancelled) {
+          // A range request is an enhancement. Keep every future day selectable
+          // so the visitor can still load that day's live availability.
+          setMonthAvailability({});
+          setMonthAvailabilityStatus('error');
+        }
       }
     };
 
     setMonthAvailability({});
-    loadMonthAvailability();
+    setMonthAvailabilityStatus('loading');
+    void loadMonthAvailability();
 
     return () => {
       cancelled = true;
@@ -155,12 +83,17 @@ export default function BookingCalendar({ leadId, sessionToken, copy = {}, local
         start: selectedSlot.start,
         end: selectedSlot.end,
         slotToken: selectedSlot.slotToken,
+        idempotencyKey: bookingAttemptRef.current?.slot === selectedSlot.start
+          ? bookingAttemptRef.current.key
+          : crypto.randomUUID(),
       };
+      bookingAttemptRef.current = { slot: selectedSlot.start, key: bookingPayload.idempotencyKey };
       const result = rescheduleMeetingId
         ? await rescheduleMeeting({ meetingId: rescheduleMeetingId, ...bookingPayload })
         : await bookMeetingRequest(bookingPayload);
 
       onBooked(result);
+      bookingAttemptRef.current = null;
     } catch (nextError) {
       setError(getBookingError(nextError, copy));
       retry();
@@ -228,13 +161,16 @@ export default function BookingCalendar({ leadId, sessionToken, copy = {}, local
               const isPast = day.value < todayValue;
               const isSelected = day.value === selectedDate;
               const hasSlots = monthAvailability[day.value] === true;
-              const disabled = !day.inMonth || isPast || (!hasSlots && day.value !== selectedDate);
+              const availabilityKnown = Object.prototype.hasOwnProperty.call(monthAvailability, day.value);
+              const disabled = !day.inMonth || isPast || (availabilityKnown && !hasSlots && day.value !== selectedDate);
 
               return (
                 <button
                   key={day.value}
                   type="button"
                   disabled={disabled}
+                  aria-label={formatDateLabel(day.value, 'long', locale)}
+                  aria-pressed={isSelected}
                   onClick={() => {
                     setSelectedDate(day.value);
                     setSelectedSlot(null);
@@ -258,6 +194,11 @@ export default function BookingCalendar({ leadId, sessionToken, copy = {}, local
               );
             })}
           </div>
+          {monthAvailabilityStatus === 'error' ? (
+            <p className="mt-2 px-1 text-xs leading-5 text-[#607693]">
+              {copy.chooseAnyDayLabel || 'Choose any future day to check its live times.'}
+            </p>
+          ) : null}
         </div>
 
         <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl corner-squircle border border-[#d8e3ef] bg-[#fbfdff]">
@@ -275,7 +216,7 @@ export default function BookingCalendar({ leadId, sessionToken, copy = {}, local
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
-            {isLoading ? <LoadingSkeleton label={copy?.loadingSlotsLabel} /> : null}
+            {isLoading ? <BookingCalendarSkeleton label={copy?.loadingSlotsLabel || 'Loading'} /> : null}
 
             {!isLoading && availabilityError ? (
               <div className="rounded-xl border border-[#f5c8c8] bg-[#fff6f6] px-4 py-3 text-sm text-[#9b1c1c]">

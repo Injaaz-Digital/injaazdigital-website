@@ -6,7 +6,7 @@ import ProgressBar from './ProgressBar';
 import StepRenderer from './StepRenderer';
 import { validateContact, validateQuestionAnswer } from '../utils/validation';
 
-export default function LeadStepper({ questions, session, copy = {}, locale = 'en', contactFields = null, onQualified, onUnqualified }) {
+export default function LeadStepper({ questions, session, copy = {}, locale = 'en', flowSteps = [], flowVersion = 0, contactFields = null, onQualified, onUnqualified }) {
   const totalSteps = questions.length + 1;
   const [stepIndex, setStepIndex] = useState(0);
   const [answerError, setAnswerError] = useState('');
@@ -33,6 +33,9 @@ export default function LeadStepper({ questions, session, copy = {}, locale = 'e
   );
   const currentQuestion = isContactStep ? contactStep : questions[stepIndex];
   const currentAnswer = currentQuestion?.key ? draftAnswers[currentQuestion.key] : undefined;
+  const currentFlowStep = !isContactStep && currentQuestion?.stepKey
+    ? flowSteps.find((step) => step.key === currentQuestion.stepKey)
+    : null;
 
   const handleContactChange = ({ target }) => {
     const { name, value } = target;
@@ -90,9 +93,19 @@ export default function LeadStepper({ questions, session, copy = {}, locale = 'e
   return (
     <section className="flex min-h-[26rem] flex-col xl:min-h-0 xl:h-full">
       <div className="flex flex-1 flex-col gap-3">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="flex-1"><ProgressBar currentStep={stepIndex + 1} totalSteps={totalSteps} /></div>
+          <span className="shrink-0 rounded-full border border-[#d8e3ef] bg-[#f8fbff] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5d7393]" title={flowVersion ? `Question flow version ${flowVersion}` : undefined}>
+            {locale.toUpperCase()}{flowVersion ? ` · v${flowVersion}` : ''}
+          </span>
         </div>
+
+        {!isContactStep && currentFlowStep ? (
+          <div className="rounded-xl border border-[#dce6f1] bg-[#f8fbff] px-3.5 py-2.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#0b5da8]">{currentFlowStep.title}</p>
+            {currentFlowStep.description ? <p className="mt-1 text-xs leading-5 text-[#607693]">{currentFlowStep.description}</p> : null}
+          </div>
+        ) : null}
 
         {isContactStep ? (
           <div>

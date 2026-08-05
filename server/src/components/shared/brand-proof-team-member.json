@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_shared_brand_proof_team_members",
+  "info": { "displayName": "Brand Proof Team Member" },
+  "options": {},
+  "attributes": {
+    "fullName": { "type": "string", "required": true, "maxLength": 120 },
+    "role": { "type": "string", "maxLength": 120 },
+    "avatar": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
+  }
+}

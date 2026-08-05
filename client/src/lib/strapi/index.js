@@ -3,6 +3,7 @@ export { normalizeValue } from './normalizers';
 export {
   fetchCollection,
   fetchContentIndex,
+  fetchDocument,
   fetchFirstBySlug,
   getPageBySlug,
   fetchLeadQuestions,

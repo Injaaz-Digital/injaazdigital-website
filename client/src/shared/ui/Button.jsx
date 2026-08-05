@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 
-const VARIANTS = {
+export const BUTTON_VARIANTS = {
   primary:
     "border border-[var(--color-secondary)]  bg-brand-gradient text-white shadow-[0_16px_32px_rgba(8,66,153,0.32)] hover:brightness-110",
   outline:
@@ -17,7 +17,7 @@ const VARIANTS = {
     "border border-sky-300/75 bg-sky-50/80 text-sky-700 hover:border-sky-400/85 hover:bg-sky-100/80 dark:border-sky-400/50 dark:bg-sky-500/10 dark:text-sky-200"
 };
 
-const SIZES = {
+export const BUTTON_SIZES = {
   xs: "h-6 px-3 text-[11px]",
   sm: "h-8 px-3.5 text-sm",
   md: "h-10 px-4 text-sm",
@@ -37,8 +37,8 @@ export default function Button({
       type={type}
       className={cn(
         "inline-flex items-center justify-center rounded-full corner-squircle font-normal tracking-[0.01em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/45 disabled:pointer-events-none disabled:opacity-50",
-        VARIANTS[variant],
-        SIZES[size],
+        BUTTON_VARIANTS[variant],
+        BUTTON_SIZES[size],
         className
       )}
       {...props}

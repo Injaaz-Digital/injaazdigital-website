@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_blocks_diagnoses",
+  "info": {
+    "displayName": "Diagnosis",
+    "description": "Visible symptoms contrasted with deeper system causes"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "eyebrow": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "text"
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.diagnosis-example",
+      "repeatable": true,
+      "required": true,
+      "min": 1,
+      "max": 6
+    },
+    "closingStatement": {
+      "type": "text"
+    }
+  }
+}

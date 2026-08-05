@@ -1,14 +1,24 @@
 import { getInitialLang } from '@/lib/i18n/locale.server';
-import { getCmsPage, getCmsPageMetadata, getCustomPageMetadata } from './cms-page';
+import { getCmsPage } from './cms-page';
+import { getCmsPageMetadata, getCustomPageMetadata } from '../content/pages/page.metadata';
 
-export async function loadCmsRoute(pathname) {
+export async function loadCmsRoute(pathname, options = {}) {
   const initialLang = await getInitialLang();
-  const cms = await getCmsPage(pathname, initialLang);
+  const cms = await getCmsPage(pathname, initialLang, options);
 
   return {
     initialLang,
     cms,
   };
+}
+
+export async function loadCmsRouteForLocale(pathname, locale, options = {}) {
+  const cms = await getCmsPage(pathname, locale, options);
+  return { initialLang: locale, cms };
+}
+
+export async function loadCmsRouteMetadataForLocale(pathname, locale) {
+  return getCmsPageMetadata(pathname, locale);
 }
 
 export async function loadCmsRouteMetadata(pathname) {

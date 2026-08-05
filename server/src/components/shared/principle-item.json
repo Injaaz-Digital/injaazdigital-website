@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_shared_principle_items",
+  "info": {
+    "displayName": "Principle Item",
+    "description": "Image-led principle feature card"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 140
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

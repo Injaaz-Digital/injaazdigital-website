@@ -18,7 +18,7 @@ const resolveServicePresentation = (item) => {
 
 const resolveServiceHref = (item, fallbackHref) => asText(item?.primaryCtaHref || item?.url) || fallbackHref;
 
-export default function ServiceOverviewBlock({ block, locale = 'en', onNavigate }) {
+export default function ServiceOverviewBlock({ block, locale = 'en' }) {
   const services = asArray(block?.services)
     .filter((item) => item?.isActive !== false)
     .sort((a, b) => (a?.displayOrder || 0) - (b?.displayOrder || 0));
@@ -37,8 +37,8 @@ export default function ServiceOverviewBlock({ block, locale = 'en', onNavigate 
               return (
                 <Container
                   key={`${item.slug || item.title || item.name}-${index}`}
-                  {...(href ? { href, onClick: (event) => { if (!onNavigate) return; event.preventDefault(); onNavigate(href); } } : {})}
-                  className="group grid gap-5 rounded-xl border border-[#d9e1e8] p-5 transition-all duration-200 hover:border-[#c0cbd8] hover:shadow-[0_4px_20px_rgba(8,52,106,0.06)] sm:grid-cols-[48px_1fr_auto] sm:p-6"
+                  {...(href ? { href } : {})}
+                  className="group grid gap-5 rounded-[24px] corner-squircle border border-[#d9e1e8] p-5 transition-all duration-200 hover:border-[#c0cbd8] hover:shadow-[0_4px_20px_rgba(8,52,106,0.06)] sm:grid-cols-[48px_1fr_auto] sm:p-6"
                 >
                   {presentation?.Icon ? (
                     <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[14px] border border-[#cddbe8] bg-[#f4f8fb] text-[#084299]" aria-hidden="true">
@@ -69,6 +69,4 @@ export default function ServiceOverviewBlock({ block, locale = 'en', onNavigate 
 ServiceOverviewBlock.propTypes = {
   block: PropTypes.object,
   locale: PropTypes.oneOf(['en', 'ar']),
-  onNavigate: PropTypes.func,
 };
-

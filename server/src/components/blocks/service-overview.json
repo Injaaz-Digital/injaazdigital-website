@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_blocks_service_overviews",
+  "info": {
+    "displayName": "Service Overview",
+    "description": "Select Offer entries to render as service cards"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "eyebrow": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "text"
+    },
+    "placement": {
+      "type": "enumeration",
+      "enum": [
+        "homepage",
+        "related"
+      ],
+      "default": "homepage"
+    },
+    "services": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::offer.offer"
+    }
+  }
+}

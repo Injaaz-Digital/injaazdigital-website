@@ -1,18 +1,25 @@
 import { cache } from 'react';
 import {
   fetchContentIndex,
+  fetchDocument,
   fetchFirstBySlug,
   fetchSingleType,
   fetchWithLocaleFallback,
   getPageBySlug,
-  normalizeMedia,
 } from '@/lib/strapi';
-import { CMS_SINGLE_TYPE_BY_PATH, STATIC_SITE_PATHS, isExternalUrl, normalizeCmsUrl, toAbsoluteSiteUrl } from '@/lib/config/site-config';
+import { request } from '@/lib/strapi';
+import { CMS_SINGLE_TYPE_BY_PATH, isExternalUrl, normalizeCmsUrl } from '@/lib/config/site-config';
 import { fetchBookingStepper } from '@/features/book-call/services/lead.service';
 import { fetchBookingPresentationConfig } from '@/features/book-call/services/calendar.service';
+import { sanitizeCmsRichText } from '@/features/blog/server/rich-text';
+import { articleSchema, cmsPageSchema, siteSettingSchema } from '@/features/cms/content/shared/schemas';
+import { estimateReadingTime } from '@/features/blog/server/reading-time';
+import { rankRelatedArticles } from '@/features/blog/server/recommendations';
+import { cmsLogger } from '@/features/cms/server/cms-logger';
+import { cmsCacheTags } from '@/features/cms/server/cms-cache';
+import { BLOG_ARTICLE_POPULATE, PAGE_COLLECTION_POPULATE, PAGE_POPULATE } from '@/features/cms/content/shared/populate';
 
 const DEFAULT_SITE_NAME = 'Injaaz Digital';
-const DEFAULT_DESCRIPTION = 'Data-driven digital growth systems for ambitious brands.';
 const HERO_CTA_FALLBACKS = Object.freeze({
   en: Object.freeze({
     primary: Object.freeze({ label: 'Book a Call', url: '/book-call', style: 'primary' }),
@@ -22,103 +29,6 @@ const HERO_CTA_FALLBACKS = Object.freeze({
     primary: Object.freeze({ label: 'احجز مكالمة', url: '/book-call', style: 'primary' }),
     secondary: Object.freeze({ label: 'شاهد كيف نعمل', url: '/growth-system', style: 'secondary' }),
   }),
-});
-
-const BLOG_ARTICLE_POPULATE = Object.freeze({
-  coverImage: true,
-  author: {
-    populate: {
-      avatar: true,
-      seo: {
-        populate: {
-          shareImage: true,
-        },
-      },
-    },
-  },
-  tags: {
-    populate: {
-      seo: {
-        populate: {
-          shareImage: true,
-        },
-      },
-    },
-  },
-  cta: true,
-  seo: {
-    populate: {
-      shareImage: true,
-    },
-  },
-});
-
-const PAGE_BLOCK_COMPONENTS = [
-  'section.hero',
-  'section.animated-text',
-  'section.problem',
-  'section.service-overview',
-  'section.feature-list',
-  'section.process',
-  'section.outcomes',
-  'section.faq',
-  'section.final-cta',
-  'section.book-call',
-  'section.editorial-content',
-  'section.system-flow',
-  'section.diagnosis',
-  'section.timeline',
-  'section.statement-pair',
-  'section.principles',
-  'blocks.hero',
-  'blocks.hero-minimal',
-  'blocks.cta-banner',
-  'blocks.rich-text',
-];
-
-const PAGE_BLOCKS_ON_POPULATE = PAGE_BLOCK_COMPONENTS.reduce((accumulator, componentUid) => {
-  accumulator[componentUid] = { populate: '*' };
-  return accumulator;
-}, {});
-
-PAGE_BLOCKS_ON_POPULATE['section.process'] = {
-  populate: {
-    steps: {
-      populate: {
-        visual: true,
-      },
-    },
-  },
-};
-
-PAGE_BLOCKS_ON_POPULATE['section.service-overview'] = {
-  populate: {
-    services: {
-      populate: {
-        capabilities: true,
-        flowSteps: true,
-        icon: true,
-        visual: true,
-        seo: { populate: '*' },
-      },
-    },
-  },
-};
-
-const PAGE_COLLECTION_POPULATE = Object.freeze({
-  seo: { populate: '*' },
-  blocks: {
-    on: PAGE_BLOCKS_ON_POPULATE,
-  },
-});
-
-const PAGE_POPULATE = Object.freeze({
-  header: { populate: '*' },
-  footer: { populate: '*' },
-  seo: { populate: '*' },
-  blocks: {
-    on: PAGE_BLOCKS_ON_POPULATE,
-  },
 });
 
 const asText = (value) => (typeof value === 'string' ? value.trim() : '');
@@ -419,9 +329,8 @@ const normalizeBrandProofGridBlock = (block) => {
   };
 };
 
-const normalizeSectionBlock = (block) => {
+const normalizeBlockCtas = (block) => {
   if (!block || typeof block !== 'object') return block;
-  if (!asText(block.__component).startsWith('section.')) return block;
 
   return {
     ...block,
@@ -459,7 +368,7 @@ const normalizeOfferBlocks = (pageData) => {
 
   return {
     ...pageData,
-    blocks: pageData.blocks.map((block) => block?.__component === 'section.service-overview'
+    blocks: pageData.blocks.map((block) => block?.__component === 'blocks.service-overview'
       ? {
           ...block,
           services: asCollection(block.services)
@@ -472,8 +381,9 @@ const normalizeOfferBlocks = (pageData) => {
 };
 
 const normalizeCmsBlock = (block, locale = 'en') => {
-  const heroNormalized = normalizeHeroBlock(block, locale);
-  return normalizeSectionBlock(normalizeBrandProofGridBlock(heroNormalized));
+  const settings = block?.settings && typeof block.settings === 'object' ? block.settings : {};
+  const heroNormalized = normalizeHeroBlock({ ...block, ...settings }, locale);
+  return normalizeBlockCtas(normalizeBrandProofGridBlock(heroNormalized));
 };
 
 const normalizeHeader = (header) => {
@@ -572,7 +482,7 @@ const normalizeAuthorData = (author) => {
   const name = asText(author.name);
   const slug = asText(author.slug);
   const role = asText(author.role);
-  const bio = asText(author.bio);
+  const bio = sanitizeCmsRichText(author.bio).html;
   const socialLinks = Array.isArray(author.socialLinks) ? author.socialLinks.map(normalizeCmsLink).filter(Boolean) : [];
   const seo = normalizeSeo(author.seo);
 
@@ -612,6 +522,8 @@ const normalizeTagData = (tag) => {
   };
 };
 
+const normalizeTaxonomyData = (value) => normalizeTagData(value);
+
 const normalizePageData = (data) => {
   if (!data || typeof data !== 'object') return null;
 
@@ -622,7 +534,7 @@ const normalizePageData = (data) => {
         .map((item) => normalizeCmsBlock(item, locale))
     : [];
 
-  return {
+  const normalized = {
     ...data,
     title: asText(data.title),
     description: asText(data.description),
@@ -630,34 +542,61 @@ const normalizePageData = (data) => {
     footer: normalizeFooter(data.footer),
     seo: normalizeSeo(data.seo),
     blocks,
+    finalCta: data.finalCta
+      ? normalizeCmsBlock({ ...data.finalCta, __component: 'blocks.final-cta' }, locale)
+      : null,
   };
+  const parsed = cmsPageSchema.safeParse(normalized);
+  if (!parsed.success) {
+    cmsLogger.error('CMS page contract validation failed.', { operation: 'cms.page.validate', locale, documentId: data.documentId, issues: parsed.error.issues.map(({ path, code }) => ({ path, code })) });
+    return null;
+  }
+  return parsed.data;
 };
 
 const normalizeArticleData = (data) => {
   if (!data || typeof data !== 'object') return null;
 
-  const readTime = Number.parseInt(data.readTime, 10);
+  const richText = sanitizeCmsRichText(data.body);
+  const articleCta = normalizeCmsLink(data.articleCta)
+    || normalizeCmsLink(data.relatedService?.cta)
+    || normalizeCmsLink(data.cta);
+  const readingTimeMinutes = estimateReadingTime(richText.html, data.readTime);
 
-  return {
+  const normalized = {
     ...data,
     title: asText(data.title),
     excerpt: asText(data.excerpt),
-    body: asText(data.body),
+    body: richText.html,
+    headings: richText.headings,
     actionStep: asText(data.actionStep),
     commonMistake: asText(data.commonMistake),
     category: asText(data.category) || 'service',
-    readTime: Number.isFinite(readTime) && readTime > 0 ? readTime : 5,
-    cta: normalizeCmsLink(data.cta),
+    readTime: readingTimeMinutes,
+    readingTimeMinutes,
+    cta: articleCta,
+    articleCta,
     author: normalizeAuthorData(data.author),
     tags: Array.isArray(data.tags) ? data.tags.map(normalizeTagData).filter(Boolean) : [],
+    primaryCategory: normalizeTaxonomyData(data.primaryCategory),
+    relatedPosts: Array.isArray(data.relatedPosts)
+      ? data.relatedPosts.filter((article) => article?.slug && article.slug !== data.slug).map((article) => ({ ...article, primaryCategory: normalizeTaxonomyData(article.primaryCategory) }))
+      : [],
+    relatedService: data.relatedService || null,
     seo: normalizeSeo(data.seo),
   };
+  const parsed = articleSchema.safeParse(normalized);
+  if (!parsed.success) {
+    cmsLogger.error('CMS article contract validation failed.', { operation: 'cms.article.validate', locale: data.locale, documentId: data.documentId, issues: parsed.error.issues.map(({ path, code }) => ({ path, code })) });
+    return null;
+  }
+  return parsed.data;
 };
 
 const normalizeSiteSetting = (data) => {
   if (!data || typeof data !== 'object') return null;
 
-  return {
+  const normalized = {
     ...data,
     siteName: asText(data.siteName) || DEFAULT_SITE_NAME,
     defaultLocale: asText(data.defaultLocale) || 'en',
@@ -665,6 +604,12 @@ const normalizeSiteSetting = (data) => {
     footer: normalizeFooter(data.footer),
     defaultSeo: normalizeSeo(data.defaultSeo),
   };
+  const parsed = siteSettingSchema.safeParse(normalized);
+  if (!parsed.success) {
+    cmsLogger.error('CMS site-setting contract validation failed.', { operation: 'cms.site.validate', locale: data.locale, documentId: data.documentId, issues: parsed.error.issues.map(({ path, code }) => ({ path, code })) });
+    return null;
+  }
+  return parsed.data;
 };
 
 const mergePageWithSiteLayout = (pageData, siteSetting) => {
@@ -714,38 +659,46 @@ const pickBookCallEditorialCopy = (block) =>
 
 const hydrateBookCallBlocks = async (pageData, locale, pathname) => {
   const blocks = Array.isArray(pageData?.blocks) ? pageData.blocks : [];
-  const hasBookCallBlock = blocks.some((block) => block?.__component === 'section.book-call');
+  const hasBookCallBlock = blocks.some((block) => block?.__component === 'blocks.book-call');
 
   if (!hasBookCallBlock) {
     return pageData;
   }
 
   const stepperKeys = [...new Set(blocks
-    .filter((block) => block?.__component === 'section.book-call')
-    .map((block) => block?.stepper?.key)
+    .filter((block) => block?.__component === 'blocks.book-call')
+    .map((block) => block?.questionFlowKey || block?.stepper?.key)
     .filter(Boolean))];
   const [steppers, bookingConfig] = await Promise.all([
     Promise.all(stepperKeys.map((key) => fetchBookingStepper({ key, locale }).catch(() => null))),
     fetchBookingPresentationConfig().catch(() => null),
   ]);
   const steppersByKey = new Map(steppers.filter(Boolean).map((stepper) => [stepper.key, stepper]));
+  const defaultFlowKey = bookingConfig?.defaultFlowKey || '';
+  if (defaultFlowKey && !steppersByKey.has(defaultFlowKey)) {
+    const defaultStepper = await fetchBookingStepper({ key: defaultFlowKey, locale }).catch(() => null);
+    if (defaultStepper) steppersByKey.set(defaultStepper.key, defaultStepper);
+  }
   const duration = Number(bookingConfig?.meetingDuration || 30);
 
   return {
     ...pageData,
     blocks: blocks.map((block) => {
-      if (block?.__component !== 'section.book-call') {
+      if (block?.__component !== 'blocks.book-call') {
         return block;
       }
-      const stepper = steppersByKey.get(block.stepper?.key) || null;
+      const requestedFlowKey = block.questionFlowKey || block.stepper?.key || defaultFlowKey;
+      const stepper = steppersByKey.get(requestedFlowKey) || steppersByKey.get(defaultFlowKey) || null;
       const questionsEnabled = Boolean(stepper) && stepper.qualificationEnabled !== false;
 
       return {
         id: block.id,
         __component: block.__component,
         ...pickBookCallEditorialCopy(block),
-        stepperKey: stepper?.key || block.stepper?.key || '',
+        stepperKey: stepper?.key || requestedFlowKey || '',
         stepperVersion: Number(stepper?.version || 0),
+        stepperLocale: stepper?.locale || locale,
+        stepperSteps: Array.isArray(stepper?.steps) ? stepper.steps : [],
         contactFields: stepper?.contactFields || null,
         ...(bookingConfig?.meetingTitle ? { meetingName: bookingConfig.meetingTitle } : {}),
         durationLabel: locale === 'ar' ? `${duration} دقيقة` : `${duration} min`,
@@ -758,56 +711,6 @@ const hydrateBookCallBlocks = async (pageData, locale, pathname) => {
         initialQuestions: questionsEnabled ? (stepper?.questions || []) : [],
       };
     }),
-  };
-};
-
-const splitKeywords = (keywords) =>
-  asText(keywords)
-    .split(',')
-    .map((keyword) => keyword.trim())
-    .filter(Boolean);
-
-const buildSiteMetadata = ({ pathname, siteSetting, pageData, title, description, noIndex = false }) => {
-  const siteName = siteSetting?.siteName || DEFAULT_SITE_NAME;
-  const seo = pageData?.seo || siteSetting?.defaultSeo || null;
-  const metaTitle = title || seo?.metaTitle || pageData?.title || siteName;
-  const metaDescription =
-    description || seo?.metaDescription || pageData?.description || siteSetting?.defaultSeo?.metaDescription || DEFAULT_DESCRIPTION;
-  const canonicalUrl = toAbsoluteSiteUrl(seo?.canonicalUrl || pathname);
-  const shareMedia = normalizeMedia(seo?.shareImage, { fallbackAlt: metaTitle });
-  const keywords = splitKeywords(seo?.keywords || siteSetting?.defaultSeo?.keywords);
-  const shouldIndex = !(seo?.noIndex || noIndex);
-
-  return {
-    title: metaTitle,
-    description: metaDescription,
-    keywords: keywords.length > 0 ? keywords : undefined,
-    alternates: {
-      canonical: canonicalUrl,
-    },
-    robots: shouldIndex
-      ? {
-          index: true,
-          follow: true,
-        }
-      : {
-          index: false,
-          follow: false,
-        },
-    openGraph: {
-      title: metaTitle,
-      description: metaDescription,
-      url: canonicalUrl,
-      siteName,
-      type: 'website',
-      images: shareMedia?.url ? [{ url: shareMedia.url, alt: shareMedia.alt || metaTitle }] : undefined,
-    },
-    twitter: {
-      card: shareMedia?.url ? 'summary_large_image' : 'summary',
-      title: metaTitle,
-      description: metaDescription,
-      images: shareMedia?.url ? [shareMedia.url] : undefined,
-    },
   };
 };
 
@@ -826,6 +729,37 @@ const PAGE_SLUG_BY_PATH = Object.freeze({
 
 const pageSlugFromPathname = (pathname) => PAGE_SLUG_BY_PATH[pathname] || toSlug(pathname);
 
+const localizedPath = (locale, pathname) => `/${locale}${pathname === '/' ? '' : pathname}`;
+
+const defaultLocalizedPaths = (pathname) => ({
+  en: localizedPath('en', pathname),
+  ar: localizedPath('ar', pathname),
+});
+
+const resolveEntityLocalizedPaths = async ({ contentType, entity, locale, pathname, prefix = '' }) => {
+  const paths = defaultLocalizedPaths(pathname);
+  const documentId = asText(entity?.documentId);
+  const alternateLocale = locale === 'ar' ? 'en' : 'ar';
+  if (!documentId || pathname === '/') return paths;
+
+  try {
+    const alternate = await fetchDocument(contentType, documentId, alternateLocale, {
+      fields: ['slug', 'documentId'],
+    });
+    const alternateSlug = asText(alternate?.slug);
+    if (alternateSlug) paths[alternateLocale] = localizedPath(alternateLocale, `/${prefix}${alternateSlug}`);
+  } catch (error) {
+    cmsLogger.warn('Localized route lookup failed; retaining the equivalent locale-prefixed path.', {
+      operation: 'cms.route.localization',
+      locale,
+      route: pathname,
+      errorCode: error?.code || 'CMS_LOCALIZED_ROUTE_LOOKUP_FAILED',
+    });
+  }
+
+  return paths;
+};
+
 const buildLayoutOnlyData = (siteSetting) => ({
   data: mergePageWithSiteLayout(null, siteSetting?.data),
   fallback: false,
@@ -834,39 +768,68 @@ const buildLayoutOnlyData = (siteSetting) => ({
 });
 
 async function loadBlogListPage(locale, siteSettingPromise) {
+  const safeBlogRequest = async (operation, request, emptyData) => {
+    try {
+      return await request();
+    } catch (error) {
+      cmsLogger.error('Blog CMS request failed; rendering the resilient blog shell.', {
+        operation,
+        locale,
+        errorCode: error?.code || 'BLOG_CMS_REQUEST_FAILED',
+      });
+      return { data: emptyData, locale, fallback: false, error: true };
+    }
+  };
   const [pageResult, articlesResult, siteSetting] = await Promise.all([
-    fetchWithLocaleFallback((activeLocale) => fetchSingleType('blog-page', activeLocale, { populate: PAGE_POPULATE }), locale),
-    fetchWithLocaleFallback(
-      (activeLocale) =>
-        fetchContentIndex('articles', activeLocale, {
-          populate: BLOG_ARTICLE_POPULATE,
-          sort: ['featured:desc', 'publishedAt:desc', 'updatedAt:desc'],
-          pagination: { pageSize: 30 },
-        }),
-      locale
+    safeBlogRequest(
+      'cms.blog-page.load',
+      () => fetchWithLocaleFallback((activeLocale) => fetchSingleType('blog-page', activeLocale, { populate: PAGE_POPULATE }), locale),
+      null
+    ),
+    safeBlogRequest(
+      'cms.blog-articles.load',
+      () => fetchWithLocaleFallback(
+        (activeLocale) =>
+          fetchContentIndex('articles', activeLocale, {
+            populate: BLOG_ARTICLE_POPULATE,
+            sort: ['featured:desc', 'publishedAt:desc', 'updatedAt:desc'],
+            pagination: { pageSize: 30 },
+          }),
+        locale
+      ),
+      []
     ),
     siteSettingPromise,
   ]);
 
-  const page = mergePageWithSiteLayout(pageResult.data, siteSetting.data);
+  const fallbackPage = {
+    title: locale === 'ar' ? 'الرؤى والأنظمة' : 'Insights and systems',
+    description: locale === 'ar'
+      ? 'مقالات عملية حول أنظمة النمو والمواقع والعمليات الرقمية.'
+      : 'Practical articles about growth, website, and digital operating systems.',
+    blocks: [],
+    seo: null,
+  };
+  const page = mergePageWithSiteLayout(pageResult.data || fallbackPage, siteSetting.data) || fallbackPage;
 
   return {
     data: {
       type: 'blog-list',
       page,
       articles: (articlesResult.data || []).map((article) => normalizeArticleData(article)).filter(Boolean),
+      localizedPaths: defaultLocalizedPaths('/blog'),
       header: page?.header || siteSetting.data?.header || null,
       footer: page?.footer || siteSetting.data?.footer || null,
     },
     fallback: pageResult.fallback || articlesResult.fallback,
-    error: false,
+    error: pageResult.error === true || articlesResult.error === true,
     settings: siteSetting.data,
   };
 }
 
 async function loadBlogArticlePage(pathname, locale, siteSettingPromise) {
   const articleSlug = pathname.replace('/blog/', '').trim();
-  const [articleResult, siteSetting] = await Promise.all([
+  const [articleResult, articleIndexResult, siteSetting] = await Promise.all([
     fetchWithLocaleFallback(
       (activeLocale) =>
         fetchFirstBySlug('articles', activeLocale, articleSlug, {
@@ -874,6 +837,11 @@ async function loadBlogArticlePage(pathname, locale, siteSettingPromise) {
         }),
       locale
     ),
+    fetchWithLocaleFallback((activeLocale) => fetchContentIndex('articles', activeLocale, {
+      populate: BLOG_ARTICLE_POPULATE,
+      sort: ['publishedAt:desc', 'updatedAt:desc'],
+      pagination: { pageSize: 200 },
+    }), locale),
     siteSettingPromise,
   ]);
 
@@ -886,40 +854,119 @@ async function loadBlogArticlePage(pathname, locale, siteSettingPromise) {
         articleResult.data.author = articleResult.data.author || {};
         articleResult.data.author.avatar = enArticle.author.avatar;
       }
-    } catch {
-      // English fetch is best-effort
+    } catch (error) {
+      cmsLogger.warn('English author-media fallback failed.', { operation: 'cms.article.author-fallback', locale, route: pathname, errorCode: error?.code || 'CMS_AUTHOR_FALLBACK_FAILED' });
     }
   }
 
+  const localizedPaths = articleResult.data
+    ? await resolveEntityLocalizedPaths({ contentType: 'articles', entity: articleResult.data, locale, pathname, prefix: 'blog/' })
+    : defaultLocalizedPaths(pathname);
+
+  const normalizedArticle = normalizeArticleData(articleResult.data);
+  const normalizedIndex = (articleIndexResult.data || []).map(normalizeArticleData).filter(Boolean);
+  if (normalizedArticle) {
+    normalizedArticle.relatedPosts = rankRelatedArticles(normalizedArticle, normalizedIndex, 4);
+    const chronologicalArticles = normalizedIndex
+      .filter((candidate) => candidate.slug)
+      .sort((left, right) => Date.parse(right.publishedAt || right.updatedAt || '') - Date.parse(left.publishedAt || left.updatedAt || ''));
+    const currentIndex = chronologicalArticles.findIndex((candidate) => candidate.slug === normalizedArticle.slug);
+    normalizedArticle.previousArticle = currentIndex >= 0 ? chronologicalArticles[currentIndex + 1] || null : null;
+    normalizedArticle.nextArticle = currentIndex > 0 ? chronologicalArticles[currentIndex - 1] || null : null;
+  }
+
   return {
-    data: articleResult.data
+    data: normalizedArticle
       ? {
           type: 'blog-post',
-          article: normalizeArticleData(articleResult.data),
+          article: normalizedArticle,
+          localizedPaths,
           header: siteSetting.data?.header || null,
           footer: siteSetting.data?.footer || null,
         }
-      : {
+        : {
           type: 'not-found',
+          localizedPaths,
           header: siteSetting.data?.header || null,
           footer: siteSetting.data?.footer || null,
         },
-    fallback: articleResult.fallback,
+    fallback: articleResult.fallback || articleIndexResult.fallback,
     error: false,
     settings: siteSetting.data,
   };
 }
 
-async function loadSingleTypePage(singleType, locale, siteSettingPromise) {
+const BLOG_TAXONOMY = Object.freeze({
+  category: { contentType: 'categories', relation: 'primaryCategory' },
+  author: { contentType: 'authors', relation: 'author' },
+  tag: { contentType: 'tags', relation: 'tags' },
+});
+
+async function loadBlogTaxonomyPage(pathname, locale, siteSettingPromise) {
+  const [, kind, slug] = pathname.match(/^\/blog\/(category|author|tag)\/([^/]+)$/) || [];
+  const config = BLOG_TAXONOMY[kind];
+  if (!config || !slug) return null;
+  const [entityResult, articlesResult, siteSetting] = await Promise.all([
+    fetchWithLocaleFallback((activeLocale) => fetchFirstBySlug(config.contentType, activeLocale, slug, { populate: { seo: { populate: { shareImage: true } } } }), locale),
+    fetchWithLocaleFallback((activeLocale) => fetchContentIndex('articles', activeLocale, {
+      populate: BLOG_ARTICLE_POPULATE,
+      filters: { [config.relation]: { slug: { $eq: slug } } },
+      sort: ['publishedAt:desc', 'updatedAt:desc'],
+      pagination: { pageSize: 100 },
+    }), locale),
+    siteSettingPromise,
+  ]);
+  if (!entityResult.data) return null;
+  const entity = entityResult.data;
+  return {
+    data: {
+      type: 'blog-list',
+      page: { title: entity.name, description: entity.description || entity.bio || '', seo: normalizeSeo(entity.seo) },
+      articles: (articlesResult.data || []).map(normalizeArticleData).filter(Boolean),
+      taxonomy: { kind, slug, entity },
+      localizedPaths: defaultLocalizedPaths(pathname),
+      header: siteSetting.data?.header || null,
+      footer: siteSetting.data?.footer || null,
+    },
+    fallback: entityResult.fallback || articlesResult.fallback,
+    error: false,
+    settings: siteSetting.data,
+  };
+}
+
+async function loadBlogSearchPage(locale, siteSettingPromise, searchParams = {}) {
+  const query = asText(searchParams.q);
+  const pageNumber = Math.max(1, Number.parseInt(searchParams.page, 10) || 1);
+  const [blogPageResult, siteSetting] = await Promise.all([
+    fetchWithLocaleFallback((activeLocale) => fetchSingleType('blog-page', activeLocale, { populate: PAGE_POPULATE }), locale),
+    siteSettingPromise,
+  ]);
+  let searchResult = { data: [], meta: { page: pageNumber, pageSize: 12, pageCount: 1, total: 0 } };
+  if (query.length >= 2) {
+    searchResult = await request('/api/articles/search', {
+      locale, q: query, page: pageNumber, pageSize: 12,
+      category: asText(searchParams.category), tag: asText(searchParams.tag),
+    }, { next: { revalidate: 60, tags: [cmsCacheTags.blogIndex(locale)] } });
+  }
+  const page = mergePageWithSiteLayout(blogPageResult.data, siteSetting.data);
+  return {
+    data: {
+      type: 'blog-list', page: { ...page, title: locale === 'ar' ? 'البحث في المقالات' : 'Search insights', description: query ? `${searchResult.meta?.total || 0} results for “${query}”` : '' },
+      articles: (searchResult.data || []).map(normalizeArticleData).filter(Boolean), search: { query, ...searchResult.meta },
+      localizedPaths: defaultLocalizedPaths('/blog/search'), header: page?.header || siteSetting.data?.header || null, footer: page?.footer || siteSetting.data?.footer || null,
+    }, fallback: blogPageResult.fallback, error: false, settings: siteSetting.data,
+  };
+}
+
+async function loadSingleTypePage(singleType, pathname, locale, siteSettingPromise) {
   const [result, siteSetting] = await Promise.all([
-    fetchWithLocaleFallback((activeLocale) => fetchSingleType(singleType, activeLocale, { populate: PAGE_POPULATE }), locale),
+    fetchWithLocaleFallback((activeLocale) => fetchSingleType(singleType, activeLocale, { populate: PAGE_COLLECTION_POPULATE }), locale),
     siteSettingPromise,
   ]);
 
   const pageData = mergePageWithSiteLayout(result.data, siteSetting.data);
-
   return {
-    data: await hydrateBookCallBlocks(pageData, locale, `/${singleType}`),
+    data: await hydrateBookCallBlocks(pageData ? { ...pageData, localizedPaths: defaultLocalizedPaths(pathname) } : pageData, locale, pathname),
     fallback: result.fallback,
     error: false,
     settings: siteSetting.data,
@@ -943,9 +990,12 @@ async function loadGenericSlugPage(pathname, locale, siteSettingPromise) {
   ]);
 
   const pageData = normalizeOfferBlocks(mergePageWithSiteLayout(result.data, siteSetting.data));
+  const localizedPaths = result.data
+    ? await resolveEntityLocalizedPaths({ contentType: 'pages', entity: result.data, locale, pathname })
+    : defaultLocalizedPaths(pathname);
 
   return {
-    data: await hydrateBookCallBlocks(pageData, locale, pathname),
+    data: await hydrateBookCallBlocks(pageData ? { ...pageData, localizedPaths } : pageData, locale, pathname),
     fallback: result.fallback,
     error: false,
     settings: siteSetting.data,
@@ -960,7 +1010,8 @@ export const getSiteSetting = cache(async (locale) => {
       data: normalizeSiteSetting(result.data),
       error: false,
     };
-  } catch {
+  } catch (error) {
+    cmsLogger.error('Site settings request failed.', { operation: 'cms.site.load', locale, errorCode: error?.code || 'CMS_SITE_REQUEST_FAILED' });
     return {
       data: null,
       fallback: false,
@@ -969,26 +1020,36 @@ export const getSiteSetting = cache(async (locale) => {
   }
 });
 
-export async function getCmsPage(pathname, locale) {
+export async function getCmsPage(pathname, locale, options = {}) {
   const normalizedPath = normalizeCmsUrl(pathname || '/');
   const siteSettingPromise = getSiteSetting(locale);
   const singleType = CMS_SINGLE_TYPE_BY_PATH[normalizedPath];
 
   try {
     if (normalizedPath === '/blog') {
-      return loadBlogListPage(locale, siteSettingPromise);
+      return await loadBlogListPage(locale, siteSettingPromise);
+    }
+
+    if (normalizedPath === '/blog/search') {
+      return await loadBlogSearchPage(locale, siteSettingPromise, options.searchParams);
+    }
+
+    if (/^\/blog\/(category|author|tag)\//.test(normalizedPath)) {
+      const taxonomyPage = await loadBlogTaxonomyPage(normalizedPath, locale, siteSettingPromise);
+      if (taxonomyPage) return taxonomyPage;
     }
 
     if (normalizedPath.startsWith('/blog/')) {
-      return loadBlogArticlePage(normalizedPath, locale, siteSettingPromise);
+      return await loadBlogArticlePage(normalizedPath, locale, siteSettingPromise);
     }
 
     if (singleType) {
-      return loadSingleTypePage(singleType, locale, siteSettingPromise);
+      return await loadSingleTypePage(singleType, normalizedPath, locale, siteSettingPromise);
     }
 
-    return loadGenericSlugPage(normalizedPath, locale, siteSettingPromise);
-  } catch {
+    return await loadGenericSlugPage(normalizedPath, locale, siteSettingPromise);
+  } catch (error) {
+    cmsLogger.error('CMS page request failed.', { operation: 'cms.page.load', locale, route: normalizedPath, errorCode: error?.code || 'CMS_PAGE_REQUEST_FAILED' });
     const siteSetting = await siteSettingPromise;
     return {
       data: mergePageWithSiteLayout(null, siteSetting.data),
@@ -998,124 +1059,3 @@ export async function getCmsPage(pathname, locale) {
     };
   }
 }
-
-export async function getCmsPageMetadata(pathname, locale) {
-  const normalizedPath = normalizeCmsUrl(pathname || '/');
-  const cms = await getCmsPage(normalizedPath, locale);
-  const isBlogList = cms.data?.type === 'blog-list';
-  const isBlogPost = cms.data?.type === 'blog-post';
-  const hasContent = Boolean(
-    cms.data?.blocks?.length ||
-      cms.data?.title ||
-      cms.data?.description ||
-      (isBlogList && (cms.data?.page?.title || cms.data?.page?.blocks?.length || cms.data?.articles?.length)) ||
-      (isBlogPost && cms.data?.article?.title)
-  );
-
-  if (!hasContent) {
-    return buildSiteMetadata({
-      pathname: normalizedPath,
-      siteSetting: cms.settings,
-      pageData: {
-        title: locale === 'ar' ? 'الصفحة غير موجودة' : 'Page Not Found',
-        description:
-          locale === 'ar'
-            ? 'هذه الصفحة غير متاحة حالياً أو لم يتم نشرها بعد.'
-            : 'This page is not available yet or has not been published.',
-      },
-      noIndex: true,
-    });
-  }
-
-  if (isBlogPost) {
-    return buildSiteMetadata({
-      pathname: normalizedPath,
-      siteSetting: cms.settings,
-      pageData: cms.data.article,
-      title: cms.data.article?.seo?.metaTitle || cms.data.article?.title,
-      description: cms.data.article?.seo?.metaDescription || cms.data.article?.excerpt || DEFAULT_DESCRIPTION,
-    });
-  }
-
-  if (isBlogList) {
-    return buildSiteMetadata({
-      pathname: normalizedPath,
-      siteSetting: cms.settings,
-      pageData: cms.data.page,
-      title: cms.data.page?.seo?.metaTitle || cms.data.page?.title || 'Blog',
-      description: cms.data.page?.seo?.metaDescription || cms.data.page?.description || DEFAULT_DESCRIPTION,
-    });
-  }
-
-  return buildSiteMetadata({
-    pathname: normalizedPath,
-    siteSetting: cms.settings,
-    pageData: cms.data,
-  });
-}
-
-export async function getCustomPageMetadata(locale, { pathname, title, description, noIndex = false }) {
-  const siteSetting = await getSiteSetting(locale);
-
-  return buildSiteMetadata({
-    pathname,
-    siteSetting: siteSetting.data,
-    pageData: {
-      title,
-      description,
-      seo: {
-        metaTitle: title,
-        metaDescription: description,
-        noIndex,
-      },
-    },
-    title,
-    description,
-    noIndex,
-  });
-}
-
-export const getSitemapEntries = cache(async () => {
-  const [articles, offers] = await Promise.all([
-    fetchContentIndex('articles', 'en', {
-      fields: ['slug', 'updatedAt'],
-      sort: ['featured:desc', 'publishedAt:desc', 'updatedAt:desc'],
-    }).catch(() => []),
-    fetchContentIndex('offers', 'en', {
-      fields: ['primaryCtaHref', 'updatedAt'],
-      filters: { isActive: { $eq: true } },
-      sort: ['displayOrder:asc'],
-    }).catch(() => []),
-  ]);
-
-  const entries = new Map();
-
-  STATIC_SITE_PATHS.forEach((pathname) => {
-    entries.set(pathname, {
-      url: toAbsoluteSiteUrl(pathname),
-      lastModified: new Date(),
-    });
-  });
-
-  articles.forEach((article) => {
-    const slug = asText(article?.slug);
-    if (!slug) return;
-
-    const pathname = normalizeCmsUrl(`/blog/${slug}`);
-    entries.set(pathname, {
-      url: toAbsoluteSiteUrl(pathname),
-      lastModified: article?.updatedAt ? new Date(article.updatedAt) : new Date(),
-    });
-  });
-
-  offers.forEach((offer) => {
-    const pathname = normalizeCmsUrl(offer?.primaryCtaHref);
-    if (!pathname || pathname === '/onboarding-engine') return;
-    entries.set(pathname, {
-      url: toAbsoluteSiteUrl(pathname),
-      lastModified: offer?.updatedAt ? new Date(offer.updatedAt) : new Date(),
-    });
-  });
-
-  return [...entries.values()];
-});

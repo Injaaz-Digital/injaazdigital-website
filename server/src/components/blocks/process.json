@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_blocks_processes",
+  "info": {
+    "displayName": "Process",
+    "description": "Step-by-step delivery process"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "eyebrow": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "text"
+    },
+    "variant": {
+      "type": "enumeration",
+      "enum": [
+        "interactive",
+        "editorial"
+      ],
+      "default": "interactive"
+    },
+    "steps": {
+      "type": "component",
+      "component": "shared.process-step",
+      "repeatable": true,
+      "min": 1
+    }
+  }
+}

@@ -12,7 +12,7 @@ import BookingCalendar from './BookingCalendar';
 import BookingConfirmation from './BookingConfirmation';
 import BookingFallback from './BookingFallback';
 
-export default function BookCallPage({ locale = 'en', initialQuestions, bookingCopy, sourcePage = '/book-call', stepperKey = '', stepperVersion = 0, contactFields = null }) {
+export default function BookCallPage({ locale = 'en', initialQuestions, bookingCopy, sourcePage = '/book-call', stepperKey = '', stepperVersion = 0, stepperSteps = [], contactFields = null }) {
   const questions = useMemo(() => normalizeQuestions(initialQuestions), [initialQuestions]);
   const copy = useMemo(
     () => ({ ...getBookingFallbackCopy(locale), ...(bookingCopy || {}) }),
@@ -81,6 +81,8 @@ export default function BookCallPage({ locale = 'en', initialQuestions, bookingC
               session={session}
               copy={copy}
               locale={locale}
+              flowSteps={stepperSteps}
+              flowVersion={stepperVersion}
               contactFields={contactFields}
               onQualified={(result) => {
                 setQualificationResult(result);

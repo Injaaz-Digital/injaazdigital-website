@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import cx from '@/lib/utils/cx';
+import { cn as cx } from '@/lib/utils';
 import { asArray, Copy, CONTAINER, EYEBROW } from './editorialShared';
 
 export default function StatementPairBlock({ block }) {
@@ -23,4 +23,3 @@ export default function StatementPairBlock({ block }) {
 }
 
 StatementPairBlock.propTypes = { block: PropTypes.object };
-

@@ -6,6 +6,7 @@ export default function robots() {
       {
         userAgent: '*',
         allow: '/',
+        disallow: ['/demo/', '/api/', '/preview/'],
       },
     ],
     sitemap: `${SITE_URL.replace(/\/+$/, '')}/sitemap.xml`,

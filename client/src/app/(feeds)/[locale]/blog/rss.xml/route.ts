@@ -1,0 +1,2 @@
+import { buildBlogRss } from '@/features/blog/server/rss';
+export async function GET(_request: Request, { params }: { params: Promise<{ locale: string }> }) { const { locale } = await params; if (locale !== 'en' && locale !== 'ar') return new Response('Not found', { status: 404 }); return new Response(await buildBlogRss(locale), { headers: { 'Content-Type': 'application/rss+xml; charset=utf-8', 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600' } }); }

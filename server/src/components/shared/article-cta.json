@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_shared_article_ctas",
+  "info": {
+    "displayName": "Article CTA",
+    "description": "Localized, trackable conversion call to action for editorial content"
+  },
+  "options": {},
+  "attributes": {
+    "headline": { "type": "string", "maxLength": 140 },
+    "body": { "type": "text", "maxLength": 400 },
+    "label": { "type": "string", "required": true, "maxLength": 80 },
+    "url": { "type": "string", "required": true, "maxLength": 2048 },
+    "isExternal": { "type": "boolean", "default": false },
+    "style": { "type": "enumeration", "enum": ["primary", "secondary", "tertiary"], "default": "primary" },
+    "trackingId": { "type": "string", "maxLength": 120 }
+  }
+}

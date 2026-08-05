@@ -1,3 +1,5 @@
+'use client';
+
 import PropTypes from 'prop-types';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useState } from 'react';

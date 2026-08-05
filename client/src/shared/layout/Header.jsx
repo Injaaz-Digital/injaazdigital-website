@@ -1,22 +1,31 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Check, ChevronDown, Languages, Menu, X } from 'lucide-react';
+import { ArrowUpRight, Check, ChevronDown, Languages, Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import LogoEn from '@/shared/brand/Logo_name2.svg';
 import LogoAr from '@/shared/brand/logo_name_ar2.svg';
 import Button from '@/shared/ui/Button';
-import cx from '@/lib/utils/cx';
+import { cn as cx } from '@/lib/utils';
 import { getLocaleDirection, normalizeLocale } from '@/lib/i18n/locale';
 import { isExternalUrl, isHashUrl, isInternalUrl, matchPathname } from '@/lib/config/site-config';
+import { useHeaderVisibility } from './Header/useHeaderVisibility';
 
 const LANGUAGE_OPTIONS = [
   { code: 'en', label: 'English' },
   { code: 'ar', label: 'العربية' },
 ];
 
+const DROPDOWN_GLASS = {
+  backgroundColor: 'rgba(255,255,255,0.72)',
+  backdropFilter: 'blur(30px) saturate(1.3)',
+  WebkitBackdropFilter: 'blur(30px) saturate(1.3)',
+};
+
 const DROPDOWN_PANEL_CLASS =
-  'corner-squircle rounded-[22px] border border-white/78 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(242,248,255,0.92))] p-2 shadow-[0_24px_44px_rgba(8,41,89,0.14)] backdrop-blur-xl';
+  'header-glass-noise relative overflow-visible corner-squircle rounded-[38px] p-2 shadow-[0_24px_44px_rgba(8,41,89,0.1)] transition-[background-color,backdrop-filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]';
 
 const MOBILE_SHEET_CLASS =
   'relative corner-squircle overflow-hidden rounded-[24px] border border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(245,249,255,0.86))] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_24px_48px_rgba(8,41,89,0.16)] backdrop-blur-[24px]';
@@ -36,7 +45,8 @@ function Header({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [hoveredService, setHoveredService] = useState(null);
+  const { hasScrolled, headerMaxWidth } = useHeaderVisibility();
   const desktopLangRef = useRef(null);
   const mobileLangRef = useRef(null);
   const servicesRef = useRef(null);
@@ -44,13 +54,9 @@ function Header({
   const isArabic = normalizedLocale === 'ar';
   const servicesActive = serviceLinks.some((item) => matchPathname(item.url, activePath));
   const logoSrc = isArabic ? (LogoAr?.src || LogoAr) : (LogoEn?.src || LogoEn);
-  const headerMaxWidth = 1200 - scrollProgress * 400;
-  const hasScrolled = scrollProgress > 0.06;
   const desktopControlClass = cx(
-    'h-9 rounded-full text-[#355884]',
-    hasScrolled
-      ? 'bg-white/18 text-[#21456d] shadow-[inset_0_1px_0_rgba(255,255,255,0.88),0_10px_22px_rgba(8,41,89,0.08)]'
-      : 'bg-white/10 hover:bg-white/20'
+    'h-9 rounded-full !border-0 !bg-transparent text-[#355884] transition-[color,text-shadow] duration-300 hover:!bg-transparent hover:!text-[#0b5da8]',
+    isLangOpen && '!text-[#087f9c] [text-shadow:0_2px_8px_rgba(8,127,156,0.24)]'
   );
   const mobileControlClass = cx(
     'corner-squircle h-11 w-11 rounded-[18px] px-0 text-[#355884] transition-[background-color,border-color,box-shadow,color] duration-300',
@@ -64,11 +70,13 @@ function Header({
       ? 'border-white/82 bg-[linear-gradient(180deg,rgba(255,255,255,0.84),rgba(245,249,255,0.78))] text-[#21456d] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_14px_28px_rgba(8,41,89,0.12)]'
       : null
   );
-  const headerShellClass = cx(
-    'relative corner-squircle flex items-center justify-between gap-3 overflow-visible rounded-full border px-2 py-1 transition-[background-color,border-color,box-shadow,backdrop-filter,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]',
+  const headerShellClass =
+    'header-glass-noise relative corner-squircle flex items-center justify-between gap-3 overflow-visible rounded-full px-2 py-1 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]';
+  const headerGlassLayerClass = cx(
+    'header-glass-noise pointer-events-none absolute inset-0 corner-squircle rounded-full transition-[background-color,backdrop-filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]',
     hasScrolled
-      ? 'border border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.84),rgba(246,250,255,0.72))] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_52px_rgba(8,41,89,0.14)] backdrop-blur-[22px]'
-      : 'border-transparent'
+      ? 'header-glass-surface'
+      : 'bg-transparent backdrop-blur-none backdrop-saturate-100'
   );
 
   const navigateTo = (url, closeMenu = false) => {
@@ -92,6 +100,7 @@ function Header({
   useEffect(() => {
     setIsMenuOpen(false);
     setIsServicesOpen(false);
+    setHoveredService(null);
   }, [activePath]);
 
   useEffect(() => {
@@ -104,7 +113,10 @@ function Header({
       if (outsideDesktop && outsideMobile) {
         setIsLangOpen(false);
       }
-      if (outsideServices) setIsServicesOpen(false);
+      if (outsideServices) {
+        setIsServicesOpen(false);
+        setHoveredService(null);
+      }
     };
 
     document.addEventListener('pointerdown', onPointerDown);
@@ -117,6 +129,7 @@ function Header({
       setIsLangOpen(false);
       setIsMenuOpen(false);
       setIsServicesOpen(false);
+      setHoveredService(null);
     };
 
     document.addEventListener('keydown', onEscape);
@@ -140,44 +153,17 @@ function Header({
     };
   }, [isMenuOpen]);
 
-  useEffect(() => {
-    let rafId = 0;
-
-    const onScroll = () => {
-      if (rafId) return;
-
-      rafId = window.requestAnimationFrame(() => {
-        const nextProgress = Math.max(0, Math.min(1, window.scrollY / 140));
-        setScrollProgress((prev) => (Math.abs(prev - nextProgress) < 0.004 ? prev : nextProgress));
-        rafId = 0;
-      });
-    };
-
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      if (rafId) window.cancelAnimationFrame(rafId);
-    };
-  }, []);
-
   const renderNavLink = (item, mobile = false) => {
     const active = matchPathname(item.url, activePath);
     const classes = cx(
       mobile
-        ? 'block corner-squircle rounded-[18px] border px-3.5 py-3 text-sm font-medium transition-[background-color,color,box-shadow,border-color] duration-300'
+        ? 'block corner-squircle rounded-[18px] border-0 bg-transparent px-3.5 py-3 text-sm font-medium transition-[color,text-shadow] duration-300'
         : 'corner-squircle rounded-full px-3.5 py-2 text-sm font-medium transition-[color,background-color,box-shadow,transform] duration-300',
       active
-        ? mobile
-          ? 'border-white/82 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(244,249,255,0.86))] text-[#21456d] shadow-[0_12px_24px_rgba(8,41,89,0.08)]'
-          : hasScrolled
-            ? 'bg-white/18 text-[#21456d] shadow-[inset_0_1px_0_rgba(255,255,255,0.88),0_10px_22px_rgba(8,41,89,0.08)]'
-            : 'bg-white/18 text-[#0b4f8c]'
+        ? 'border-0 bg-transparent text-[#087f9c] shadow-none [text-shadow:0_2px_8px_rgba(8,127,156,0.24)]'
         : mobile
-          ? 'border-white bg-transparent text-[#21456d] hover:border-white/68 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(244,248,255,0.62))] hover:text-[#0b4f8c]'
-          : hasScrolled
-            ? 'bg-transparent text-[#21456d] hover:bg-white/20 hover:text-[#0b4f8c]'
-            : 'bg-transparent text-[#21456d]/88 hover:bg-white/14 hover:text-[#0b4f8c]'
+          ? 'bg-transparent text-[#21456d] hover:bg-transparent hover:text-[#0b4f8c]'
+          : 'bg-transparent text-[#21456d]/88 hover:bg-transparent hover:text-[#0b4f8c]'
     );
 
     if (item.isExternal || isExternalUrl(item.url)) {
@@ -228,103 +214,212 @@ function Header({
   const renderLanguageMenu = (mobile = false) => (
     <div
       className={cx(
-        'absolute top-full z-50 mt-2 w-52',
-        DROPDOWN_PANEL_CLASS,
+        'absolute top-full z-50 w-52 pt-5',
         mobile ? 'ltr:right-0 rtl:left-0' : 'ltr:left-0 rtl:right-0'
       )}
-      role="menu"
-      aria-label={isArabic ? 'اللغة' : 'Language'}
     >
-      <div className="px-3 pb-2 pt-1">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6b85a2]">
-          {isArabic ? 'اللغة' : 'Language'}
-        </p>
-        <p className="mt-1 text-xs text-[#5b7391]">
-          {isArabic ? 'اختر لغة العرض للموقع.' : 'Choose the site display language.'}
-        </p>
-      </div>
+      <div
+        className={cx(DROPDOWN_PANEL_CLASS, hasScrolled && 'header-glass-surface')}
+        style={hasScrolled ? undefined : DROPDOWN_GLASS}
+        role="menu"
+        aria-label={isArabic ? 'اللغة' : 'Language'}
+      >
+        <span className="header-glass-noise__texture" aria-hidden="true" />
+        <div className="px-2.5 pb-1.5 pt-1">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6b85a2]">
+            {isArabic ? 'اللغة' : 'Language'}
+          </p>
+          <p className="mt-1 text-xs text-[#5b7391]">
+            {isArabic ? 'اختر لغة العرض للموقع.' : 'Choose the site display language.'}
+          </p>
+        </div>
 
-      {LANGUAGE_OPTIONS.map((option) => {
-        const selected = normalizedLocale === option.code;
-        const optionDir = getLocaleDirection(option.code);
+        {LANGUAGE_OPTIONS.map((option) => {
+          const selected = normalizedLocale === option.code;
+          const optionDir = getLocaleDirection(option.code);
 
-        return (
-          <Button
-            key={option.code}
-            variant="ghost"
-            size="sm"
-            dir={option.dir}
-            className={cx(
-              'corner-squircle mb-1 h-auto w-full rounded-[16px] px-3 py-3 text-sm font-medium last:mb-0',
-              selected
-                ? 'border border-white/80 bg-white text-[#21456d] shadow-[0_10px_20px_rgba(8,41,89,0.08)]'
-                : 'bg-transparent text-[#27436b] hover:bg-white/78 hover:text-[#1d4f86]'
-            )}
-            onClick={() => {
-              onLocaleChange?.(option.code);
-              setIsLangOpen(false);
-            }}
-          >
-            <span
+          return (
+            <Button
+              key={option.code}
+              variant="ghost"
+              size="sm"
+              dir={option.dir}
               className={cx(
-                'flex w-full items-center justify-between gap-2',
-                optionDir === 'rtl' ? 'flex-row-reverse text-right' : 'text-left'
+                'corner-squircle mb-1 h-auto w-full rounded-[16px] px-2.5 py-2.5 text-sm font-medium last:mb-0',
+                selected
+                  ? '!border-0 !bg-transparent !text-[#087f9c] !shadow-none [text-shadow:0_2px_8px_rgba(8,127,156,0.22)] hover:!bg-transparent'
+                  : '!border-0 bg-transparent text-[#27436b] shadow-none hover:bg-white/20 hover:text-[#1d4f86]'
               )}
+              onClick={() => {
+                onLocaleChange?.(option.code);
+                setIsLangOpen(false);
+              }}
             >
-              <span>{option.label}</span>
               <span
                 className={cx(
-                  'inline-flex h-6 w-6 items-center justify-center rounded-full text-[#0b4f8c]',
-                  selected ? 'bg-[#edf4ff]' : 'bg-white/70 text-[#8ba2bd]'
+                  'flex w-full items-center justify-between gap-2',
+                  optionDir === 'rtl' ? 'flex-row-reverse text-right' : 'text-left'
                 )}
-                aria-hidden={!selected}
               >
-                {selected ? <Check size={15} /> : option.code.toUpperCase()}
+                <span>{option.label}</span>
+                <span
+                  className={cx(
+                    'inline-flex h-6 w-6 items-center justify-center rounded-full text-[#0b4f8c]',
+                    selected ? 'bg-transparent text-[#087f9c]' : 'bg-transparent text-[#6b85a2]'
+                  )}
+                  aria-hidden={!selected}
+                >
+                  {selected ? <Check size={15} /> : option.code.toUpperCase()}
+                </span>
               </span>
-            </span>
-          </Button>
-        );
-      })}
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 
   const renderServicesMenu = () => serviceLinks.length ? (
-    <div className="relative" ref={servicesRef}>
+    <div
+      className="relative"
+      ref={servicesRef}
+      onMouseEnter={() => {
+        setIsServicesOpen(true);
+        setIsLangOpen(false);
+      }}
+      onMouseLeave={() => { setIsServicesOpen(false); setHoveredService(null); }}
+      onFocusCapture={() => {
+        setIsServicesOpen(true);
+        setIsLangOpen(false);
+      }}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) { setIsServicesOpen(false); setHoveredService(null); }
+      }}
+    >
       <button
         type="button"
         className={cx(
-          'corner-squircle flex items-center gap-1 rounded-full px-3.5 py-2 text-sm font-medium transition-[color,background-color,box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#28aec3]/40',
+          'corner-squircle flex items-center gap-1 rounded-full border-0 px-3.5 py-2 text-sm font-medium shadow-none transition-[color,text-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#28aec3]/40',
           servicesActive || isServicesOpen
-            ? 'bg-white/20 text-[#0b4f8c] shadow-[inset_0_1px_0_rgba(255,255,255,0.88),0_10px_22px_rgba(8,41,89,0.08)]'
-            : 'text-[#21456d]/88 hover:bg-white/18 hover:text-[#0b4f8c]'
+            ? 'bg-transparent text-[#087f9c] [text-shadow:0_2px_8px_rgba(8,127,156,0.24)]'
+            : 'bg-transparent text-[#21456d]/88 hover:bg-transparent hover:text-[#0b4f8c]'
         )}
         aria-expanded={isServicesOpen}
         aria-haspopup="menu"
-        onClick={() => setIsServicesOpen((open) => !open)}
       >
         {servicesLabel}
         <ChevronDown className={cx('h-3.5 w-3.5 transition-transform', isServicesOpen && 'rotate-180')} aria-hidden="true" />
       </button>
       {isServicesOpen ? (
-        <div className={cx('absolute top-full z-50 mt-2 w-64', DROPDOWN_PANEL_CLASS, 'ltr:left-0 rtl:right-0')} role="menu" aria-label={servicesLabel}>
-          {serviceLinks.map((item) => (
-            <Link
-              key={item.url}
-              href={item.url}
-              role="menuitem"
-              className={cx('block rounded-[15px] px-3 py-3 text-sm font-medium text-[#27436b] transition-colors hover:bg-white hover:text-[#0b4f8c]', matchPathname(item.url, activePath) && 'bg-white text-[#0b4f8c]')}
-              onClick={(event) => {
-                setIsServicesOpen(false);
-                if (!onNavigate) return;
-                event.preventDefault();
-                onNavigate(item.url);
-              }}
-              onMouseEnter={() => prefetchRoute(item.url)}
-              onFocus={() => prefetchRoute(item.url)}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <div className="absolute top-full z-50 w-[34rem] max-w-[calc(100vw-2rem)] pt-5 ltr:left-0 rtl:right-0">
+          <div
+            className={cx(DROPDOWN_PANEL_CLASS, 'p-2', hasScrolled && 'header-glass-surface')}
+            style={hasScrolled ? undefined : DROPDOWN_GLASS}
+            role="menu"
+            aria-label={servicesLabel}
+          >
+            <span className="header-glass-noise__texture" aria-hidden="true" />
+            <div className="grid grid-cols-[minmax(0,1fr)_13rem] gap-1.5 rtl:grid-cols-[13rem_minmax(0,1fr)]">
+              <div className="py-1">
+                <p className="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#4a6a8a]">
+                  {isArabic ? 'حلولنا' : 'What we build'}
+                </p>
+                {serviceLinks.map((item, i) => {
+                  const active = matchPathname(item.url, activePath);
+                  return (
+                    <Link
+                      key={item.url}
+                      href={item.url}
+                      role="menuitem"
+                      className={cx(
+                        'group flex items-center justify-between gap-3 corner-squircle rounded-[15px] px-2.5 py-2.5 text-sm font-medium transition-colors hover:bg-white/20 hover:text-[#087f9c]',
+                        active
+                          ? 'bg-transparent text-[#087f9c] [text-shadow:0_2px_8px_rgba(8,127,156,0.2)]'
+                          : 'text-[#27436b]',
+                        hoveredService === i && '!bg-white/20 !text-[#087f9c]'
+                      )}
+                      onClick={(event) => {
+                        setIsServicesOpen(false);
+                        setHoveredService(null);
+                        if (!onNavigate) return;
+                        event.preventDefault();
+                        onNavigate(item.url);
+                      }}
+                      onMouseEnter={() => {
+                        prefetchRoute(item.url);
+                        setHoveredService(i);
+                      }}
+                      onMouseLeave={() => setHoveredService(null)}
+                      onFocus={() => prefetchRoute(item.url)}
+                    >
+                      <span>{item.label}</span>
+                      <ArrowUpRight className="h-3.5 w-3.5 text-[#6b85a2] transition-[color,transform] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#087f9c] rtl:rotate-[-90deg]" aria-hidden="true" />
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div className="relative isolate min-h-[13.5rem] overflow-hidden corner-squircle rounded-[28px] p-3 text-white transition-[background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] rtl:order-first"
+                style={{
+                  backgroundColor: hoveredService !== null
+                    ? (hoveredService === 0 ? '#0a3a2e' : '#1a1a3e')
+                    : '#0a315b'
+                }}
+              >
+                <div className="absolute inset-0 transition-opacity duration-300"
+                  style={{
+                    background: hoveredService !== null
+                      ? (hoveredService === 0
+                        ? 'radial-gradient(circle at 80% 15%, rgba(45,212,120,0.50), transparent 34%), linear-gradient(145deg, transparent 42%, rgba(255,255,255,0.08) 43%, transparent 72%)'
+                        : 'radial-gradient(circle at 80% 15%, rgba(145,115,235,0.50), transparent 34%), linear-gradient(145deg, transparent 42%, rgba(255,255,255,0.08) 43%, transparent 72%)')
+                      : 'radial-gradient(circle at 80% 15%, rgba(75,205,220,0.55), transparent 34%), linear-gradient(145deg, transparent 42%, rgba(255,255,255,0.08) 43%, transparent 72%)'
+                  }}
+                />
+                <div className={cx(
+                  'absolute -right-8 top-10 h-28 w-28 corner-squircle rounded-full border-[18px] transition-[border-color] duration-300',
+                  hoveredService === null ? 'border-[#28aec3]/35' : hoveredService === 0 ? 'border-[#2dd48a]/35' : 'border-[#9b83eb]/35'
+                )} />
+                <div className={cx(
+                  'absolute bottom-5 right-6 h-16 w-24 -rotate-6 corner-squircle rounded-xl backdrop-blur-sm transition-[background-color] duration-300',
+                  hoveredService === null ? 'bg-white/10' : hoveredService === 0 ? 'bg-white/10' : 'bg-white/10'
+                )}>
+                  <span className={cx(
+                    'absolute left-3 top-3 h-1.5 w-10 rounded-full transition-[background-color] duration-300',
+                    hoveredService === null ? 'bg-[#71dce5]' : hoveredService === 0 ? 'bg-[#4ade80]' : 'bg-[#a78bfa]'
+                  )} />
+                  <span className="absolute left-3 top-7 h-1 w-14 rounded-full bg-white/45" />
+                  <span className="absolute left-3 top-10 h-1 w-9 rounded-full bg-white/25" />
+                </div>
+                <div className="relative z-10 flex h-full flex-col justify-between">
+                  <span className={cx(
+                    'inline-flex h-8 w-8 items-center justify-center corner-squircle rounded-full text-xs font-semibold ring-1 ring-inset ring-white/15 transition-[background-color] duration-300',
+                    hoveredService === null ? 'bg-white/10' : 'bg-white/10'
+                  )}>
+                    {hoveredService === null ? 'ID' : hoveredService === 0 ? 'GE' : 'WE'}
+                  </span>
+                  <div>
+                    <p className={cx(
+                      'text-[10px] font-semibold uppercase tracking-[0.18em] transition-[color] duration-300',
+                      hoveredService === null ? 'text-[#b0ecf0]' : hoveredService === 0 ? 'text-[#86efac]' : 'text-[#c4b5fd]'
+                    )}>
+                      {hoveredService === null
+                        ? 'Injaaz systems'
+                        : hoveredService === 0
+                          ? (isArabic ? 'محرك النمو' : 'Growth Engine')
+                          : (isArabic ? 'محرك الموقع' : 'Website Engine')}
+                    </p>
+                    <p className="mt-1 max-w-[14ch] text-[0.95rem] font-semibold leading-snug [text-shadow:0_2px_12px_rgba(0,0,0,0.25)]">
+                      {hoveredService === null
+                        ? (isArabic ? 'من الفكرة إلى النمو.' : 'From idea to growth.')
+                        : hoveredService === 0
+                          ? (isArabic ? 'نظام ينمو بإيراداتك.' : 'The revenue growth system.')
+                          : (isArabic ? 'تصميم وتطوير يصنعان الأثر.' : 'Design & development built for impact.')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       ) : null}
     </div>
@@ -337,6 +432,9 @@ function Header({
         style={{ maxWidth: `${headerMaxWidth.toFixed(2)}px` }}
       >
         <div className={headerShellClass} style={{ transform: hasScrolled ? 'translateY(0px)' : 'translateY(4px)' }}>
+          <span className={headerGlassLayerClass} aria-hidden="true">
+            <span className="header-glass-noise__texture transition-opacity duration-500" style={{ opacity: hasScrolled ? 0.16 : 0 }} aria-hidden="true" />
+          </span>
           <Link
             href="/"
             className="relative -mx-4  block h-[54px] w-[138px] shrink-0 rounded-xl transition-opacity hover:opacity-90 max-[520px]:h-[54px] max-[520px]:w-[138px]"
@@ -353,11 +451,25 @@ function Header({
 
           <div className="relative hidden items-center gap-2 md:flex">
             {showLanguageSwitcher ? (
-              <div className="relative" ref={desktopLangRef}>
+              <div
+                className="relative"
+                ref={desktopLangRef}
+                onMouseEnter={() => {
+                  setIsLangOpen(true);
+                  setIsServicesOpen(false);
+                }}
+                onMouseLeave={() => setIsLangOpen(false)}
+                onFocusCapture={() => {
+                  setIsLangOpen(true);
+                  setIsServicesOpen(false);
+                }}
+                onBlurCapture={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) setIsLangOpen(false);
+                }}
+              >
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setIsLangOpen((open) => !open)}
                   className={desktopControlClass}
                   aria-label={isArabic ? 'تبديل اللغة' : 'Switch language'}
                   aria-expanded={isLangOpen}
@@ -391,7 +503,10 @@ function Header({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsLangOpen((open) => !open)}
-                className={mobileControlClass}
+                className={cx(
+                  mobileControlClass,
+                  isLangOpen && '!border-0 !bg-transparent !text-[#087f9c] !shadow-none [text-shadow:0_2px_8px_rgba(8,127,156,0.24)]'
+                )}
                 aria-label={isArabic ? 'تبديل اللغة' : 'Switch language'}
                 aria-expanded={isLangOpen}
                 aria-haspopup="menu"
@@ -479,11 +594,11 @@ function Header({
                     </motion.div>
                   ))}
                   {serviceLinks.length ? (
-                    <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 12 } }} className="rounded-[18px] border border-white bg-white/35 p-2">
+                    <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 12 } }} className="corner-squircle rounded-[18px] border border-white bg-white/35 p-2">
                       <p className="px-2 pb-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#6b85a2]">{servicesLabel}</p>
                       <div className="grid gap-1">
                         {serviceLinks.map((item) => (
-                          <Link key={item.url} href={item.url} className="rounded-[14px] px-3 py-2.5 text-sm font-medium text-[#21456d] hover:bg-white/80" onClick={(event) => { setIsMenuOpen(false); if (!onNavigate) return; event.preventDefault(); onNavigate(item.url); }}>{item.label}</Link>
+                          <Link key={item.url} href={item.url} className="corner-squircle rounded-[14px] px-3 py-2.5 text-sm font-medium text-[#21456d] hover:bg-white/80" onClick={(event) => { setIsMenuOpen(false); if (!onNavigate) return; event.preventDefault(); onNavigate(item.url); }}>{item.label}</Link>
                         ))}
                       </div>
                     </motion.div>

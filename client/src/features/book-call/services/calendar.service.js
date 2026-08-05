@@ -1,4 +1,4 @@
-import { request, requestJson } from '@/lib/strapi/client';
+import { bookingRequest } from '@/lib/booking/client';
 
 const normalizeSlot = (slot) => ({
   start: String(slot?.start || ''),
@@ -7,10 +7,7 @@ const normalizeSlot = (slot) => ({
 });
 
 export const fetchAvailability = async ({ date }) => {
-  const response = await request('/api/calendar/availability', {
-    date,
-  });
-  const payload = response?.data || response;
+  const payload = await bookingRequest('/availability', { query: { date }, cache: 'no-store' });
 
   if (Array.isArray(payload)) {
     return {
@@ -30,39 +27,38 @@ export const fetchAvailability = async ({ date }) => {
 };
 
 export const fetchAvailabilityRange = async ({ from, to }) => {
-  const response = await request('/api/calendar/availability', { from, to });
-  return response?.data || response;
+  return bookingRequest('/availability', { query: { from, to }, cache: 'no-store' });
 };
 
 export const fetchBookingPresentationConfig = async () => {
-  const response = await request('/api/calendar/config');
-  return response?.data || response || null;
+  return bookingRequest('/config', { cache: 'no-store' });
 };
 
 export const bookMeeting = async (payload) => {
   const idempotencyKey = payload.idempotencyKey || crypto.randomUUID();
   const { idempotencyKey: _discarded, ...body } = payload;
-  const response = await requestJson('/api/calendar/book', {
+  return bookingRequest('/meetings', {
     method: 'POST',
     headers: { 'Idempotency-Key': idempotencyKey },
     body,
+    cache: 'no-store',
   });
-
-  return response?.data || response || null;
 };
 
 export const cancelMeeting = async ({ meetingId, ...payload }) => {
-  const response = await requestJson(`/api/calendar/bookings/${meetingId}/cancel`, {
-    method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: payload,
+  const idempotencyKey = payload.idempotencyKey || crypto.randomUUID();
+  const { idempotencyKey: _discarded, ...body } = payload;
+  return bookingRequest(`/meetings/${encodeURIComponent(meetingId)}/cancel`, {
+    method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body, cache: 'no-store',
   });
-  return response?.data || response;
 };
 
 export const rescheduleMeeting = async ({ meetingId, ...payload }) => {
-  const response = await requestJson(`/api/calendar/bookings/${meetingId}/reschedule`, {
-    method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: payload,
+  const idempotencyKey = payload.idempotencyKey || crypto.randomUUID();
+  const { idempotencyKey: _discarded, ...body } = payload;
+  return bookingRequest(`/meetings/${encodeURIComponent(meetingId)}/reschedule`, {
+    method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body, cache: 'no-store',
   });
-  return response?.data || response;
 };
 
 export const fetchAvailabilityRequest = (date) => fetchAvailability({ date });

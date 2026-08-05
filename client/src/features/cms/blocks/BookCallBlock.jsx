@@ -14,6 +14,7 @@ export default function BookCallBlock({ block, locale, route }) {
         bookingCopy={block}
         stepperKey={block.stepperKey}
         stepperVersion={block.stepperVersion}
+        stepperSteps={block.stepperSteps}
         contactFields={block.contactFields}
         sourcePage={block.sourcePage || route || '/book-call'}
       />
@@ -29,6 +30,7 @@ BookCallBlock.propTypes = {
     initialQuestions: PropTypes.array,
     stepperKey: PropTypes.string,
     stepperVersion: PropTypes.number,
+    stepperSteps: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string, title: PropTypes.string, description: PropTypes.string })),
     contactFields: PropTypes.object,
   }).isRequired,
   locale: PropTypes.oneOf(['en', 'ar']).isRequired,

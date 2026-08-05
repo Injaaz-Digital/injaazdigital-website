@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "about_pages",
+  "info": {
+    "singularName": "about-page",
+    "pluralName": "about-pages",
+    "displayName": "About Injaaz Digital",
+    "description": "The single CMS-managed About Injaaz Digital page"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "title": { "type": "string", "required": true, "pluginOptions": { "i18n": { "localized": true } } },
+    "blocks": {
+      "type": "dynamiczone",
+      "components": ["blocks.hero", "blocks.page-hero", "blocks.animated-text", "blocks.problem", "blocks.service-overview", "blocks.feature-list", "blocks.faq", "blocks.process", "blocks.final-cta", "blocks.book-call", "blocks.system-flow", "blocks.diagnosis", "blocks.timeline", "blocks.statement-pair", "blocks.principles", "blocks.dashboard-showcase", "blocks.booking-meeting", "blocks.brand-proof-grid"],
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "seo": { "type": "component", "component": "shared.seo", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } }
+  }
+}

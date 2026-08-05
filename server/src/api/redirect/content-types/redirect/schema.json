@@ -1,0 +1,13 @@
+{
+  "kind": "collectionType",
+  "collectionName": "managed_redirects",
+  "info": { "singularName": "redirect", "pluralName": "redirects", "displayName": "Redirect", "description": "Validated internal SEO redirects managed by editors" },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "sourcePath": { "type": "string", "required": true, "unique": true, "regex": "^/(?!/)[^\\s]*$" },
+    "destinationPath": { "type": "string", "required": true, "regex": "^/(?!/)[^\\s]*$" },
+    "permanent": { "type": "boolean", "default": true },
+    "active": { "type": "boolean", "default": true }
+  }
+}

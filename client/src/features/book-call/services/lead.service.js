@@ -1,4 +1,4 @@
-import { requestJson } from '@/lib/strapi/client';
+import { bookingRequest } from '@/lib/booking/client';
 import { fetchLeadQuestions as fetchLeadQuestionsFromStrapi, fetchWithLocaleFallback } from '@/lib/strapi/queries';
 
 export const fetchLeadQuestions = async (locale = 'en') => {
@@ -12,44 +12,41 @@ export const fetchLeadQuestions = async (locale = 'en') => {
 
 export const fetchBookingStepper = async ({ key, locale = 'en' }) => {
   if (!key) return null;
-  const response = await requestJson(`/api/booking/steppers/${encodeURIComponent(key)}/runtime?locale=${encodeURIComponent(locale)}`);
-  return response?.data || response || null;
+  return bookingRequest(`/flows/${encodeURIComponent(key)}/runtime`, { query: { locale }, cache: 'no-store' });
 };
 
 export const startLeadSession = async (payload) => {
-  const response = await requestJson('/api/lead-sessions/start', {
+  const { stepperKey, stepperVersion, ...rest } = payload;
+  return bookingRequest('/sessions', {
     method: 'POST',
-    body: payload,
+    body: { ...rest, flowKey: stepperKey || undefined, flowVersion: stepperVersion || undefined },
+    cache: 'no-store',
   });
-
-  return response?.data || null;
 };
 
 export const saveLeadAnswer = async (payload) => {
-  const response = await requestJson('/api/lead-responses/save', {
+  const { leadId, questionTitle: _questionTitle, ...body } = payload;
+  return bookingRequest(`/sessions/${encodeURIComponent(leadId)}/answers`, {
     method: 'POST',
-    body: payload,
+    body,
+    cache: 'no-store',
   });
-
-  return response?.data || null;
 };
 
 export const updateLeadContact = async ({ leadId, ...payload }) => {
-  const response = await requestJson(`/api/leads/${leadId}/contact`, {
-    method: 'PUT',
+  return bookingRequest(`/sessions/${encodeURIComponent(leadId)}/contact`, {
+    method: 'PATCH',
     body: payload,
+    cache: 'no-store',
   });
-
-  return response?.data || null;
 };
 
 export const completeLead = async ({ leadId, ...payload }) => {
-  const response = await requestJson(`/api/leads/${leadId}/complete`, {
+  return bookingRequest(`/sessions/${encodeURIComponent(leadId)}/complete`, {
     method: 'POST',
     body: payload,
+    cache: 'no-store',
   });
-
-  return response?.data || null;
 };
 
 export {

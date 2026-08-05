@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import cx from '@/lib/utils/cx';
+import { cn as cx } from '@/lib/utils';
 
 const TEXT_CLASS =
   '![font-family:var(--font-domaine),Iowan_Old_Style,Times_New_Roman,serif] font-medium leading-[1.08] tracking-[-0.016em] text-[clamp(1.65rem,4.2vw,3rem)] text-black';
@@ -97,7 +97,7 @@ export default function AnimatedTextBlock({ block, locale = 'en' }) {
       ref={sectionRef}
       dir={isArabic ? 'rtl' : 'ltr'}
       className={cx(
-        'pt-16 sm:pt-24 pb-4 sm:pb-8',
+        'py-16 sm:py-24',
         block?.sticky && 'min-h-[80svh] py-0'
       )}
     >

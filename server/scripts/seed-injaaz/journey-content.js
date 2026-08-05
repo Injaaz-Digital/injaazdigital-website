@@ -24,7 +24,7 @@ const offer = (title, description, icon, url, outcome, capabilities, displayOrde
 });
 
 const servicesEn = () => ({
-  __component: 'section.service-overview',
+  __component: 'blocks.service-overview',
   eyebrow: 'Active systems',
   heading: 'Systems we build',
   description:
@@ -33,7 +33,7 @@ const servicesEn = () => ({
 });
 
 const servicesAr = () => ({
-  __component: 'section.service-overview',
+  __component: 'blocks.service-overview',
   eyebrow: 'العروض المتاحة',
   heading: 'ابدأ بالنظام الذي يسبب أكبر عائق.',
   description:
@@ -65,7 +65,7 @@ const englishPages = [
       },
       servicesEn(),
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'Disconnected work creates hidden costs',
         heading: 'A campaign, website, and workflow should not behave like separate projects.',
         description:
@@ -77,7 +77,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'The complete customer path',
         heading: 'Every stage should make the next stage easier.',
         description: 'Attention → Interest → Conversion → Sales → Onboarding → Delivery',
@@ -91,7 +91,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'Find the constraint before buying another disconnected deliverable.',
         description: 'Use a focused strategy call to identify whether growth, conversion, or onboarding should be improved first.',
         primaryCta: cta('Request a system diagnosis', '/book-call'),
@@ -112,7 +112,7 @@ const englishPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'Turn marketing investment into qualified business opportunities.',
         description:
           'Growth Engine connects market insight, offer strategy, creative, campaigns, landing pages, lead qualification, and KPI analysis into one measurable acquisition system.',
@@ -121,7 +121,7 @@ const englishPages = [
         imageKeyword: 'customer-acquisition-system',
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'Why budget gets wasted',
         heading: 'Buying ads is not the same as building an acquisition engine.',
         description:
@@ -134,7 +134,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'The acquisition mechanism',
         heading: 'A connected path from offer to optimization.',
         description: 'Each stage is designed and measured in relation to the next.',
@@ -149,7 +149,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'What can be included',
         heading: 'Built around the business model, not a fixed funnel template.',
         description:
@@ -166,7 +166,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'KPI intelligence',
         heading: 'Metrics become useful when their relationships explain what to fix.',
         description:
@@ -183,7 +183,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'How we work',
         heading: 'Diagnose first. Build what the evidence requires.',
         description: 'A concise cycle for launching, learning, and improving without hiding behind activity.',
@@ -197,7 +197,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'Fit and adaptability',
         heading: 'The engine changes with how the company sells.',
         description:
@@ -212,7 +212,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'What Growth Engine is not',
         heading: 'No random activity, cheap leads at any cost, or guaranteed-revenue theatre.',
         description: 'The work is designed to create evidence and qualified opportunity without pretending every variable is controllable.',
@@ -225,7 +225,7 @@ const englishPages = [
       },
       servicesEn(),
       {
-        __component: 'section.faq',
+        __component: 'legacy.faq',
         eyebrow: 'Before we start',
         heading: 'Growth Engine questions',
         items: [
@@ -236,7 +236,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'Find the acquisition constraint before increasing the budget.',
         description: 'Start with a Growth Diagnosis focused on the offer, campaign path, qualification, measurement, and sales handoff.',
         primaryCta: cta('Request a Growth Diagnosis', '/book-call'),
@@ -257,7 +257,7 @@ const englishPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'Build a website that works like a business system.',
         description:
           'Website Engine combines strategy, messaging, UX, development, structured content, integrations, and measurement so customers can understand, trust, and act—and your team can publish and grow.',
@@ -266,7 +266,7 @@ const englishPages = [
         imageKeyword: 'conversion-business-website',
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'Beyond the online brochure',
         heading: 'A modern-looking website can still be a weak business asset.',
         description:
@@ -279,7 +279,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         eyebrow: 'The website value system',
         heading: 'A valuable website reduces the distance between interest and action.',
         description: 'The experience should make the desired outcome easier to reach while lowering uncertainty and effort.',
@@ -290,7 +290,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'Strategy, structure, and message',
         heading: 'Architecture follows customer decisions and business goals.',
         description:
@@ -305,7 +305,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'Design, build, and management',
         heading: 'A maintainable platform for customers and the team behind it.',
         description: 'Technical decisions are made in service of speed, clarity, publishing, measurement, and long-term maintainability.',
@@ -319,7 +319,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'Analytics, performance, and readiness',
         heading: 'Measurement should answer business questions—not merely count visitors.',
         description:
@@ -335,7 +335,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'How we build',
         heading: 'From diagnosis to a platform the business can improve.',
         description: 'The process keeps strategy, content, design, development, and validation connected.',
@@ -351,7 +351,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'What Website Engine is not',
         heading: 'Not a decorative redesign, generic template, or abandoned stack.',
         description: 'The website earns its complexity by supporting a real customer or business need.',
@@ -365,7 +365,7 @@ const englishPages = [
       },
       servicesEn(),
       {
-        __component: 'section.faq',
+        __component: 'legacy.faq',
         eyebrow: 'Before we start',
         heading: 'Website Engine questions',
         items: [
@@ -376,7 +376,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'Plan the website around the decisions it needs to support.',
         description: 'Start with a Website Diagnosis covering customer journeys, content, conversion, technology, integrations, and measurement.',
         primaryCta: cta('Request a Website Diagnosis', '/book-call'),
@@ -397,7 +397,7 @@ const englishPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'Turn every closed customer into a delivery-ready project.',
         description:
           'Onboarding Engine designs and automates the journey from “new customer” to “ready for delivery,” reducing administrative work while giving customers and internal teams clear next steps.',
@@ -406,7 +406,7 @@ const englishPages = [
         imageKeyword: 'client-onboarding-workflow',
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'The post-sale gap',
         heading: 'The sale is closed. The customer still does not know what happens next.',
         description:
@@ -419,7 +419,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'The onboarding mechanism',
         heading: 'A guided flow from sale confirmed to delivery ready.',
         description: 'The right workflow changes by service, package, customer, risk, and internal delivery model.',
@@ -435,7 +435,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'What can be included',
         heading: 'One onboarding experience connected to the tools behind delivery.',
         description: 'Scope is selected around the current process, customer experience, risk, and operational return.',
@@ -451,7 +451,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'Practical AI assistance',
         heading: 'Use AI to reduce review work—not to remove responsible judgment.',
         description: 'AI is an optional capability for speed, clarity, classification, and communication within controlled workflows.',
@@ -465,7 +465,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         eyebrow: 'Operational visibility',
         heading: 'Measure how quickly and reliably customers become ready.',
         description: 'KPIs are selected around the process rather than presented as invented performance claims.',
@@ -476,7 +476,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'Adapted to delivery',
         heading: 'Different businesses need different readiness conditions.',
         description: 'The workflow follows what must be true before the specific team can deliver well.',
@@ -490,7 +490,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'How we implement',
         heading: 'Simplify before automating.',
         description: 'The goal is a clearer process—not a complicated workflow created only to use more tools.',
@@ -506,7 +506,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'What Onboarding Engine is not',
         heading: 'Automation should strengthen the relationship, not hide a broken process.',
         description: 'Sensitive decisions and important customer moments keep appropriate human control.',
@@ -519,7 +519,7 @@ const englishPages = [
       },
       servicesEn(),
       {
-        __component: 'section.faq',
+        __component: 'legacy.faq',
         eyebrow: 'Before we start',
         heading: 'Onboarding Engine questions',
         items: [
@@ -530,7 +530,7 @@ const englishPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'Find where new customers get stuck before delivery begins.',
         description: 'Start with an onboarding audit covering information, documents, handoffs, tools, responsibilities, and readiness conditions.',
         primaryCta: cta('Audit Your Onboarding Process', '/book-call'),
@@ -562,7 +562,7 @@ const arabicPages = [
       },
       servicesAr(),
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'رحلة العميل الكاملة',
         heading: 'كل مرحلة يجب أن تسهل المرحلة التي تليها.',
         description: 'الانتباه ← الاهتمام ← التحويل ← البيع ← التأهيل ← التسليم',
@@ -576,7 +576,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'حدد العائق قبل شراء خدمة منفصلة جديدة.',
         description: 'ابدأ بمكالمة تحدد هل الأولوية اليوم للنمو أم الموقع أم تأهيل العملاء.',
         primaryCta: cta('اطلب تشخيص النظام', '/book-call'),
@@ -596,7 +596,7 @@ const arabicPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'حوّل استثمار التسويق إلى فرص أعمال مؤهلة.',
         description: 'يربط محرك النمو السوق والعرض والرسالة والإبداع والحملات وصفحة الهبوط والتأهيل والقياس داخل نظام اكتساب واحد.',
         primaryCta: cta('اطلب تشخيص النمو', '/book-call'),
@@ -604,7 +604,7 @@ const arabicPages = [
         imageKeyword: 'customer-acquisition-system',
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'أين تضيع الميزانية',
         heading: 'شراء الإعلانات لا يعني بناء محرك اكتساب.',
         description: 'عندما ينفصل العرض والحملة والصفحة والتأهيل والمتابعة، تظهر أرقام كثيرة بدون قرار واضح.',
@@ -616,7 +616,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'آلية الاكتساب',
         heading: 'مسار مترابط من العرض إلى التحسين.',
         description: 'العرض ← الرسالة ← الإبداع ← الحملة ← صفحة الهبوط ← العميل المؤهل ← التحسين',
@@ -631,7 +631,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'ما الذي يمكن تضمينه',
         heading: 'نظام يتكيف مع نموذج العمل لا مع قالب ثابت.',
         description: 'يتحدد النطاق حسب العرض ومسار البيع والقناة والقدرة الداخلية والبيانات المتاحة.',
@@ -647,7 +647,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'ذكاء مؤشرات الأداء',
         heading: 'قيمة المؤشر في علاقته بما قبله وما بعده.',
         description: 'نقرأ الوصول والنقر وسلوك الصفحة وجودة العميل والحجز وفرصة البيع، ونستخدم تكلفة الاكتساب والعائد عندما تتوفر بيانات مبيعات موثوقة.',
@@ -659,7 +659,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'منهجية العمل',
         heading: 'نشخص، نصمم، نبني، نطلق، نتعلم، ثم نحسن.',
         steps: [
@@ -673,7 +673,7 @@ const arabicPages = [
       },
       servicesAr(),
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'حدد عائق الاكتساب قبل زيادة الميزانية.',
         description: 'ابدأ بتشخيص العرض والحملة والتأهيل والقياس والتسليم إلى المبيعات.',
         primaryCta: cta('اطلب تشخيص النمو', '/book-call'),
@@ -693,7 +693,7 @@ const arabicPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'ابن موقعا يعمل كنظام أعمال.',
         description: 'يجمع محرك الموقع بين الاستراتيجية والرسائل وتجربة المستخدم والتطوير والمحتوى المنظم والتكامل والقياس حتى يفهم العميل ويثق ويتخذ الإجراء.',
         primaryCta: cta('اطلب تشخيص الموقع', '/book-call'),
@@ -701,7 +701,7 @@ const arabicPages = [
         imageKeyword: 'conversion-business-website',
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'أبعد من الكتيب الرقمي',
         heading: 'قد يبدو الموقع حديثا ويبقى أصلا ضعيفا.',
         description: 'يضعف الموقع عندما يعكس أقسام الشركة بدل احتياجات العميل أو يخفي الخطوة التالية أو يصعب تحديثه.',
@@ -713,7 +713,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'الاستراتيجية والبنية والرسالة',
         heading: 'تتبع البنية قرارات العميل وأهداف العمل.',
         items: [
@@ -726,7 +726,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'التصميم والبناء والإدارة',
         heading: 'منصة قابلة للصيانة للعميل والفريق.',
         items: [
@@ -739,7 +739,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'كيف نبني',
         heading: 'من التشخيص إلى منصة يمكن تحسينها.',
         steps: [
@@ -755,7 +755,7 @@ const arabicPages = [
       },
       servicesAr(),
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'خطط الموقع حول القرارات التي يجب أن يدعمها.',
         description: 'ابدأ بتشخيص الرحلات والمحتوى والتحويل والتقنية والتكامل والقياس.',
         primaryCta: cta('اطلب تشخيص الموقع', '/book-call'),
@@ -775,7 +775,7 @@ const arabicPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'حوّل كل عميل جديد إلى مشروع جاهز للتنفيذ.',
         description: 'يصمم محرك التأهيل الرحلة من العميل الجديد إلى الجاهزية، ليقل العمل الإداري وتصبح الخطوات أوضح للعميل والفريق.',
         primaryCta: cta('راجع عملية التأهيل', '/book-call'),
@@ -783,7 +783,7 @@ const arabicPages = [
         imageKeyword: 'client-onboarding-workflow',
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         eyebrow: 'الفجوة بعد البيع',
         heading: 'تم البيع، لكن العميل لا يعرف ماذا يحدث بعد ذلك.',
         description: 'تستثمر الشركات في التسويق والبيع ثم تدير أول تجربة تشغيلية عبر الرسائل والذاكرة والتذكير اليدوي.',
@@ -795,7 +795,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'آلية التأهيل',
         heading: 'تدفق موجه من تأكيد البيع إلى الجاهزية.',
         description: 'تأكيد البيع ← الترحيب ← جمع المعلومات ← الوثائق ← التحقق ← الملخص الداخلي ← إنشاء المشروع ← الانطلاق',
@@ -811,7 +811,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'ما الذي يمكن تضمينه',
         heading: 'تجربة واحدة متصلة بأدوات التنفيذ.',
         items: [
@@ -826,7 +826,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         eyebrow: 'مساعدة عملية بالذكاء الاصطناعي',
         heading: 'تقليل عمل المراجعة بدون إزالة الحكم المسؤول.',
         items: [
@@ -839,7 +839,7 @@ const arabicPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         eyebrow: 'كيف ننفذ',
         heading: 'نبسط قبل أن نؤتمت.',
         steps: [
@@ -855,7 +855,7 @@ const arabicPages = [
       },
       servicesAr(),
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'حدد أين يتعطل العميل قبل بداية التنفيذ.',
         description: 'ابدأ بمراجعة المعلومات والوثائق والتسليم والأدوات والمسؤوليات وشروط الجاهزية.',
         primaryCta: cta('راجع عملية التأهيل', '/book-call'),
@@ -886,7 +886,7 @@ const homepageEn = {
       align: 'left',
     },
     {
-      __component: 'section.animated-text',
+      __component: 'blocks.animated-text',
       eyebrow: 'The meaning of Injaaz',
       text: 'Injaaz is not activity. It is not movement without direction. It is the moment intention takes form and effort becomes progress. Digital is the structure through which that progress can be designed, measured, repeated, and improved.',
       highlightedText: 'effort becomes progress',
@@ -897,7 +897,7 @@ const homepageEn = {
       theme: 'contrast',
     },
     {
-      __component: 'section.problem',
+      __component: 'blocks.problem',
       eyebrow: 'The central tension',
       heading: 'More activity does not always create more progress.',
       description: 'Before adding more, the flow must be understood.',
@@ -910,7 +910,7 @@ const homepageEn = {
       ],
     },
     {
-      __component: 'section.system-flow',
+      __component: 'blocks.system-flow',
       eyebrow: 'Every company is a system',
       heading: 'Every company is a system.',
       description: 'A company is not a collection of isolated departments, campaigns, pages, and tools. It is a living system of people, decisions, processes, technology, and feedback.',
@@ -921,7 +921,7 @@ const homepageEn = {
     },
     servicesEn(),
     {
-      __component: 'section.diagnosis',
+      __component: 'blocks.diagnosis',
       eyebrow: 'From symptom to system',
       heading: 'The visible problem may not be where the real problem began.',
       items: [
@@ -932,7 +932,7 @@ const homepageEn = {
       closingStatement: 'A symptom asks for a quick fix. A system asks for understanding.',
     },
     {
-      __component: 'section.process',
+      __component: 'blocks.process',
       eyebrow: 'The Injaaz method',
       heading: 'We do not begin with the deliverable. We begin with the movement it must create.',
       description: 'A coherent method for turning a complex objective into an operable, measurable system.',
@@ -948,7 +948,7 @@ const homepageEn = {
       ],
     },
     {
-      __component: 'section.system-flow',
+      __component: 'blocks.system-flow',
       eyebrow: 'Measurement and feedback',
       heading: 'A system becomes intelligent when it can observe its own results.',
       description: 'A number alone says very little. Its meaning appears when it is connected to the stage before it, the stage after it, and the decision it should influence.',
@@ -964,7 +964,7 @@ const homepageEn = {
       variant: 'measurement',
     },
     {
-      __component: 'section.principles',
+      __component: 'blocks.principles',
       eyebrow: 'Why Injaaz Digital',
       heading: 'The work is designed as a system, not a collection of claims.',
       items: [
@@ -977,7 +977,20 @@ const homepageEn = {
       ],
     },
     {
-      __component: 'section.problem',
+      __component: 'blocks.faq',
+      eyebrow: 'Common questions',
+      heading: 'A clearer starting point.',
+      description: 'The first conversation is designed to identify the real constraint before choosing what to build.',
+      items: [
+        faq('What does Injaaz Digital build?', 'We build connected website and growth systems that clarify the offer, guide customers toward action, and make improvement measurable.'),
+        faq('Do I need to know which service I need?', 'No. We begin with the objective and the point where progress is being lost, then recommend the most useful starting system.'),
+        faq('Is this only design or development?', 'No. Design and development are part of the work, but they are connected to positioning, customer journeys, operations, measurement, and business outcomes.'),
+        faq('Can you improve an existing website or process?', 'Yes. We first diagnose what is already working, what is disconnected, and whether improvement or a focused rebuild is the better decision.'),
+        faq('What happens after the strategy call?', 'You receive a clear recommendation for the next step, expected scope, and the system that should be addressed first.'),
+      ],
+    },
+    {
+      __component: 'blocks.problem',
       eyebrow: 'Who this work is for',
       heading: 'For companies ready to replace scattered effort with deliberate progress.',
       description: 'The work is relevant to small and growing companies, service businesses, consultants, agencies, and local companies when the situation demands a clearer system.',
@@ -991,7 +1004,7 @@ const homepageEn = {
       ],
     },
     {
-      __component: 'section.editorial-content',
+      __component: 'legacy.editorial-content',
       eyebrow: 'The larger direction',
       heading: 'The work begins with growth and websites, but the direction is larger.',
       body: 'Growth and websites are where the work begins. The larger direction is the design of clearer systems across customer experience, operations, automation, and decision-making.',
@@ -999,7 +1012,7 @@ const homepageEn = {
       variant: 'vision',
     },
     {
-      __component: 'section.final-cta',
+      __component: 'blocks.final-cta',
       heading: 'Begin with the place where progress is being lost.',
       description: 'The first step is not choosing a service. It is understanding the system, the objective, and the distance between them.',
       primaryCta: cta('Start a conversation', '/book-call'),
@@ -1019,7 +1032,7 @@ const aboutEn = {
   },
   blocks: [
     {
-      __component: 'section.hero',
+      __component: 'blocks.page-hero',
       eyebrow: 'About Injaaz Digital',
       title: 'We believe achievement begins when effort finds direction.',
       description: 'Injaaz Digital is a digital systems company built around a simple idea: meaningful progress does not come from isolated activity. It appears when intention, people, processes, technology, and feedback move together.',
@@ -1027,7 +1040,7 @@ const aboutEn = {
       variant: 'visual',
     },
     {
-      __component: 'section.editorial-content',
+      __component: 'legacy.editorial-content',
       eyebrow: 'Why Injaaz',
       heading: 'Injaaz is the movement from intention into reality.',
       body: 'Injaaz is an Arabic word that carries the meaning of achievement—of bringing something from intention into reality.\n\nIt is not merely movement or activity. It is effort that has found its form, its direction, and its result.\n\nDigital is the medium through which this philosophy takes shape: software, design, data, automation, communication, and the systems that connect them.\n\nModern companies rarely suffer from a lack of tools. They suffer from a lack of coherence. A website may be disconnected from the company’s value. Advertising may be disconnected from the sales process. Data may exist without influencing decisions. Tools may create more work instead of reducing it.',
@@ -1035,7 +1048,7 @@ const aboutEn = {
       variant: 'default',
     },
     {
-      __component: 'section.timeline',
+      __component: 'blocks.timeline',
       eyebrow: 'Origin',
       heading: 'Our Starting Line',
       stages: [
@@ -1046,7 +1059,7 @@ const aboutEn = {
       ],
     },
     {
-      __component: 'section.editorial-content',
+      __component: 'legacy.editorial-content',
       eyebrow: 'How we think',
       heading: 'The visible problem is rarely the whole problem.',
       body: 'We approach business problems as engineers approach complex systems: by understanding the whole, breaking it into meaningful parts, tracing the movement between them, and finding where the intended result is being lost.\n\nA company contains people, incentives, decisions, communication, customers, time, money, processes, technology, and feedback. A website can shape trust. A message can shape demand. A process can shape response time. A metric can shape a decision. A decision can shape the next result.',
@@ -1061,7 +1074,7 @@ const aboutEn = {
       variant: 'manifesto',
     },
     {
-      __component: 'section.statement-pair',
+      __component: 'blocks.statement-pair',
       eyebrow: 'Mission and vision',
       first: {
         label: 'Our mission',
@@ -1075,7 +1088,7 @@ const aboutEn = {
       },
     },
     {
-      __component: 'section.principles',
+      __component: 'blocks.principles',
       eyebrow: 'Principles and direction',
       heading: 'The standards that keep the work deliberate.',
       items: [
@@ -1090,7 +1103,7 @@ const aboutEn = {
       closingStatement: 'The destination is not more digital activity. It is a more deliberate form of progress.',
     },
     {
-      __component: 'section.final-cta',
+      __component: 'blocks.final-cta',
       heading: 'Every achievement begins as an intention. What gives it reality is the system built between them.',
       primaryCta: cta('Start a conversation', '/book-call'),
     },
@@ -1109,17 +1122,18 @@ const homepageAr = {
   },
   blocks: [
     { __component: 'blocks.hero', eyebrow: 'أنظمة رقمية لتقدم ذي معنى', title: 'نصمم الأنظمة التي تتحول عبرها النية إلى إنجاز.', subtitle: 'تجمع إنجاز ديجيتال الاستراتيجية والتقنية والتصميم والبيانات والتنفيذ في بنية واحدة، ليتحول النشاط المتفرق إلى تقدم واضح وقابل للقياس.', primaryCta: cta('ابدأ من النظام', '/book-call'), secondaryCta: cta('استكشف عملنا', '#services', 'secondary'), align: 'left' },
-    { __component: 'section.animated-text', eyebrow: 'معنى إنجاز', text: 'إنجاز ليس مجرد نشاط. وليس حركة بلا اتجاه. إنه اللحظة التي تتخذ فيها النية شكلا ويتحول الجهد إلى تقدم. والرقمي هو البنية التي تسمح بتصميم هذا التقدم وقياسه وتكراره وتحسينه.', highlightedText: 'يتحول الجهد إلى تقدم', alignment: 'left', size: 'medium', animationStyle: 'progressive-opacity', sticky: true, theme: 'contrast' },
-    { __component: 'section.problem', eyebrow: 'التوتر المركزي', heading: 'المزيد من النشاط لا يصنع دائما المزيد من التقدم.', description: 'قبل أن نضيف المزيد، يجب أن نفهم التدفق.', items: [item('مزيد من الإعلان', 'لا يصلح عرضا ضعيفا.'), item('مزيد من الزيارات', 'لا يصلح تموضعا غير واضح.'), item('مزيد من الأدوات', 'لا يصلح عملية مكسورة.'), item('مزيد من البيانات', 'لا يصنع قرارا أفضل وحده.'), item('مزيد من التقنية', 'قد يزيد التعقيد عند غياب نظام واضح.')] },
-    { __component: 'section.system-flow', eyebrow: 'كل شركة هي نظام', heading: 'كل شركة هي نظام.', description: 'الشركة ليست أقساما وحملات وصفحات وأدوات منفصلة، بل نظام حي من الناس والقرارات والعمليات والتقنية والتغذية الراجعة.', steps: ['المدخلات', 'القرارات', 'الأفعال', 'النتائج', 'التغذية الراجعة', 'التحسين'].map((title) => item(title, '')), signals: ['السوق', 'العرض', 'التواصل', 'تجربة العميل', 'التقنية', 'العمليات', 'القياس', 'القرارات'].map((title) => item(title, '')), closingStatement: 'عندما يتغير جزء، يستجيب النظام كله.', variant: 'system' },
+    { __component: 'blocks.animated-text', eyebrow: 'معنى إنجاز', text: 'إنجاز ليس مجرد نشاط. وليس حركة بلا اتجاه. إنه اللحظة التي تتخذ فيها النية شكلا ويتحول الجهد إلى تقدم. والرقمي هو البنية التي تسمح بتصميم هذا التقدم وقياسه وتكراره وتحسينه.', highlightedText: 'يتحول الجهد إلى تقدم', alignment: 'left', size: 'medium', animationStyle: 'progressive-opacity', sticky: true, theme: 'contrast' },
+    { __component: 'blocks.problem', eyebrow: 'التوتر المركزي', heading: 'المزيد من النشاط لا يصنع دائما المزيد من التقدم.', description: 'قبل أن نضيف المزيد، يجب أن نفهم التدفق.', items: [item('مزيد من الإعلان', 'لا يصلح عرضا ضعيفا.'), item('مزيد من الزيارات', 'لا يصلح تموضعا غير واضح.'), item('مزيد من الأدوات', 'لا يصلح عملية مكسورة.'), item('مزيد من البيانات', 'لا يصنع قرارا أفضل وحده.'), item('مزيد من التقنية', 'قد يزيد التعقيد عند غياب نظام واضح.')] },
+    { __component: 'blocks.system-flow', eyebrow: 'كل شركة هي نظام', heading: 'كل شركة هي نظام.', description: 'الشركة ليست أقساما وحملات وصفحات وأدوات منفصلة، بل نظام حي من الناس والقرارات والعمليات والتقنية والتغذية الراجعة.', steps: ['المدخلات', 'القرارات', 'الأفعال', 'النتائج', 'التغذية الراجعة', 'التحسين'].map((title) => item(title, '')), signals: ['السوق', 'العرض', 'التواصل', 'تجربة العميل', 'التقنية', 'العمليات', 'القياس', 'القرارات'].map((title) => item(title, '')), closingStatement: 'عندما يتغير جزء، يستجيب النظام كله.', variant: 'system' },
     servicesAr(),
-    { __component: 'section.diagnosis', eyebrow: 'من العرض إلى النظام', heading: 'قد لا تبدأ المشكلة الحقيقية من مكان ظهورها.', items: [{ visibleProblem: 'أصبح الإعلان مكلفا.', deeperSystem: 'قد يكون العرض ضعيفا أو الرسالة غير واضحة أو الصفحة منفصلة أو الاستجابة بطيئة.' }, { visibleProblem: 'الموقع لا يحول.', deeperSystem: 'قد يكون التموقع غامضا أو الثقة ناقصة أو الرحلة بلا خطوة تالية طبيعية.' }, { visibleProblem: 'جودة العملاء المحتملين ضعيفة.', deeperSystem: 'قد يجذب الاستهداف أو الوعد أو التأهيل أو المتابعة الانتباه الخطأ.' }], closingStatement: 'العرض يطلب إصلاحا سريعا. النظام يطلب فهما.' },
-    { __component: 'section.process', eyebrow: 'منهج إنجاز', heading: 'لا نبدأ بالمخرج. نبدأ بالحركة التي يجب أن يصنعها.', description: 'منهج مترابط يحول الهدف المعقد إلى نظام قابل للتشغيل والقياس.', variant: 'editorial', steps: [step('نفهم', 'ندرس الهدف والسياق والجمهور والقيود والحالة الحالية.'), step('نرسم', 'نجعل التدفق الكامل مرئيا بما فيه الأشخاص والأدوات والقرارات والتسليم.'), step('نشخص', 'نفصل الأعراض عن الأسباب ونحدد موضع فقدان التقدم.'), step('نصمم', 'نربط الاستراتيجية والرسالة والتجربة والتقنية والقياس.'), step('نبني', 'نحول التصميم إلى نظام عملي وقابل للصيانة.'), step('نقيس', 'نراقب الإشارات التي تؤثر في القرار.'), step('نحسن', 'نستخدم التغذية الراجعة لتحسين النظام.')] },
-    { __component: 'section.system-flow', eyebrow: 'القياس والتغذية الراجعة', heading: 'يصبح النظام ذكيا عندما يستطيع ملاحظة نتائجه.', description: 'لا يقول الرقم الكثير وحده؛ يظهر معناه عندما يرتبط بالمرحلة قبله وبعده وبالقرار الذي يجب أن يؤثر فيه.', steps: ['الانتباه', 'التفاعل', 'التحويل', 'التأهيل', 'التواصل', 'الفرصة', 'العميل'].map((title) => item(title, '')), signals: [item('زيارات قوية وتحويل ضعيف', 'راجع تطابق الرسالة والقيمة والثقة والاحتكاك.'), item('تحويل قوي وجودة ضعيفة', 'راجع الاستهداف والوعد والتأهيل والنية.'), item('جودة قوية وتواصل ضعيف', 'راجع التوجيه وسرعة الرد والملكية والمتابعة.'), item('تصميم قوي بلا إجراء مقاس', 'وضح الخطوة التالية والحدث الذي يجب أن يقود القرار.')], closingStatement: 'المؤشرات المفيدة تربط الانطباع والتفاعل والتحويل والتأهيل والتواصل والفرصة وتكلفة الاكتساب عندما تتوفر بيانات مبيعات موثوقة.', variant: 'measurement' },
-    { __component: 'section.principles', eyebrow: 'لماذا إنجاز ديجيتال', heading: 'نصمم العمل كنظام، لا كمجموعة ادعاءات.', items: [item('النظام قبل العرض', 'نبحث عن البنية خلف المشكلة الظاهرة.'), item('الاستراتيجية متصلة بالتنفيذ', 'يتحول التفكير إلى تصميم وبرمجيات وحملات وربط وإجراء مقاس.'), item('تقنية ذات غرض', 'تفيد الأداة عندما توضح العملية أو تقوي القرار أو تحسن النتيجة.'), item('القياس مع الحكم', 'تدعم البيانات الفهم ولا تستبدله.'), item('مبني للتشغيل', 'يبقى العمل مفيدا بعد يوم الإطلاق.'), item('تحسين بالتغذية الراجعة', 'تصبح كل نتيجة مدخلا للقرار التالي.')] },
-    { __component: 'section.problem', eyebrow: 'لمن هذا العمل', heading: 'للشركات المستعدة لاستبدال الجهد المتفرق بتقدم مقصود.', description: 'يناسب الشركات النامية والخدمية والاستشارية والمحلية عندما تحتاج الحالة إلى نظام أوضح.', items: [item('انتباه بلا مسار تحويل', 'الحضور موجود لكن الاهتمام بلا طريق واضح نحو الإجراء.'), item('قيمة يصعب شرحها', 'تحتاج الرسالة والتجربة أن تحملا القيمة الحقيقية.'), item('أدوات وعمليات منفصلة', 'كشف النمو فجوات في التسليم أو تكرارا أو غياب ملكية.'), item('تسويق بلا رؤية كاملة', 'يزداد الاستثمار دون وضوح بين العرض والحملة والصفحة والعميل والاستجابة.'), item('موقع لا يعكس الطموح', 'لم يعد الحضور الرقمي يدعم الثقة والإجراء والنمو.'), item('قياس قبل القرار التالي', 'يحتاج الفريق إشارات مفيدة لا مزيدا من الأرقام.')] },
-    { __component: 'section.editorial-content', eyebrow: 'الاتجاه الأكبر', heading: 'يبدأ العمل بالنمو والمواقع، لكن الاتجاه أوسع.', body: 'النمو والمواقع هما بداية العمل. والاتجاه الأكبر هو تصميم أنظمة أوضح عبر تجربة العميل والعمليات والأتمتة واتخاذ القرار.', closingStatement: 'ليس مزيدا من التقنية لذاتها، بل بنى أفضل ينتج عبرها الإنسان والتقنية تقدما ذا معنى معا.', variant: 'vision' },
-    { __component: 'section.final-cta', heading: 'ابدأ من المكان الذي يضيع فيه التقدم.', description: 'الخطوة الأولى ليست اختيار خدمة، بل فهم النظام والهدف والمسافة بينهما.', primaryCta: cta('ابدأ محادثة', '/book-call') },
+    { __component: 'blocks.diagnosis', eyebrow: 'من العرض إلى النظام', heading: 'قد لا تبدأ المشكلة الحقيقية من مكان ظهورها.', items: [{ visibleProblem: 'أصبح الإعلان مكلفا.', deeperSystem: 'قد يكون العرض ضعيفا أو الرسالة غير واضحة أو الصفحة منفصلة أو الاستجابة بطيئة.' }, { visibleProblem: 'الموقع لا يحول.', deeperSystem: 'قد يكون التموقع غامضا أو الثقة ناقصة أو الرحلة بلا خطوة تالية طبيعية.' }, { visibleProblem: 'جودة العملاء المحتملين ضعيفة.', deeperSystem: 'قد يجذب الاستهداف أو الوعد أو التأهيل أو المتابعة الانتباه الخطأ.' }], closingStatement: 'العرض يطلب إصلاحا سريعا. النظام يطلب فهما.' },
+    { __component: 'blocks.process', eyebrow: 'منهج إنجاز', heading: 'لا نبدأ بالمخرج. نبدأ بالحركة التي يجب أن يصنعها.', description: 'منهج مترابط يحول الهدف المعقد إلى نظام قابل للتشغيل والقياس.', variant: 'editorial', steps: [step('نفهم', 'ندرس الهدف والسياق والجمهور والقيود والحالة الحالية.'), step('نرسم', 'نجعل التدفق الكامل مرئيا بما فيه الأشخاص والأدوات والقرارات والتسليم.'), step('نشخص', 'نفصل الأعراض عن الأسباب ونحدد موضع فقدان التقدم.'), step('نصمم', 'نربط الاستراتيجية والرسالة والتجربة والتقنية والقياس.'), step('نبني', 'نحول التصميم إلى نظام عملي وقابل للصيانة.'), step('نقيس', 'نراقب الإشارات التي تؤثر في القرار.'), step('نحسن', 'نستخدم التغذية الراجعة لتحسين النظام.')] },
+    { __component: 'blocks.system-flow', eyebrow: 'القياس والتغذية الراجعة', heading: 'يصبح النظام ذكيا عندما يستطيع ملاحظة نتائجه.', description: 'لا يقول الرقم الكثير وحده؛ يظهر معناه عندما يرتبط بالمرحلة قبله وبعده وبالقرار الذي يجب أن يؤثر فيه.', steps: ['الانتباه', 'التفاعل', 'التحويل', 'التأهيل', 'التواصل', 'الفرصة', 'العميل'].map((title) => item(title, '')), signals: [item('زيارات قوية وتحويل ضعيف', 'راجع تطابق الرسالة والقيمة والثقة والاحتكاك.'), item('تحويل قوي وجودة ضعيفة', 'راجع الاستهداف والوعد والتأهيل والنية.'), item('جودة قوية وتواصل ضعيف', 'راجع التوجيه وسرعة الرد والملكية والمتابعة.'), item('تصميم قوي بلا إجراء مقاس', 'وضح الخطوة التالية والحدث الذي يجب أن يقود القرار.')], closingStatement: 'المؤشرات المفيدة تربط الانطباع والتفاعل والتحويل والتأهيل والتواصل والفرصة وتكلفة الاكتساب عندما تتوفر بيانات مبيعات موثوقة.', variant: 'measurement' },
+    { __component: 'blocks.principles', eyebrow: 'لماذا إنجاز ديجيتال', heading: 'نصمم العمل كنظام، لا كمجموعة ادعاءات.', items: [item('النظام قبل العرض', 'نبحث عن البنية خلف المشكلة الظاهرة.'), item('الاستراتيجية متصلة بالتنفيذ', 'يتحول التفكير إلى تصميم وبرمجيات وحملات وربط وإجراء مقاس.'), item('تقنية ذات غرض', 'تفيد الأداة عندما توضح العملية أو تقوي القرار أو تحسن النتيجة.'), item('القياس مع الحكم', 'تدعم البيانات الفهم ولا تستبدله.'), item('مبني للتشغيل', 'يبقى العمل مفيدا بعد يوم الإطلاق.'), item('تحسين بالتغذية الراجعة', 'تصبح كل نتيجة مدخلا للقرار التالي.')] },
+    { __component: 'blocks.faq', eyebrow: 'أسئلة شائعة', heading: 'بداية أوضح.', description: 'صممت المحادثة الأولى لتحديد العائق الحقيقي قبل اختيار ما يجب بناؤه.', items: [faq('ماذا تبني إنجاز ديجيتال؟', 'نبني أنظمة مواقع ونمو مترابطة توضح العرض، توجه العميل نحو الإجراء، وتجعل التحسين قابلا للقياس.'), faq('هل يجب أن أعرف الخدمة التي أحتاجها؟', 'لا. نبدأ بالهدف وموضع فقدان التقدم، ثم نقترح النظام الأنسب للبدء.'), faq('هل العمل مجرد تصميم أو تطوير؟', 'لا. التصميم والتطوير جزء من العمل، لكنهما يرتبطان بالتموضع ورحلة العميل والعمليات والقياس ونتائج الأعمال.'), faq('هل يمكن تحسين موقع أو عملية موجودة؟', 'نعم. نشخص أولا ما يعمل وما هو منفصل، ثم نحدد هل التحسين أو إعادة البناء المركزة هو القرار الأفضل.'), faq('ماذا يحدث بعد المكالمة الاستراتيجية؟', 'تحصل على توصية واضحة للخطوة التالية والنطاق المتوقع والنظام الذي يجب معالجته أولا.')] },
+    { __component: 'blocks.problem', eyebrow: 'لمن هذا العمل', heading: 'للشركات المستعدة لاستبدال الجهد المتفرق بتقدم مقصود.', description: 'يناسب الشركات النامية والخدمية والاستشارية والمحلية عندما تحتاج الحالة إلى نظام أوضح.', items: [item('انتباه بلا مسار تحويل', 'الحضور موجود لكن الاهتمام بلا طريق واضح نحو الإجراء.'), item('قيمة يصعب شرحها', 'تحتاج الرسالة والتجربة أن تحملا القيمة الحقيقية.'), item('أدوات وعمليات منفصلة', 'كشف النمو فجوات في التسليم أو تكرارا أو غياب ملكية.'), item('تسويق بلا رؤية كاملة', 'يزداد الاستثمار دون وضوح بين العرض والحملة والصفحة والعميل والاستجابة.'), item('موقع لا يعكس الطموح', 'لم يعد الحضور الرقمي يدعم الثقة والإجراء والنمو.'), item('قياس قبل القرار التالي', 'يحتاج الفريق إشارات مفيدة لا مزيدا من الأرقام.')] },
+    { __component: 'legacy.editorial-content', eyebrow: 'الاتجاه الأكبر', heading: 'يبدأ العمل بالنمو والمواقع، لكن الاتجاه أوسع.', body: 'النمو والمواقع هما بداية العمل. والاتجاه الأكبر هو تصميم أنظمة أوضح عبر تجربة العميل والعمليات والأتمتة واتخاذ القرار.', closingStatement: 'ليس مزيدا من التقنية لذاتها، بل بنى أفضل ينتج عبرها الإنسان والتقنية تقدما ذا معنى معا.', variant: 'vision' },
+    { __component: 'blocks.final-cta', heading: 'ابدأ من المكان الذي يضيع فيه التقدم.', description: 'الخطوة الأولى ليست اختيار خدمة، بل فهم النظام والهدف والمسافة بينهما.', primaryCta: cta('ابدأ محادثة', '/book-call') },
   ],
 };
 
@@ -1134,13 +1148,13 @@ const aboutAr = {
     noIndex: false,
   },
   blocks: [
-    { __component: 'section.hero', eyebrow: 'عن إنجاز ديجيتال', title: 'نؤمن أن الإنجاز يبدأ عندما يجد الجهد اتجاهه.', description: 'إنجاز ديجيتال شركة أنظمة رقمية مبنية حول فكرة بسيطة: لا يأتي التقدم من نشاط منفصل، بل عندما تتحرك النية والناس والعمليات والتقنية والتغذية الراجعة معا.', imageKeyword: 'digital-systems-company', variant: 'visual' },
-    { __component: 'section.editorial-content', eyebrow: 'لماذا إنجاز', heading: 'إنجاز هو الانتقال من النية إلى الواقع.', body: 'إنجاز كلمة عربية تحمل معنى التحقيق وإخراج الشيء من النية إلى الواقع.\n\nليست مجرد حركة أو نشاط، بل جهد وجد شكله واتجاهه ونتيجته.\n\nوالرقمي هو الوسط الذي تتجسد عبره هذه الفلسفة: البرمجيات والتصميم والبيانات والأتمتة والتواصل والأنظمة التي تربطها.\n\nنادرا ما تعاني الشركات الحديثة من نقص الأدوات؛ بل من غياب الانسجام. قد ينفصل الموقع عن قيمة الشركة، والإعلان عن عملية البيع، والبيانات عن القرار، وقد تخلق الأدوات عملا أكثر بدل تقليله.', closingStatement: 'توجد إنجاز ديجيتال لتجمع هذه الأجزاء في كل أوضح.', variant: 'default' },
-    { __component: 'section.timeline', eyebrow: 'الأصل', heading: 'نقطة البداية', stages: [step('طريقة في النظر', 'بدأت إنجاز بطريقة ترى المشكلات كأجزاء من نظام أكبر لا كإخفاقات منفصلة.'), step('أساس هندسي', 'علمتنا هندسة البرمجيات تتبع التدفقات والاعتماديات والأسباب والتعقيد والتحسين بالتغذية الراجعة.'), step('إدراك', 'لا تصنع المزيد من البرمجيات والإعلانات والبيانات نتائج أفضل إلا عندما تنتمي إلى هدف واضح وعملية مترابطة.'), step('الاتجاه الحالي', 'نشأت إنجاز ديجيتال من رغبة في وصل التفكير التجاري بالتقنية والتصميم والبيانات والتنفيذ، ومنح الطموح بنية يتحول عبرها إلى إنجاز.')] },
-    { __component: 'section.editorial-content', eyebrow: 'كيف نفكر', heading: 'المشكلة الظاهرة نادرا ما تكون المشكلة كلها.', body: 'نتعامل مع مشكلات العمل كما يتعامل المهندسون مع الأنظمة المعقدة: نفهم الكل ونفككه إلى أجزاء ذات معنى ونتتبع الحركة بينها ونجد أين تضيع النتيجة المقصودة.\n\nتحتوي الشركة على الناس والحوافز والقرارات والتواصل والعملاء والوقت والمال والعمليات والتقنية والتغذية الراجعة. يشكل الموقع الثقة، وتشكل الرسالة الطلب، وتشكل العملية سرعة الاستجابة، ويشكل المؤشر القرار، ويشكل القرار النتيجة التالية.', statements: [item('الجهد بلا اتجاه يصبح إنهاكا.', ''), item('التقنية بلا غرض تصبح تعقيدا.', ''), item('البيانات بلا حكم تصبح ضوضاء.', ''), item('الاستراتيجية بلا تنفيذ تبقى نية.', ''), item('التنفيذ بلا تغذية راجعة يكرر نفسه.', '')], closingStatement: 'يبدأ التقدم عندما تتحرك هذه العناصر كواحد.', variant: 'manifesto' },
-    { __component: 'section.statement-pair', eyebrow: 'الرسالة والرؤية', first: { label: 'رسالتنا', statement: 'أن نحول النية إلى بنية، والجهد إلى تقدم، والقدرة الرقمية إلى إنجاز ذي معنى.', explanation: 'نجمع الاستراتيجية والتقنية والتصميم والبيانات والتنفيذ في أنظمة واضحة بما يكفي للتشغيل وذكية بما يكفي للتحسن.' }, second: { label: 'رؤيتنا', statement: 'نتصور عالما لا يترك فيه التقدم للصدفة.', explanation: 'حيث لا تصنع التقنية ضوضاء أكثر، ولا تزيد الأدوات التعقيد، ولا يضيع الجهد في أفعال منفصلة.\n\nحيث لكل هدف مسار، ولكل فعل مكان في نظام أكبر، وتصبح كل نتيجة بداية لقرار أحكم.' } },
-    { __component: 'section.principles', eyebrow: 'المبادئ والاتجاه', heading: 'المعايير التي تبقي العمل مقصودا.', items: [item('افهم قبل أن تبني', 'يجب أن يسبق الوضوح التنفيذ.'), item('أصلح النظام لا العرض فقط', 'تبدأ المشكلات الظاهرة غالبا في مكان آخر.'), item('استخدم التقنية بقصد', 'يجب أن تحسن التقنية العمل لا أن تزينه.'), item('قس ما يوجه القرار', 'ليس كل رقم متاح جديرا بالانتباه.'), item('حسن بالتغذية الراجعة', 'يجب أن تعلم كل نتيجة ما يأتي بعدها.')], directionHeading: 'إلى أين نتجه', directionBody: 'تبدأ إنجاز ديجيتال بالأنظمة التي تلتقي عبرها الشركات بالسوق: حضورها الرقمي ومسارها لاكتساب العملاء.\n\nويمتد الاتجاه الأكبر نحو تجارب عملاء أوضح وعمليات أقوى وأتمتة ذات غرض وبنى أفضل للقرار.', closingStatement: 'الوجهة ليست مزيدا من النشاط الرقمي، بل شكلا أكثر قصدا من التقدم.' },
-    { __component: 'section.final-cta', heading: 'يبدأ كل إنجاز كنية. وما يمنحه الواقع هو النظام المبني بينهما.', primaryCta: cta('ابدأ محادثة', '/book-call') },
+    { __component: 'blocks.page-hero', eyebrow: 'عن إنجاز ديجيتال', title: 'نؤمن أن الإنجاز يبدأ عندما يجد الجهد اتجاهه.', description: 'إنجاز ديجيتال شركة أنظمة رقمية مبنية حول فكرة بسيطة: لا يأتي التقدم من نشاط منفصل، بل عندما تتحرك النية والناس والعمليات والتقنية والتغذية الراجعة معا.', imageKeyword: 'digital-systems-company', variant: 'visual' },
+    { __component: 'legacy.editorial-content', eyebrow: 'لماذا إنجاز', heading: 'إنجاز هو الانتقال من النية إلى الواقع.', body: 'إنجاز كلمة عربية تحمل معنى التحقيق وإخراج الشيء من النية إلى الواقع.\n\nليست مجرد حركة أو نشاط، بل جهد وجد شكله واتجاهه ونتيجته.\n\nوالرقمي هو الوسط الذي تتجسد عبره هذه الفلسفة: البرمجيات والتصميم والبيانات والأتمتة والتواصل والأنظمة التي تربطها.\n\nنادرا ما تعاني الشركات الحديثة من نقص الأدوات؛ بل من غياب الانسجام. قد ينفصل الموقع عن قيمة الشركة، والإعلان عن عملية البيع، والبيانات عن القرار، وقد تخلق الأدوات عملا أكثر بدل تقليله.', closingStatement: 'توجد إنجاز ديجيتال لتجمع هذه الأجزاء في كل أوضح.', variant: 'default' },
+    { __component: 'blocks.timeline', eyebrow: 'الأصل', heading: 'نقطة البداية', stages: [step('طريقة في النظر', 'بدأت إنجاز بطريقة ترى المشكلات كأجزاء من نظام أكبر لا كإخفاقات منفصلة.'), step('أساس هندسي', 'علمتنا هندسة البرمجيات تتبع التدفقات والاعتماديات والأسباب والتعقيد والتحسين بالتغذية الراجعة.'), step('إدراك', 'لا تصنع المزيد من البرمجيات والإعلانات والبيانات نتائج أفضل إلا عندما تنتمي إلى هدف واضح وعملية مترابطة.'), step('الاتجاه الحالي', 'نشأت إنجاز ديجيتال من رغبة في وصل التفكير التجاري بالتقنية والتصميم والبيانات والتنفيذ، ومنح الطموح بنية يتحول عبرها إلى إنجاز.')] },
+    { __component: 'legacy.editorial-content', eyebrow: 'كيف نفكر', heading: 'المشكلة الظاهرة نادرا ما تكون المشكلة كلها.', body: 'نتعامل مع مشكلات العمل كما يتعامل المهندسون مع الأنظمة المعقدة: نفهم الكل ونفككه إلى أجزاء ذات معنى ونتتبع الحركة بينها ونجد أين تضيع النتيجة المقصودة.\n\nتحتوي الشركة على الناس والحوافز والقرارات والتواصل والعملاء والوقت والمال والعمليات والتقنية والتغذية الراجعة. يشكل الموقع الثقة، وتشكل الرسالة الطلب، وتشكل العملية سرعة الاستجابة، ويشكل المؤشر القرار، ويشكل القرار النتيجة التالية.', statements: [item('الجهد بلا اتجاه يصبح إنهاكا.', ''), item('التقنية بلا غرض تصبح تعقيدا.', ''), item('البيانات بلا حكم تصبح ضوضاء.', ''), item('الاستراتيجية بلا تنفيذ تبقى نية.', ''), item('التنفيذ بلا تغذية راجعة يكرر نفسه.', '')], closingStatement: 'يبدأ التقدم عندما تتحرك هذه العناصر كواحد.', variant: 'manifesto' },
+    { __component: 'blocks.statement-pair', eyebrow: 'الرسالة والرؤية', first: { label: 'رسالتنا', statement: 'أن نحول النية إلى بنية، والجهد إلى تقدم، والقدرة الرقمية إلى إنجاز ذي معنى.', explanation: 'نجمع الاستراتيجية والتقنية والتصميم والبيانات والتنفيذ في أنظمة واضحة بما يكفي للتشغيل وذكية بما يكفي للتحسن.' }, second: { label: 'رؤيتنا', statement: 'نتصور عالما لا يترك فيه التقدم للصدفة.', explanation: 'حيث لا تصنع التقنية ضوضاء أكثر، ولا تزيد الأدوات التعقيد، ولا يضيع الجهد في أفعال منفصلة.\n\nحيث لكل هدف مسار، ولكل فعل مكان في نظام أكبر، وتصبح كل نتيجة بداية لقرار أحكم.' } },
+    { __component: 'blocks.principles', eyebrow: 'المبادئ والاتجاه', heading: 'المعايير التي تبقي العمل مقصودا.', items: [item('افهم قبل أن تبني', 'يجب أن يسبق الوضوح التنفيذ.'), item('أصلح النظام لا العرض فقط', 'تبدأ المشكلات الظاهرة غالبا في مكان آخر.'), item('استخدم التقنية بقصد', 'يجب أن تحسن التقنية العمل لا أن تزينه.'), item('قس ما يوجه القرار', 'ليس كل رقم متاح جديرا بالانتباه.'), item('حسن بالتغذية الراجعة', 'يجب أن تعلم كل نتيجة ما يأتي بعدها.')], directionHeading: 'إلى أين نتجه', directionBody: 'تبدأ إنجاز ديجيتال بالأنظمة التي تلتقي عبرها الشركات بالسوق: حضورها الرقمي ومسارها لاكتساب العملاء.\n\nويمتد الاتجاه الأكبر نحو تجارب عملاء أوضح وعمليات أقوى وأتمتة ذات غرض وبنى أفضل للقرار.', closingStatement: 'الوجهة ليست مزيدا من النشاط الرقمي، بل شكلا أكثر قصدا من التقدم.' },
+    { __component: 'blocks.final-cta', heading: 'يبدأ كل إنجاز كنية. وما يمنحه الواقع هو النظام المبني بينهما.', primaryCta: cta('ابدأ محادثة', '/book-call') },
   ],
 };
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { ArrowRight } from 'lucide-react';
-import cx from '@/lib/utils/cx';
+import { cn as cx } from '@/lib/utils';
 import { asArray, CONTAINER, EYEBROW } from './editorialShared';
 
 export default function SystemFlowBlock({ block }) {
@@ -20,7 +20,7 @@ export default function SystemFlowBlock({ block }) {
           <div>
             <ol className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3" aria-label={block?.heading}>
               {steps.map((step, index) => (
-                <li key={`${step.title}-${index}`} className={cx('group rounded-xl border p-5 transition-all duration-200', measurement ? 'border-white/12 bg-white/[0.045]' : 'border-[#d6e1e8] hover:border-[#c0cbd8] hover:shadow-[0_4px_20px_rgba(8,52,106,0.06)]')}>
+                <li key={`${step.title}-${index}`} className={cx('group rounded-[24px] corner-squircle border p-5 transition-all duration-200', measurement ? 'border-white/12 bg-white/[0.045]' : 'border-[#d6e1e8] hover:border-[#c0cbd8] hover:shadow-[0_4px_20px_rgba(8,52,106,0.06)]')}>
                   <span className={cx('text-[0.65rem] font-semibold tracking-[0.14em]', measurement ? 'text-[#79bfe0]' : 'text-[#1685a1]')}>{String(index + 1).padStart(2, '0')}</span>
                   <p className={cx('premium-geist mt-4 text-lg font-semibold tracking-[-0.02em]', measurement ? 'text-white' : 'text-[#13263d]')}>{step.title}</p>
                   {step.description ? (
@@ -53,4 +53,3 @@ export default function SystemFlowBlock({ block }) {
 }
 
 SystemFlowBlock.propTypes = { block: PropTypes.object };
-

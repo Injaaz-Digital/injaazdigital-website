@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_blocks_final_ctas",
+  "info": {
+    "displayName": "Final CTA",
+    "description": "Final conversion section"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "text"
+    },
+    "primaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "secondaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    }
+  }
+}

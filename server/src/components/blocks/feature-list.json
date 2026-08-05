@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_blocks_feature_lists",
+  "info": {
+    "displayName": "Feature List",
+    "description": "Dense feature grid"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "eyebrow": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 180
+    },
+    "description": {
+      "type": "text"
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.list-item",
+      "repeatable": true,
+      "min": 1,
+      "max": 8
+    }
+  }
+}

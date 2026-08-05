@@ -1,4 +1,4 @@
-import CmsSiteClient from '@/features/cms/renderer/CmsSiteClient';
+import CmsSiteServer from '@/features/cms/renderer/CmsSiteServer';
 import { loadCmsRoute, loadCmsRouteMetadata } from '@/features/cms/lib/cms-route';
 
 export async function generateMetadata() {
@@ -9,7 +9,7 @@ export default async function Page() {
   const { initialLang, cms } = await loadCmsRoute('/book-call');
 
   return (
-    <CmsSiteClient
+    <CmsSiteServer
       route="/book-call"
       initialLang={initialLang}
       cmsData={cms.data}

@@ -1,0 +1,12 @@
+import { BOOK_CALL_TIMEZONE } from '../../constants/bookCall.constants';
+import type { AppLocale } from '@/lib/i18n/routing';
+export const formatLocalDateValue = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+export const parseLocalDate = (value: string) => { const [year, month, day] = String(value || '').split('-').map(Number); return new Date(year, (month || 1) - 1, day || 1); };
+export const addMonths = (date: Date, count: number) => new Date(date.getFullYear(), date.getMonth() + count, 1);
+export const sameMonth = (left: Date, right: Date) => left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth();
+export const buildMonthDays = (monthDate: Date) => { const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1); const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0); const gridStart = new Date(monthStart); gridStart.setDate(monthStart.getDate() - ((monthStart.getDay() + 6) % 7)); return Array.from({ length: 42 }, (_, index) => { const date = new Date(gridStart); date.setDate(gridStart.getDate() + index); return { value: formatLocalDateValue(date), day: date.getDate(), inMonth: date >= monthStart && date <= monthEnd, date }; }); };
+const intlLocale = (locale: AppLocale | string) => locale === 'ar' ? 'ar-MA' : 'en';
+export const formatMonthLabel = (date: Date, locale: AppLocale | string = 'en') => new Intl.DateTimeFormat(intlLocale(locale), { month: 'long', year: 'numeric' }).format(date);
+export const buildWeekdayLabels = (locale: AppLocale | string = 'en') => { const formatter = new Intl.DateTimeFormat(intlLocale(locale), { weekday: 'short', timeZone: 'UTC' }); return Array.from({ length: 7 }, (_, index) => formatter.format(new Date(Date.UTC(2024, 0, 1 + index))).replace('.', '')); };
+export const formatDateLabel = (value: string, weekday: 'short' | 'long' = 'short', locale: AppLocale | string = 'en') => new Intl.DateTimeFormat(intlLocale(locale), { weekday, month: 'short', day: 'numeric', timeZone: BOOK_CALL_TIMEZONE }).format(new Date(`${value}T12:00:00`));
+export const formatSlotLabel = (value: string, timezone = BOOK_CALL_TIMEZONE, locale: AppLocale | string = 'en') => new Intl.DateTimeFormat(intlLocale(locale), { hour: 'numeric', minute: '2-digit', timeZone: timezone }).format(new Date(value));

@@ -226,7 +226,7 @@ const legacyPages = [
         align: 'left',
       },
       {
-        __component: 'section.service-overview',
+        __component: 'blocks.service-overview',
         heading: 'Two focused services for a cleaner digital engine.',
         description: 'Injaaz Digital keeps the offer simple: a serious website first, then a growth system that makes demand easier to manage.',
         services: [
@@ -243,7 +243,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         heading: 'A digital presence should not make prospects work this hard.',
         description: 'Most businesses lose momentum because their offer is unclear, their website feels unfinished, or leads arrive without a system.',
         items: [
@@ -253,7 +253,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         heading: 'A measured process from clarity to improvement.',
         description: 'Diagnose, Structure, Build, Launch, Improve.',
         steps: [
@@ -265,7 +265,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         heading: 'The outcome is a digital presence that feels easier to trust.',
         description: 'Every page and system is built to reduce confusion before a prospect ever reaches out.',
         items: [
@@ -275,7 +275,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'Ready to make your online presence easier to trust and easier to act on?',
         description: 'Start with a focused call. We will review the offer, the path to leads, and the most practical next build.',
         primaryCta: cta('Book a call', '/book-call'),
@@ -295,7 +295,7 @@ const legacyPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'A website that makes your business look serious, clear, and trustworthy.',
         description:
           'We design and build premium websites that clarify your positioning, present your offer with confidence, and guide visitors toward the right contact action.',
@@ -304,7 +304,7 @@ const legacyPages = [
         imageKeyword: 'premium-website-interface',
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         heading: 'Everything your website needs to carry the offer with confidence.',
         description: 'The focus is not decoration. It is clarity, perceived trust, responsive execution, and a contact path that works.',
         items: [
@@ -317,7 +317,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         heading: 'A direct build process with fewer vague handoffs.',
         description: 'Discovery, Structure, Design, Development, Launch.',
         steps: [
@@ -329,7 +329,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         heading: 'What the website is built to improve.',
         items: [
           metric('Trust', 'First impression', 'A serious visual system that supports the value of the offer.'),
@@ -338,7 +338,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.faq',
+        __component: 'legacy.faq',
         heading: 'Website development questions',
         items: [
           faq('Can the website content be edited later?', 'Yes. The page copy and sections are managed through Strapi so the frontend is not the place where marketing copy has to live.'),
@@ -347,7 +347,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'Build a website that makes the offer easier to believe.',
         description: 'Use the call to clarify scope, priorities, and the cleanest path to launch.',
         primaryCta: cta('Book a website call', '/book-call'),
@@ -367,7 +367,7 @@ const legacyPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'Turn attention into leads. Turn leads into organized sales conversations.',
         description:
           'We connect landing pages, lead capture, tracking, WhatsApp follow-up, and content direction into a practical system that helps demand move somewhere useful.',
@@ -376,7 +376,7 @@ const legacyPages = [
         imageKeyword: 'growth-dashboard-sales',
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         heading: 'A system for the full path from interest to follow-up.',
         description: 'The goal is to make lead generation more structured, visible, and reviewable.',
         items: [
@@ -390,7 +390,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         heading: 'A practical build path for cleaner growth operations.',
         description: 'Diagnose flow, Design journey, Build assets, Launch system, Optimize.',
         steps: [
@@ -402,7 +402,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         heading: 'What becomes easier to manage.',
         items: [
           metric('Leads', 'Captured', 'Interest has a clear destination instead of disappearing across channels.'),
@@ -411,7 +411,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.faq',
+        __component: 'legacy.faq',
         heading: 'Growth system questions',
         items: [
           faq('Is this only for paid ads?', 'No. The system can support organic content, direct outreach, campaigns, and existing audience attention.'),
@@ -420,7 +420,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'Give every lead a clearer path from interest to conversation.',
         description: 'Use the call to map the current flow and identify the highest-leverage system to build first.',
         primaryCta: cta('Book a growth call', '/book-call'),
@@ -440,7 +440,7 @@ const legacyPages = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'A focused digital partner for clearer websites and cleaner growth systems.',
         description:
           'Injaaz Digital helps businesses structure their offer, build a serious web presence, and connect lead capture with practical follow-up.',
@@ -449,7 +449,7 @@ const legacyPages = [
         imageKeyword: 'digital-studio-team',
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         heading: 'Why the work stays focused.',
         description: 'Most digital projects fail when strategy, page structure, content, and follow-up are treated as separate pieces.',
         items: [
@@ -459,7 +459,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         heading: 'What clients should feel after launch.',
         description: 'The website and growth path should be easier to explain, easier to manage, and easier to improve.',
         items: [
@@ -469,7 +469,7 @@ const legacyPages = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'Start with the digital path that needs the most clarity.',
         description: 'Use a focused call to decide whether the first priority is the website, the funnel, or the full growth system.',
         primaryCta: cta('Book a call', '/book-call'),
@@ -501,7 +501,7 @@ const legacyPagesAr = [
         align: 'left',
       },
       {
-        __component: 'section.service-overview',
+        __component: 'blocks.service-overview',
         heading: 'خدمتان واضحتان لبناء محرك رقمي أنظف.',
         description: 'نحافظ على بساطة العرض: موقع جاد أولا، ثم نظام نمو يجعل إدارة الطلب أسهل.',
         services: [
@@ -518,7 +518,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         heading: 'حضورك الرقمي لا يجب أن يجعل العميل يبذل جهدا لفهمك.',
         description: 'كثير من الأعمال تخسر الزخم لأن العرض غير واضح، الموقع يبدو غير مكتمل، أو العملاء المحتملون يصلون بلا نظام.',
         items: [
@@ -528,7 +528,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         heading: 'عملية هادئة من الوضوح إلى التحسين.',
         description: 'نشخص، نهيكل، نبني، نطلق، نحسن.',
         steps: [
@@ -540,7 +540,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         heading: 'النتيجة حضور رقمي أسهل في الفهم والثقة.',
         description: 'كل صفحة وكل نظام يبنى لتقليل الحيرة قبل أن يتواصل العميل المحتمل.',
         items: [
@@ -550,7 +550,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'هل تريد حضورا رقميا أسهل في الثقة وأسهل في اتخاذ القرار؟',
         description: 'ابدأ بمكالمة مركزة. نراجع العرض، مسار العملاء المحتملين، وأفضل خطوة عملية للبناء.',
         primaryCta: cta('احجز مكالمة', '/book-call'),
@@ -570,7 +570,7 @@ const legacyPagesAr = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'موقع يجعل عملك يبدو جادا، واضحا، وجديرا بالثقة.',
         description:
           'نصمم ونبني مواقع احترافية توضّح تموضعك، تعرض عرضك بثقة، وتوجه الزائر نحو إجراء التواصل المناسب.',
@@ -579,7 +579,7 @@ const legacyPagesAr = [
         imageKeyword: 'premium-website-interface',
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         heading: 'كل ما يحتاجه موقعك ليحمل العرض بثقة.',
         description: 'التركيز ليس على الزخرفة. التركيز على الوضوح، الثقة، التنفيذ المتجاوب، ومسار تواصل يعمل.',
         items: [
@@ -592,7 +592,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         heading: 'عملية بناء مباشرة بدون تسليمات غامضة.',
         description: 'اكتشاف، هيكلة، تصميم، تطوير، إطلاق.',
         steps: [
@@ -604,7 +604,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         heading: 'ما الذي صمم الموقع لتحسينه؟',
         items: [
           metric('ثقة', 'الانطباع الأول', 'نظام بصري جاد يدعم قيمة العرض.'),
@@ -613,7 +613,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.faq',
+        __component: 'legacy.faq',
         heading: 'أسئلة تطوير المواقع',
         items: [
           faq('هل يمكن تعديل محتوى الموقع لاحقا؟', 'نعم. نصوص الصفحة والأقسام تدار من Strapi، لذلك لا يجب أن يعيش النص التسويقي داخل الواجهة.'),
@@ -622,7 +622,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'ابن موقعا يجعل عرضك أسهل في التصديق.',
         description: 'استخدم المكالمة لتوضيح النطاق، الأولويات، وأقصر طريق نظيف للإطلاق.',
         primaryCta: cta('احجز مكالمة للموقع', '/book-call'),
@@ -642,7 +642,7 @@ const legacyPagesAr = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'حوّل الانتباه إلى عملاء محتملين. وحوّلهم إلى محادثات بيع منظمة.',
         description:
           'نربط صفحات الهبوط، التقاط العملاء المحتملين، التتبع، متابعة واتساب، واتجاه المحتوى داخل نظام عملي يجعل الطلب يتحرك إلى مكان مفيد.',
@@ -651,7 +651,7 @@ const legacyPagesAr = [
         imageKeyword: 'growth-dashboard-sales',
       },
       {
-        __component: 'section.feature-list',
+        __component: 'blocks.feature-list',
         heading: 'نظام للمسار الكامل من الاهتمام إلى المتابعة.',
         description: 'الهدف أن يصبح توليد العملاء المحتملين أكثر تنظيما ووضوحا وقابلية للمراجعة.',
         items: [
@@ -665,7 +665,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.process',
+        __component: 'blocks.process',
         heading: 'طريق بناء عملي لعمليات نمو أوضح.',
         description: 'تشخيص التدفق، تصميم الرحلة، بناء الأصول، إطلاق النظام، التحسين.',
         steps: [
@@ -677,7 +677,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         heading: 'ما الذي يصبح أسهل في الإدارة؟',
         items: [
           metric('عملاء محتملون', 'يتم التقاطهم', 'الاهتمام يصبح له وجهة واضحة بدل أن يضيع بين القنوات.'),
@@ -686,7 +686,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.faq',
+        __component: 'legacy.faq',
         heading: 'أسئلة نظام النمو',
         items: [
           faq('هل هذا مخصص للإعلانات المدفوعة فقط؟', 'لا. يمكن للنظام دعم المحتوى العضوي، التواصل المباشر، الحملات، والانتباه الموجود من الجمهور.'),
@@ -695,7 +695,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'امنح كل عميل محتمل طريقا أوضح من الاهتمام إلى المحادثة.',
         description: 'استخدم المكالمة لرسم التدفق الحالي وتحديد أعلى نظام عملي يجب بناؤه أولا.',
         primaryCta: cta('احجز مكالمة للنمو', '/book-call'),
@@ -715,7 +715,7 @@ const legacyPagesAr = [
     },
     blocks: [
       {
-        __component: 'section.hero',
+        __component: 'blocks.page-hero',
         title: 'شريك رقمي مركز لمواقع أوضح وأنظمة نمو أنظف.',
         description:
           'تساعد إنجاز ديجيتال الأعمال على هيكلة العرض، بناء حضور ويب جاد، وربط التقاط العملاء المحتملين بمتابعة عملية.',
@@ -724,7 +724,7 @@ const legacyPagesAr = [
         imageKeyword: 'digital-studio-team',
       },
       {
-        __component: 'section.problem',
+        __component: 'blocks.problem',
         heading: 'لماذا يبقى العمل مركزا؟',
         description: 'تفشل كثير من المشاريع الرقمية عندما يتم فصل الاستراتيجية، بنية الصفحة، المحتوى، والمتابعة عن بعضها.',
         items: [
@@ -734,7 +734,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.outcomes',
+        __component: 'blocks.dashboard-showcase',
         heading: 'ما الذي يجب أن يشعر به العميل بعد الإطلاق؟',
         description: 'يجب أن يصبح الموقع ومسار النمو أسهل في الشرح، الإدارة، والتحسين.',
         items: [
@@ -744,7 +744,7 @@ const legacyPagesAr = [
         ],
       },
       {
-        __component: 'section.final-cta',
+        __component: 'blocks.final-cta',
         heading: 'ابدأ بالمسار الرقمي الذي يحتاج إلى أكبر قدر من الوضوح.',
         description: 'استخدم مكالمة مركزة لتحديد هل الأولوية هي الموقع، القمع، أو نظام النمو الكامل.',
         primaryCta: cta('احجز مكالمة', '/book-call'),
@@ -759,8 +759,51 @@ const siteSettingsByLocale = {
   ar: siteSettingDataAr,
 };
 
-const pages = getJourneyPages('en');
-const pagesAr = getJourneyPages('ar');
+const SUPPORTED_PAGE_BLOCKS = new Set([
+  'blocks.hero',
+  'blocks.page-hero',
+  'blocks.animated-text',
+  'blocks.problem',
+  'blocks.service-overview',
+  'blocks.feature-list',
+  'blocks.faq',
+  'blocks.process',
+  'blocks.final-cta',
+  'blocks.book-call',
+  'blocks.system-flow',
+  'blocks.diagnosis',
+  'blocks.timeline',
+  'blocks.statement-pair',
+  'blocks.principles',
+  'blocks.dashboard-showcase',
+  'blocks.booking-meeting',
+  'blocks.brand-proof-grid',
+]);
+
+const organizePages = (locale) => getJourneyPages(locale).map((page) => {
+  const supportedBlocks = page.blocks.filter((block) => SUPPORTED_PAGE_BLOCKS.has(block.__component));
+
+  if (page.slug !== 'home') {
+    return { ...page, blocks: supportedBlocks };
+  }
+
+  const pick = (uid) => supportedBlocks.find((block) => block.__component === uid);
+  return {
+    ...page,
+    blocks: [
+      pick('blocks.hero'),
+      pick('blocks.animated-text'),
+      pick('blocks.problem'),
+      pick('blocks.service-overview'),
+      pick('blocks.principles'),
+      pick('blocks.faq'),
+      pick('blocks.final-cta'),
+    ].filter(Boolean),
+  };
+});
+
+const pages = organizePages('en');
+const pagesAr = organizePages('ar');
 const offers = getOffers('en');
 const offersAr = getOffers('ar');
 const offersByLocale = { en: offers, ar: offersAr };
@@ -1040,7 +1083,7 @@ pages.push({
   },
   blocks: [
     {
-      __component: 'section.book-call',
+      __component: 'blocks.book-call',
       ...bookCallBlockSettingsByLocale.en,
     },
   ],
@@ -1058,13 +1101,14 @@ pagesAr.push({
   },
   blocks: [
     {
-      __component: 'section.book-call',
+      __component: 'blocks.book-call',
       ...bookCallBlockSettingsByLocale.ar,
     },
   ],
 });
 
-const REQUIRED_PAGE_SLUGS = new Set(pages.map((page) => page.slug));
+const SINGLE_PAGE_SLUGS = new Set(['home', 'about']);
+const REQUIRED_PAGE_SLUGS = new Set(pages.filter((page) => !SINGLE_PAGE_SLUGS.has(page.slug)).map((page) => page.slug));
 
 const nowIso = () => new Date().toISOString();
 
@@ -1192,6 +1236,8 @@ async function ensurePublicReadPermissions(strapi) {
   const actions = [
     `${UIDS.siteSetting}.find`,
     `${UIDS.blogPage}.find`,
+    `${UIDS.homePage}.find`,
+    `${UIDS.aboutPage}.find`,
     `${UIDS.page}.find`,
     `${UIDS.page}.findOne`,
     `${UIDS.article}.find`,
@@ -1200,6 +1246,8 @@ async function ensurePublicReadPermissions(strapi) {
     `${UIDS.author}.findOne`,
     `${UIDS.tag}.find`,
     `${UIDS.tag}.findOne`,
+    `${UIDS.category}.find`,
+    `${UIDS.category}.findOne`,
     `${UIDS.offer}.find`,
     `${UIDS.offer}.findOne`,
   ];
@@ -1306,6 +1354,12 @@ async function upsertSingleType(strapi, uid, data) {
 const toPageData = (page) => ({
   title: page.title,
   slug: page.slug,
+  seo: page.seo,
+  blocks: page.blocks,
+});
+
+const toSinglePageData = (page) => ({
+  title: page.title,
   seo: page.seo,
   blocks: page.blocks,
 });
@@ -1491,6 +1545,44 @@ async function getHomepageOfferRelationsByLocale(strapi) {
   ]));
 }
 
+const PRINCIPLE_MEDIA_MATCHES = [
+  'about_strategy_preview_31520b653a',
+  'about_case_study_cover_aa228ef873',
+  'Generated_Image_October_06_2025_7_59_PM_2_upscayl_4x_upscayl_standard_4x_32ee5e22f1',
+  'blog-demand-scorecard',
+  'blog-homepage-message-framework',
+  'about_discuss_background_74716ba52a',
+];
+
+async function getPrincipleMediaIds(strapi) {
+  const files = await strapi.db.query('plugin::upload.file').findMany({
+    select: ['id', 'name', 'url'],
+  });
+
+  return PRINCIPLE_MEDIA_MATCHES.map((match) => (
+    (files || []).find((file) => `${file.name || ''} ${file.url || ''}`.includes(match))?.id
+  )).filter(Boolean);
+}
+
+function attachPrincipleMedia(block, mediaIds) {
+  if (block.__component !== 'blocks.principles') {
+    return block;
+  }
+
+  return {
+    ...block,
+    items: (block.items || []).map((entry, index) => {
+      const image = mediaIds.length > 0 ? mediaIds[index % mediaIds.length] : null;
+      return {
+        ...(entry.label ? { label: entry.label } : {}),
+        title: entry.title,
+        description: entry.description,
+        ...(image ? { image } : {}),
+      };
+    }),
+  };
+}
+
 async function ensureCmsContent(strapi) {
   await upsertSingleTypeLocales(strapi, UIDS.siteSetting, siteSettingsByLocale);
   await upsertSingleType(strapi, UIDS.calendarSetting, calendarSettingData);
@@ -1500,6 +1592,11 @@ async function ensureCmsContent(strapi) {
   }
 
   const homepageOfferRelationsByLocale = await getHomepageOfferRelationsByLocale(strapi);
+  const principleMediaIds = await getPrincipleMediaIds(strapi);
+
+  if (principleMediaIds.length === 0) {
+    strapi.log.warn('No Media Library images were found for the Principles block. Cards will use their visual fallback.');
+  }
 
   let defaultStepper = await strapi.db.query('plugin::booking.stepper').findOne({
     where: { key: 'default-website-qualification' },
@@ -1524,23 +1621,41 @@ async function ensureCmsContent(strapi) {
     localePages.map((page) => ({
       ...page,
       blocks: page.blocks.map((block) => {
-        if (block.__component === 'section.book-call') {
-          return { ...block, stepper: defaultStepper.id };
+        const blockWithPrincipleMedia = attachPrincipleMedia(block, principleMediaIds);
+
+        if (blockWithPrincipleMedia.__component === 'blocks.book-call') {
+          // The main website follows the booking service's configured default.
+          // Campaign landing pages set questionFlowKey explicitly in Strapi.
+          return blockWithPrincipleMedia;
         }
 
-        if (block.__component === 'section.service-overview') {
+        if (blockWithPrincipleMedia.__component === 'blocks.service-overview') {
           return {
-            ...block,
+            ...blockWithPrincipleMedia,
             services: { connect: homepageOfferRelationsByLocale[locale] || [] },
           };
         }
 
-        return block;
+        return blockWithPrincipleMedia;
       }),
     })),
   ]));
 
-  for (const page of stepperPagesByLocale[DEFAULT_LOCALE]) {
+  const singlePageDataByUid = {
+    [UIDS.homePage]: Object.fromEntries(ACTIVE_LOCALES.map((locale) => {
+      const page = stepperPagesByLocale[locale].find((entry) => entry.slug === 'home');
+      return [locale, toSinglePageData(page)];
+    })),
+    [UIDS.aboutPage]: Object.fromEntries(ACTIVE_LOCALES.map((locale) => {
+      const page = stepperPagesByLocale[locale].find((entry) => entry.slug === 'about');
+      return [locale, toSinglePageData(page)];
+    })),
+  };
+
+  await upsertSingleTypeLocales(strapi, UIDS.homePage, singlePageDataByUid[UIDS.homePage]);
+  await upsertSingleTypeLocales(strapi, UIDS.aboutPage, singlePageDataByUid[UIDS.aboutPage]);
+
+  for (const page of stepperPagesByLocale[DEFAULT_LOCALE].filter((entry) => !SINGLE_PAGE_SLUGS.has(entry.slug))) {
     await upsertLocalizedPage(strapi, UIDS.page, page, stepperPagesByLocale);
   }
 

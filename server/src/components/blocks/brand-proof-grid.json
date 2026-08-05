@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_blocks_brand_proof_grids",
+  "info": {
+    "displayName": "Brand Proof Grid",
+    "description": "Media-rich proof mosaic for strategy, team, performance and case studies"
+  },
+  "options": {},
+  "attributes": {
+    "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "satisfactionPanel": { "type": "component", "component": "shared.brand-proof-satisfaction", "repeatable": false },
+    "strategyPanel": { "type": "component", "component": "shared.brand-proof-strategy-card", "repeatable": true, "max": 6 },
+    "consultationPanel": { "type": "component", "component": "shared.brand-proof-consultation", "repeatable": false },
+    "performancePanel": { "type": "component", "component": "shared.brand-proof-performance", "repeatable": false },
+    "caseStudyPanel": { "type": "component", "component": "shared.brand-proof-case-study", "repeatable": false },
+    "industriesPanel": { "type": "component", "component": "shared.brand-proof-industries", "repeatable": false },
+    "testimonialPanel": { "type": "component", "component": "shared.brand-proof-testimonial", "repeatable": false }
+  }
+}
