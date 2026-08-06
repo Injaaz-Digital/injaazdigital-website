@@ -9,6 +9,7 @@ const serverSchema = publicSchema.extend({
   SITE_URL: optionalUrl,
   CONTENT_ANALYZER_API_URL: optionalUrl,
   CONTENT_ANALYZER_BOOKING_KEY: z.string().min(32).optional(),
+  CONTENT_ANALYZER_BOOKING_SITE_ID: z.string().regex(/^site_[a-zA-Z0-9_-]+$/).optional(),
   STRAPI_API_TOKEN: z.string().min(1).optional(),
   STRAPI_PREVIEW_SECRET: z.string().min(32).optional(),
   STRAPI_WEBHOOK_SECRET: z.string().min(32).optional(),

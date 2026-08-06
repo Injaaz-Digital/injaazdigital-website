@@ -50,19 +50,6 @@
     "fallbackDescription": {
       "type": "text",
       "description": "Brief next-step message shown below the fallback heading."
-    },
-    "questionFlowKey": {
-      "type": "string",
-      "required": false,
-      "regex": "^[a-z][a-z0-9_-]*$",
-      "description": "Stable API key of a published Question flow in content-analyzer. Leave empty to use the website default flow."
-    },
-    "stepper": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::booking.stepper",
-      "required": false,
-      "private": true
     }
   }
 }

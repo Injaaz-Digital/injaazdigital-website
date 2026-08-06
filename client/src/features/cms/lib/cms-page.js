@@ -9,8 +9,7 @@ import {
 } from '@/lib/strapi';
 import { request } from '@/lib/strapi';
 import { CMS_SINGLE_TYPE_BY_PATH, isExternalUrl, normalizeCmsUrl } from '@/lib/config/site-config';
-import { fetchBookingStepper } from '@/features/book-call/services/lead.service';
-import { fetchBookingPresentationConfig } from '@/features/book-call/services/calendar.service';
+import { fetchWebsiteBookingBootstrap } from '@/features/book-call/server/booking-integration';
 import { sanitizeCmsRichText } from '@/features/blog/server/rich-text';
 import { articleSchema, cmsPageSchema, siteSettingSchema } from '@/features/cms/content/shared/schemas';
 import { estimateReadingTime } from '@/features/blog/server/reading-time';
@@ -665,20 +664,20 @@ const hydrateBookCallBlocks = async (pageData, locale, pathname) => {
     return pageData;
   }
 
-  const stepperKeys = [...new Set(blocks
-    .filter((block) => block?.__component === 'blocks.book-call')
-    .map((block) => block?.questionFlowKey || block?.stepper?.key)
-    .filter(Boolean))];
-  const [steppers, bookingConfig] = await Promise.all([
-    Promise.all(stepperKeys.map((key) => fetchBookingStepper({ key, locale }).catch(() => null))),
-    fetchBookingPresentationConfig().catch(() => null),
-  ]);
-  const steppersByKey = new Map(steppers.filter(Boolean).map((stepper) => [stepper.key, stepper]));
-  const defaultFlowKey = bookingConfig?.defaultFlowKey || '';
-  if (defaultFlowKey && !steppersByKey.has(defaultFlowKey)) {
-    const defaultStepper = await fetchBookingStepper({ key: defaultFlowKey, locale }).catch(() => null);
-    if (defaultStepper) steppersByKey.set(defaultStepper.key, defaultStepper);
-  }
+  const bootstrap = await fetchWebsiteBookingBootstrap({ locale }).catch((error) => {
+    cmsLogger.error('Website booking integration could not be loaded.', {
+      operation: 'cms.book-call.integration-resolve',
+      locale,
+      route: pathname,
+      errorCode: error?.code || 'BOOKING_INTEGRATION_UNAVAILABLE',
+    });
+    return null;
+  });
+  const bookingConfig = bootstrap?.bookingConfig || null;
+  const stepper = bootstrap?.stepper || null;
+  const flowKey = stepper?.key || bookingConfig?.defaultFlowKey || '';
+  const hasConfigurationError = !stepper;
+  const questionsEnabled = Boolean(stepper) && stepper.qualificationEnabled !== false;
   const duration = Number(bookingConfig?.meetingDuration || 30);
 
   return {
@@ -687,15 +686,11 @@ const hydrateBookCallBlocks = async (pageData, locale, pathname) => {
       if (block?.__component !== 'blocks.book-call') {
         return block;
       }
-      const requestedFlowKey = block.questionFlowKey || block.stepper?.key || defaultFlowKey;
-      const stepper = steppersByKey.get(requestedFlowKey) || steppersByKey.get(defaultFlowKey) || null;
-      const questionsEnabled = Boolean(stepper) && stepper.qualificationEnabled !== false;
-
       return {
         id: block.id,
         __component: block.__component,
         ...pickBookCallEditorialCopy(block),
-        stepperKey: stepper?.key || requestedFlowKey || '',
+        stepperKey: flowKey,
         stepperVersion: Number(stepper?.version || 0),
         stepperLocale: stepper?.locale || locale,
         stepperSteps: Array.isArray(stepper?.steps) ? stepper.steps : [],
@@ -706,7 +701,13 @@ const hydrateBookCallBlocks = async (pageData, locale, pathname) => {
           ? `توقيت ${bookingConfig?.timezone || 'Africa/Casablanca'}`
           : (bookingConfig?.timezone || 'Africa/Casablanca'),
         meetingLocation: bookingConfig?.meetingLocation || 'Google Meet',
-        questionsBeforeBookingEnabled: questionsEnabled,
+        questionsBeforeBookingEnabled: questionsEnabled || hasConfigurationError,
+        ...(hasConfigurationError ? {
+          errorTitle: locale === 'ar' ? 'إعداد الحجز غير مكتمل' : 'Booking configuration unavailable',
+          errorDescription: locale === 'ar'
+            ? 'تعذر تحميل إعداد الحجز لهذا الموقع. يرجى التواصل معنا مباشرة.'
+            : 'This website booking integration could not be loaded. Please contact us directly.',
+        } : {}),
         sourcePage: pathname || '/book-call',
         initialQuestions: questionsEnabled ? (stepper?.questions || []) : [],
       };

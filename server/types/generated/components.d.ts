@@ -53,10 +53,7 @@ export interface BlocksBookCall extends Struct.ComponentSchema {
       Schema.Attribute.DefaultTo<'Book a Strategy Call'>;
     qualificationIntroTitle: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Fit questions'>;
-    questionFlowKey: Schema.Attribute.String;
     settings: Schema.Attribute.Component<'shared.block-settings', false>;
-    stepper: Schema.Attribute.Relation<'manyToOne', 'plugin::booking.stepper'> &
-      Schema.Attribute.Private;
     successTitle: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Your strategy call is booked'>;
   };

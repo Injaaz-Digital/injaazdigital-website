@@ -58,3 +58,9 @@ test('visual quality honors reduced motion and constrained hardware', () => {
   assert.equal(resolveVisualQuality('auto', { width: 1440, devicePixelRatio: 2, reducedMotion: true, saveData: false, hardwareConcurrency: 8, webgl: true }), 'low');
   assert.equal(resolveVisualQuality('auto', { width: 1440, devicePixelRatio: 1, reducedMotion: false, saveData: false, hardwareConcurrency: 8, webgl: true }), 'high');
 });
+
+test('book-call CMS blocks do not own Flow questionnaire selection', async () => {
+  const schema = JSON.parse(await readFile(new URL('../../server/src/components/blocks/book-call.json', import.meta.url), 'utf8'));
+  assert.equal('questionFlowKey' in schema.attributes, false);
+  assert.equal('stepper' in schema.attributes, false);
+});
