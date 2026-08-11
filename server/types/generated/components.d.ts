@@ -53,6 +53,11 @@ export interface BlocksBookCall extends Struct.ComponentSchema {
       Schema.Attribute.DefaultTo<'Book a Strategy Call'>;
     qualificationIntroTitle: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Fit questions'>;
+    questionFlowKey: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        minLength: 1;
+        maxLength: 80;
+      }>;
     settings: Schema.Attribute.Component<'shared.block-settings', false>;
     successTitle: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Your strategy call is booked'>;

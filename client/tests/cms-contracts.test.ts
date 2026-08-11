@@ -11,6 +11,7 @@ import { cmsCacheTags } from '../src/features/cms/server/cms-cache';
 import { cacheTagsForStrapiWebhook } from '../src/features/cms/server/strapi-webhook';
 import { isSafeInternalPath, isSupportedPreviewPath } from '../src/lib/security/redirects';
 import { resolveVisualQuality } from '../src/lib/visual/visual-quality';
+import { getBookCallFlowRequestKeys, normalizeBookCallFlowKey } from '../src/features/cms/lib/book-call-flow';
 
 test('Strapi query serialization preserves nested filters and array order', () => {
   assert.equal(buildQuery({ locale: 'ar', filters: { slug: { $eq: 'growth' } }, sort: ['featured:desc', 'updatedAt:desc'] }), '?locale=ar&filters%5Bslug%5D%5B%24eq%5D=growth&sort%5B0%5D=featured%3Adesc&sort%5B1%5D=updatedAt%3Adesc');
@@ -59,8 +60,28 @@ test('visual quality honors reduced motion and constrained hardware', () => {
   assert.equal(resolveVisualQuality('auto', { width: 1440, devicePixelRatio: 1, reducedMotion: false, saveData: false, hardwareConcurrency: 8, webgl: true }), 'high');
 });
 
-test('book-call CMS blocks do not own Flow questionnaire selection', async () => {
+test('book-call CMS blocks support an optional stable Flow key', async () => {
   const schema = JSON.parse(await readFile(new URL('../../server/src/components/blocks/book-call.json', import.meta.url), 'utf8'));
-  assert.equal('questionFlowKey' in schema.attributes, false);
+  assert.deepEqual(schema.attributes.questionFlowKey, {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+    regex: '^[a-z][a-z0-9_-]*$',
+    description: "Optional stable Flow key for this block (for example, growth-diagnosis). This is an identifier, not a secret. Leave blank to use the website's default Flow.",
+  });
   assert.equal('stepper' in schema.attributes, false);
+});
+
+test('book-call Flow requests preserve default selection and deduplicate explicit keys', () => {
+  const blocks = [
+    { __component: 'blocks.hero', questionFlowKey: 'ignored' },
+    { __component: 'blocks.book-call' },
+    { __component: 'blocks.book-call', questionFlowKey: ' growth-diagnosis ' },
+    { __component: 'blocks.book-call', questionFlowKey: 'growth-diagnosis' },
+    { __component: 'blocks.book-call', questionFlowKey: 'website-diagnosis' },
+  ];
+
+  assert.equal(normalizeBookCallFlowKey(' growth-diagnosis '), 'growth-diagnosis');
+  assert.equal(normalizeBookCallFlowKey(null), '');
+  assert.deepEqual(getBookCallFlowRequestKeys(blocks), ['', 'growth-diagnosis', 'website-diagnosis']);
 });

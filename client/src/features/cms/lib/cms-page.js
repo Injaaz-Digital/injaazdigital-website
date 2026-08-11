@@ -17,6 +17,7 @@ import { rankRelatedArticles } from '@/features/blog/server/recommendations';
 import { cmsLogger } from '@/features/cms/server/cms-logger';
 import { cmsCacheTags } from '@/features/cms/server/cms-cache';
 import { BLOG_ARTICLE_POPULATE, PAGE_COLLECTION_POPULATE, PAGE_POPULATE } from '@/features/cms/content/shared/populate';
+import { getBookCallFlowRequestKeys, normalizeBookCallFlowKey } from '@/features/cms/lib/book-call-flow';
 
 const DEFAULT_SITE_NAME = 'Injaaz Digital';
 const HERO_CTA_FALLBACKS = Object.freeze({
@@ -664,21 +665,24 @@ const hydrateBookCallBlocks = async (pageData, locale, pathname) => {
     return pageData;
   }
 
-  const bootstrap = await fetchWebsiteBookingBootstrap({ locale }).catch((error) => {
-    cmsLogger.error('Website booking integration could not be loaded.', {
-      operation: 'cms.book-call.integration-resolve',
-      locale,
-      route: pathname,
-      errorCode: error?.code || 'BOOKING_INTEGRATION_UNAVAILABLE',
-    });
-    return null;
-  });
-  const bookingConfig = bootstrap?.bookingConfig || null;
-  const stepper = bootstrap?.stepper || null;
-  const flowKey = stepper?.key || bookingConfig?.defaultFlowKey || '';
-  const hasConfigurationError = !stepper;
-  const questionsEnabled = Boolean(stepper) && stepper.qualificationEnabled !== false;
-  const duration = Number(bookingConfig?.meetingDuration || 30);
+  const bootstraps = new Map(await Promise.all(
+    getBookCallFlowRequestKeys(blocks).map(async (requestedFlowKey) => {
+      const bootstrap = await fetchWebsiteBookingBootstrap({
+        locale,
+        ...(requestedFlowKey ? { flowKey: requestedFlowKey } : {}),
+      }).catch((error) => {
+        cmsLogger.error('Website booking integration could not be loaded.', {
+          operation: 'cms.book-call.integration-resolve',
+          locale,
+          route: pathname,
+          flowKey: requestedFlowKey || 'default',
+          errorCode: error?.code || 'BOOKING_INTEGRATION_UNAVAILABLE',
+        });
+        return null;
+      });
+      return [requestedFlowKey, bootstrap];
+    })
+  ));
 
   return {
     ...pageData,
@@ -686,6 +690,15 @@ const hydrateBookCallBlocks = async (pageData, locale, pathname) => {
       if (block?.__component !== 'blocks.book-call') {
         return block;
       }
+      const requestedFlowKey = normalizeBookCallFlowKey(block.questionFlowKey);
+      const bootstrap = bootstraps.get(requestedFlowKey) || null;
+      const bookingConfig = bootstrap?.bookingConfig || null;
+      const stepper = bootstrap?.stepper || null;
+      const flowKey = stepper?.key || bookingConfig?.defaultFlowKey || '';
+      const hasConfigurationError = !stepper;
+      const questionsEnabled = Boolean(stepper) && stepper.qualificationEnabled !== false;
+      const duration = Number(bookingConfig?.meetingDuration || 30);
+
       return {
         id: block.id,
         __component: block.__component,

@@ -7,6 +7,13 @@
   "options": {},
   "attributes": {
     "settings": { "type": "component", "component": "shared.block-settings", "repeatable": false },
+    "questionFlowKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "regex": "^[a-z][a-z0-9_-]*$",
+      "description": "Optional stable Flow key for this block (for example, growth-diagnosis). This is an identifier, not a secret. Leave blank to use the website's default Flow."
+    },
     "introEyebrow": {
       "type": "string",
       "default": "Injaaz Digital",

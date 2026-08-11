@@ -5,6 +5,7 @@ import { Geist, IBM_Plex_Sans_Arabic, Manrope, Syne } from "next/font/google";
 import { SITE_URL } from "@/lib/config/site-config";
 import { getLocaleDirection } from "@/lib/i18n/locale";
 import { getInitialLang } from "@/lib/i18n/locale.server";
+import { getServerEnv } from "@/lib/config/env";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -69,6 +70,9 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const htmlLang = await getInitialLang();
   const htmlDir = getLocaleDirection(htmlLang);
+  const flowEnv = getServerEnv();
+  const flowSiteId = flowEnv.CONTENT_ANALYZER_BOOKING_SITE_ID;
+  const flowSdkUrl = flowEnv.CONTENT_ANALYZER_API_URL ? new URL('/flow.js', flowEnv.CONTENT_ANALYZER_API_URL).toString() : '';
 
   return (
     <html lang={htmlLang} dir={htmlDir} suppressHydrationWarning>
@@ -77,6 +81,7 @@ export default async function RootLayout({ children }) {
         className={`${geist.className} ${arabic.className} ${geist.variable} ${manrope.variable} ${syne.variable} ${arabic.variable} ${domaine.variable} bg-white/88`}
       >
         {process.env.NODE_ENV === 'development' ? <Script src="https://mcp.figma.com/mcp/html-to-design/capture.js" strategy="afterInteractive" /> : null}
+        {flowSiteId && flowSdkUrl ? <Script id="flow-website-intelligence" src={flowSdkUrl} data-site-id={flowSiteId} strategy="afterInteractive" /> : null}
         {children}
       </body>
     </html>

@@ -29,6 +29,19 @@ const forward = async (request: NextRequest, context: { params: Promise<{ path: 
   const upstream = new URL(`/api/v1/booking/public/${resource}`, env.CONTENT_ANALYZER_API_URL);
   upstream.search = request.nextUrl.search;
   const contentType = request.headers.get('content-type');
+  let body = ['GET', 'HEAD'].includes(request.method) ? undefined : await request.text();
+  if (resource === 'sessions' && contentType?.includes('application/json') && env.CONTENT_ANALYZER_BOOKING_SITE_ID) {
+    try {
+      const input = JSON.parse(body || '{}');
+      const visitorId = request.cookies.get(`flow_vid_${env.CONTENT_ANALYZER_BOOKING_SITE_ID}`)?.value;
+      const sessionId = request.cookies.get(`flow_sid_${env.CONTENT_ANALYZER_BOOKING_SITE_ID}`)?.value;
+      if (/^v_[A-Za-z0-9_-]{12,158}$/.test(visitorId || '') && /^s_[A-Za-z0-9_-]{12,158}$/.test(sessionId || '')) {
+        body = JSON.stringify({ ...input, analyticsContext: { visitorId, sessionId } });
+      }
+    } catch {
+      // The upstream booking schema returns the canonical malformed-body error.
+    }
+  }
   const response = await fetch(upstream, {
     method: request.method,
     headers: {
@@ -38,7 +51,7 @@ const forward = async (request: NextRequest, context: { params: Promise<{ path: 
       ...(request.headers.get('idempotency-key') ? { 'Idempotency-Key': request.headers.get('idempotency-key')! } : {}),
       ...(request.headers.get('x-request-id') ? { 'X-Request-Id': request.headers.get('x-request-id')! } : {}),
     },
-    body: ['GET', 'HEAD'].includes(request.method) ? undefined : await request.text(),
+    body,
     cache: 'no-store',
   }).catch(() => null);
 

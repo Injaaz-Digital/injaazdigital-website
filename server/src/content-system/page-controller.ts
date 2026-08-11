@@ -6,8 +6,7 @@ export const enrichBookCallSteppers = async (_strapi: any, value: unknown) => {
     const blocks = Array.isArray(entry?.blocks) ? entry.blocks : [];
     blocks.forEach((block: any) => {
       if (block?.__component !== 'blocks.book-call') return;
-      // Flow selection belongs to the registered website integration, not CMS.
-      delete block.questionFlowKey;
+      // Runtime stepper data is owned by the booking service; the CMS only stores its stable key.
       delete block.stepper;
     });
   }));
